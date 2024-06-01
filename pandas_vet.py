@@ -99,7 +99,7 @@ def _check_data(data, check_fn=lambda df: df, modify_fn=lambda df: df, subset=No
 
 ## Public methods added to Pandas DataFrame
 @pd.api.extensions.register_dataframe_accessor("check")
-class ChainCheckDataFrame:
+class DataFrameVet:
 
     def __init__(self, pandas_obj):
         self._obj = pandas_obj
