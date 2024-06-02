@@ -1,31 +1,13 @@
-# from dill.source import getsource
-from inspect import currentframe, getargvalues, getsourcelines
+from inspect import getsourcelines
+from IPython.display import display
 import pandas as pd
 import pandas._config.config as cf
 from pandas.core.groupby.groupby import DataError
 from pandas.core.config_init import is_terminal
-from pandas._config.config import (
-    # is_bool,
-    # is_callable,
-    is_instance_factory,
-    # is_int,
-    is_nonnegative_int,
-    # is_one_of_factory,
-    # is_str,
-    # is_text,
-)
-
-from IPython.display import display
+from pandas._config.config import is_float, is_nonnegative_int, is_str
+from termcolor import colored
 from time import time
-import matplotlib # Must import for .plot()/.hist()
 import numpy as np
-
-# Certain functions requires:
-# pip install Jinga2 # for table caption
-# pip install openpyxl pyarrow  # For writing excel or parquet
-# pip install matplotlib 
-# dill
-
 
 # Public functions
 def start_timer(verbose=False):
@@ -95,7 +77,7 @@ def _register_vet_options():
                 Since Pandas returns a new, re-initialized DataFrame at each method
                 to avoid mutating objects.
             """,
-        validator=is_instance_factory(float)
+        validator=is_float
     )
 
 
