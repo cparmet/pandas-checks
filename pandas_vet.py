@@ -7,7 +7,7 @@ from pandas.core.config_init import is_terminal
 from pandas._config.config import (
     # is_bool,
     # is_callable,
-    # is_instance_factory,
+    is_instance_factory,
     # is_int,
     is_nonnegative_int,
     # is_one_of_factory,
@@ -26,19 +26,78 @@ import numpy as np
 # pip install matplotlib 
 # dill
 
-## Public functions
-def start_timer():
-    return time()
 
-## Private functions
-def _in_ipython():
-    """Helper function to check if we're in IPython/Jupyter or a regular .py script"""
-    try:
-        # If get_ipython() is defined, it's an interactive environment
-        return get_ipython() is not None
-    except NameError:
-        # If get_ipython() is not defined, it's a regular .py script
-        return False
+# Public functions
+def start_timer(verbose=False):
+    """
+    TODO: Ideally we wouldn't use pandas config to store the start time.
+    See if there's a better way store variables that will persist across Pandas method chains.
+    They return newly initialized DataFrames at each method which reset all of a DataFrame's attributes.
+    And we want to avoid global variables in the pandas_vet.py.
+    """
+    pd.set_option("vet.timer_start_time", time())
+    if verbose:
+        print("Started timer at:", pd.get_option("vet.timer_start_time"))
+
+def print_time_elapsed(check_name="Time elapsed", units="seconds"):
+    start = pd.get_option("vet.timer_start_time")
+    if start==np.nan:
+        print("Timer hasn't been started. Call .check.start_time() before .check.get_time_elapsed()")
+    elapsed = time() - start
+    if units=="minutes":
+        elapsed/=60
+    elif units=="hours":
+        elapsed/=60*60
+    elif units!="seconds":
+        raise ValueError(f"Unexpected value for argument `units`: {units}")
+    print(check_name + ": " if check_name else "", elapsed, units)
+
+# Private functions
+def _register_vet_option(name, default_value, description, validator):
+    """Add a Pandas Vet option to the Pandas configuration.
+    This method enables us to set global formatting for Vet checks
+    and store variables that will persist across Pandas method chains
+    which return newly initialized DataFrames at each method
+    (resetting DataFrame's attributes)."""
+    key_name = name if "vet." not in name else name.replace("vet,","") # If we passed vet.name, stirp vet., since we'll be working in "vet" config namespace
+    try: # See if this option is already registered
+        pd.get_option(f"vet.{key_name}")
+    except pd.errors.OptionError: # Register it!
+        with cf.config_prefix("vet"):
+            cf.register_option(
+                key_name,
+                default_value,
+                description,validator
+                )
+
+def _register_vet_options():
+    _register_vet_option(
+        name="precision",
+        default_value=2,
+        description="""
+            : int
+                Set the precision of outputs from pandas_vet methods.
+                Floating point output precision in terms of number of places after the
+                decimal, for regular formatting as well as scientific notation. Similar
+                to ``precision`` in :meth:`numpy.set_printoptions`.
+
+                Does not change precision of other Pandas methods. Use pd.set_option('display.precision',...) instead.
+            """,
+        validator=is_nonnegative_int
+        )
+    _register_vet_option(
+        name="timer_start_time",
+        default_value=np.nan,
+        description="""
+            : int
+                Internal timer from the package pandas_vet.
+                Used to create a global timer that will persist over method chains.
+                Since Pandas returns a new, re-initialized DataFrame at each method
+                to avoid mutating objects.
+            """,
+        validator=is_instance_factory(float)
+    )
+
 
 def _lambda_to_string(lambda_func):
     """TODO: This still returns all arguments to the calling function. They get entangled with the argument when it's a lambda function. Try other ways to get just the argument we want"""
@@ -111,37 +170,8 @@ def _check_data(data, check_fn=lambda df: df, modify_fn=lambda df: df, subset=No
 ## Public methods added to Pandas DataFrame
 @pd.api.extensions.register_dataframe_accessor("check")
 class DataFrameVet:
-    # _timer_start = None
-
     def __init__(self, pandas_obj):
         self._obj = pandas_obj
-        # self._obj._vet_timer_start = getattr(pandas_obj, "_vet_timer_start", None)
-        self._vet_start_time_value = "Just created"
-        self._register_options()
-
-
-    def _register_option(self, name, default_value, description, validator):
-        try:
-            pd.get_option(name)
-        except pd.errors.OptionError: # It hasn't already been registered
-            with cf.config_prefix("vet"):
-                cf.register_option(name, default_value, description, validator)
-
-    def _register_options(self):
-        self._register_option(
-            name="precision",
-            default_value=2,
-            description="""
-                : int
-                    Set the precision of outputs from pandas_vet methods.
-                    Floating point output precision in terms of number of places after the
-                    decimal, for regular formatting as well as scientific notation. Similar
-                    to ``precision`` in :meth:`numpy.set_printoptions`.
-
-                    Does not change precision of other Pandas methods. Use pd.set_option('display.precision',...) instead.
-                """,
-            validator=is_nonnegative_int
-        )
 
     def set_format(self, precision=2):
         pd.set_option("vet.precision", precision)
@@ -309,6 +339,10 @@ class DataFrameVet:
         _check_data(self._obj, check_fn=lambda df: df.shape, modify_fn=fn, subset=subset, check_name=check_name)
         return self._obj
 
+    def start_timer(self, verbose=False):
+        start_timer(verbose) # Call the public function
+        return self._obj
+
     def tail(self, n=5, fn=lambda df: df, subset=None, check_name=None):            
         _check_data(
             self._obj,
@@ -319,15 +353,8 @@ class DataFrameVet:
             )
         return self._obj
     
-    def time_elapsed(self, start_time, check_name="Time elapsed", units="seconds"):
-        elapsed = time() - start_time
-        if units=="minutes":
-            elapsed/=60
-        elif units=="hours":
-            elapsed/=60*60
-        elif units!="seconds":
-            raise ValueError(f"Unexpected value for argument `units`: {units}")
-        print(check_name + ": " if check_name else "", elapsed, units)
+    def print_time_elapsed(self, check_name="Time elapsed", units="seconds"):
+        print_time_elapsed(check_name=check_name, units=units) # Call the public function
         return self._obj
 
     def unique(self, column, fn=lambda df: df, check_name=None):
@@ -365,6 +392,6 @@ class DataFrameVet:
             print("Wrote file {path}")
         return self._obj
 
-if "__name__"=="__main__":
-    print("hi")
-    print(pd.DataFrame(data=[0,1,2]))
+
+# Initialize configuration
+_register_vet_options()
