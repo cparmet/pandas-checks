@@ -17,7 +17,20 @@ def start_timer(verbose=False):
     They return newly initialized DataFrames at each method which reset all of a DataFrame's attributes.
     And we want to avoid global variables in the pandas_vet.py.
     """
-    pd.set_option("vet.timer_start_time", time())
+    # Do we need to register option while setting it?
+    if "vet.timer_start_time" not in pd._config.config._select_options("vet"):
+        _register_vet_option(
+            name="timer_start_time",
+            default_value=time(),
+            description="""
+                : int
+                Internal timer from the package pandas_vet. Used to create a global timer that will persist over method chains. Since Pandas returns a new, re-initialized DataFrame at each method to avoid mutating objects.
+                """,
+            validator=is_instance_factory(float)
+        )
+    # The option has already been registered. Re-set its value
+    else:
+        pd.set_option("vet.timer_start_time", time())
     if verbose:
         print("Started timer at:", pd.get_option("vet.timer_start_time"))
 
@@ -41,9 +54,11 @@ def _register_vet_option(name, default_value, description, validator):
     and store variables that will persist across Pandas method chains
     which return newly initialized DataFrames at each method
     (resetting DataFrame's attributes)."""
-    key_name = name if "vet." not in name else name.replace("vet,","") # If we passed vet.name, stirp vet., since we'll be working in "vet" config namespace
+    key_name = name if "vet." not in name else name.replace("vet,","") # If we passed vet.name, strip vet., since we'll be working in "vet" config namespace
     try: # See if this option is already registered
         pd.get_option(f"vet.{key_name}")
+        # If so, reset its value
+        pd.set_option(f"vet.{key_name}", default_value)
     except pd.errors.OptionError: # Register it!
         with cf.config_prefix("vet"):
             cf.register_option(
@@ -52,44 +67,33 @@ def _register_vet_option(name, default_value, description, validator):
                 description,validator
                 )
 
-def _register_vet_options():
-    _register_vet_option(
-        name="precision",
-        default_value=2,
-        description="""
-            : int
-                The floating point output precision of Pandas Vet outputs, in terms of number of places after the
-                decimal, for regular formatting as well as scientific notation.
-                Similar to ``precision`` in :meth:`numpy.set_printoptions`.
-
-                Does not change precision of other Pandas methods. Use pd.set_option('display.precision',...) instead.
-            """,
-        validator=is_nonnegative_int
-        )
-    _register_vet_option(
-        name="table_style_cell_hover",
-        default_value={
-            'selector': 'td:hover',
-            'props': [('background-color', '#2986cc')]
-                      },
-        description="""
-            : int
+def _initialize_format_options(options=None):
+    """Set up, or reset, Pandas Vet options
+    None=initalize/reset all options"""
+    option_keys = [option.replace("vet.", "") for option in options] if options else []
+    if "precision" in option_keys or options==None:
+        _register_vet_option(
+            name="precision",
+            default_value=2,
+            description="""
+                : int
+                The floating point output precision of Pandas Vet outputs, in terms of number of places after the decimal, for regular formatting as well as scientific notation. Similar to ``precision`` in :meth:`numpy.set_printoptions`. Does not change precision of other Pandas methods. Use pd.set_option('display.precision',...) instead.
+                """,
+            validator=is_nonnegative_int
+            )
+    if "table_cell_hover_style" in option_keys or options==None:
+        _register_vet_option(
+            name="table_cell_hover_style",
+            default_value={
+                'selector': 'td:hover',
+                'props': [('background-color', '#2986cc')]
+                        },
+            description="""
+                : int
                 The background color to show when hovering over a Pandas Vet table`.
-            """,
-        validator=is_instance_factory(dict)
-        )
-    _register_vet_option(
-        name="timer_start_time",
-        default_value=np.nan,
-        description="""
-            : int
-                Internal timer from the package pandas_vet.
-                Used to create a global timer that will persist over method chains.
-                Since Pandas returns a new, re-initialized DataFrame at each method
-                to avoid mutating objects.
-            """,
-        validator=is_instance_factory(float)
-    )
+                """,
+            validator=is_instance_factory(dict)
+            )
     # Text color for failure and success messages
     for option, default in {
         "fail_text_fg_color": "white",
@@ -97,15 +101,16 @@ def _register_vet_options():
         "success_text_fg_color": "black",
         "success_text_bg_color": "on_green"
         }.items():
-            _register_vet_option(
-                name=option,
-                default_value=default,
-                description=f"""
-                    : str
-                        Color of {"text" if "fg" in option else "background"} for Pandas Vet {option.split("_")[0]} messages.
-                    """,
-                validator=is_instance_factory(str)
-            )
+            if "option" in option_keys or options==None:
+                _register_vet_option(
+                    name=option,
+                    default_value=default,
+                    description=f"""
+                        : str
+                            Color of {"text" if "fg" in option else "background"} for Pandas Vet {option.split("_")[0]} messages.
+                        """,
+                    validator=is_instance_factory(str)
+                )
 
 def _format_success_message(message):
     return colored(message, pd.get_option("vet.success_text_fg_color"), pd.get_option("vet.success_text_bg_color"))
@@ -139,6 +144,12 @@ def _modify_data(data, fn=lambda df: df, subset=None):
         raise TypeError(f"Argument `fn` is of unexpected type {type(fn)}")
     return data[subset] if subset else data
 
+def _get_vet_table_styles():
+    """Return empty list when all registered styles are {}"""
+    return (
+        [pd.get_option("vet.table_cell_hover_style")] if pd.get_option("vet.table_cell_hover_style") else []
+    )
+
 def _display_check(data, name=None):
     """ Behave differently if we're in an IPython interactive session / Jupyter nobteook"""
     try:
@@ -152,14 +163,14 @@ def _display_check(data, name=None):
                 display(
                     data
                     .style.set_caption(name if name else "") # Add check name to dataframe
-                    .set_table_styles([pd.get_option("vet.table_style_cell_hover")])
+                    .set_table_styles(_get_vet_table_styles())
                     .format(precision=pd.get_option("vet.precision"))
                     ) 
             elif isinstance(data, pd.Series):
                 display(
                     pd.DataFrame(data)
                     .style.set_caption(name if name else "")
-                    .set_table_styles([pd.get_option("vet.table_style_cell_hover")])
+                    .set_table_styles(_get_vet_table_styles())
                     .format(precision=pd.get_option("vet.precision"))
                     ) # Add check name as column head
             else: # Print check name and data on separate lines
@@ -189,13 +200,20 @@ class DataFrameVet:
     def __init__(self, pandas_obj):
         self._obj = pandas_obj
 
-    def set_format(self, precision=2):
-        pd.set_option("vet.precision", precision)
+    def set_format(self, **kwargs):
+        for arg, value in kwargs.items():
+            vet_option = arg if arg.startswith("vet.") else "vet." + arg # Fully qualified
+            print(arg, value, vet_option)
+            if vet_option in pd._config.config._select_options("vet"):
+                print("set_option")
+                pd.set_option(vet_option, value)
+            else:
+                raise AttributeError(f"No Pandas Vet option for {vet_option}. Available options: {pd._config.config._select_options('vet')}")
         return self._obj
 
     def reset_format(self):
-        """Alias that runs set_format() with all defaults"""
-        self.set_format()
+        """Re-initilaize all Pandas Vet options for formatting"""
+        _initialize_format_options()
         return self._obj
 
     def assert_data(
@@ -203,8 +221,8 @@ class DataFrameVet:
             condition,
             subset=None,
             exception_class=DataError,
-            pass_message="✔️ Assertion passed ",
-            fail_message="ㄨ Assertion failed ",
+            pass_message=" ✔️ Assertion passed ",
+            fail_message=" ㄨ Assertion failed ",
             raise_exception=True,
             verbose=False
             ):
@@ -410,4 +428,4 @@ class DataFrameVet:
 
 
 # Initialize configuration
-_register_vet_options()
+_initialize_format_options()
