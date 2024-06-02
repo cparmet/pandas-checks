@@ -4,7 +4,7 @@ import pandas as pd
 import pandas._config.config as cf
 from pandas.core.groupby.groupby import DataError
 from pandas.core.config_init import is_terminal
-from pandas._config.config import is_float, is_nonnegative_int, is_str
+from pandas._config.config import is_instance_factory, is_nonnegative_int
 from termcolor import colored
 from time import time
 import numpy as np
@@ -58,14 +58,25 @@ def _register_vet_options():
         default_value=2,
         description="""
             : int
-                Set the precision of outputs from pandas_vet methods.
-                Floating point output precision in terms of number of places after the
-                decimal, for regular formatting as well as scientific notation. Similar
-                to ``precision`` in :meth:`numpy.set_printoptions`.
+                The floating point output precision of Pandas Vet outputs, in terms of number of places after the
+                decimal, for regular formatting as well as scientific notation.
+                Similar to ``precision`` in :meth:`numpy.set_printoptions`.
 
                 Does not change precision of other Pandas methods. Use pd.set_option('display.precision',...) instead.
             """,
         validator=is_nonnegative_int
+        )
+    _register_vet_option(
+        name="table_style_cell_hover",
+        default_value={
+            'selector': 'td:hover',
+            'props': [('background-color', '#2986cc')]
+                      },
+        description="""
+            : int
+                The background color to show when hovering over a Pandas Vet table`.
+            """,
+        validator=is_instance_factory(dict)
         )
     _register_vet_option(
         name="timer_start_time",
@@ -77,7 +88,7 @@ def _register_vet_options():
                 Since Pandas returns a new, re-initialized DataFrame at each method
                 to avoid mutating objects.
             """,
-        validator=is_float
+        validator=is_instance_factory(float)
     )
     # Text color for failure and success messages
     for option, default in {
@@ -93,7 +104,7 @@ def _register_vet_options():
                     : str
                         Color of {"text" if "fg" in option else "background"} for Pandas Vet {option.split("_")[0]} messages.
                     """,
-                validator=is_str
+                validator=is_instance_factory(str)
             )
 
 def _format_success_message(message):
@@ -141,12 +152,14 @@ def _display_check(data, name=None):
                 display(
                     data
                     .style.set_caption(name if name else "") # Add check name to dataframe
+                    .set_table_styles([pd.get_option("vet.table_style_cell_hover")])
                     .format(precision=pd.get_option("vet.precision"))
                     ) 
             elif isinstance(data, pd.Series):
                 display(
                     pd.DataFrame(data)
                     .style.set_caption(name if name else "")
+                    .set_table_styles([pd.get_option("vet.table_style_cell_hover")])
                     .format(precision=pd.get_option("vet.precision"))
                     ) # Add check name as column head
             else: # Print check name and data on separate lines
