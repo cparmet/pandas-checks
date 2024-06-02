@@ -34,11 +34,19 @@ def start_timer(verbose=False):
     if verbose:
         print("Started timer at:", pd.get_option("vet.timer_start_time"))
 
-def print_time_elapsed(check_name="Time elapsed", units="seconds"):
+def print_time_elapsed(check_name="Time elapsed", units="auto"):
+    """Reminder: If you change default arg values, change in .check.print_time_elapsed too"""
     start = pd.get_option("vet.timer_start_time")
     if start==np.nan:
         print("Timer hasn't been started. Call .check.start_time() before .check.get_time_elapsed()")
     elapsed = time() - start
+    if units=="auto":
+        if elapsed>60:
+            units="minutes"
+        elif elapsed>60*60:
+            units="hours"
+        else:
+            units="seconds"
     if units=="minutes":
         elapsed/=60
     elif units=="hours":
@@ -387,7 +395,7 @@ class DataFrameVet:
             )
         return self._obj
     
-    def print_time_elapsed(self, check_name="Time elapsed", units="seconds"):
+    def print_time_elapsed(self, check_name="Time elapsed", units="auto"):
         print_time_elapsed(check_name=check_name, units=units) # Call the public function
         return self._obj
 
