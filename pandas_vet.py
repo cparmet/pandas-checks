@@ -1,7 +1,20 @@
 # from dill.source import getsource
 from inspect import currentframe, getargvalues, getsourcelines
 import pandas as pd
+import pandas._config.config as cf
 from pandas.core.groupby.groupby import DataError
+from pandas.core.config_init import is_terminal
+from pandas._config.config import (
+    # is_bool,
+    # is_callable,
+    # is_instance_factory,
+    # is_int,
+    is_nonnegative_int,
+    # is_one_of_factory,
+    # is_str,
+    # is_text,
+)
+
 from IPython.display import display
 from time import time
 import matplotlib # Must import for .plot()/.hist()
@@ -53,7 +66,7 @@ def _modify_data(data, fn=lambda df: df, subset=None):
         raise TypeError(f"Argument `fn` is of unexpected type {type(fn)}")
     return data[subset] if subset else data
 
-def _display_check(data, name=None, precision=2):
+def _display_check(data, name=None):
     """ Behave differently if we're in an IPython interactive session / Jupyter nobteook"""
     try:
         print()
@@ -66,13 +79,13 @@ def _display_check(data, name=None, precision=2):
                 display(
                     data
                     .style.set_caption(name if name else "") # Add check name to dataframe
-                    .format(precision=precision)
+                    .format(precision=pd.get_option("vet.precision"))
                     ) 
             elif isinstance(data, pd.Series):
                 display(
                     pd.DataFrame(data)
                     .style.set_caption(name if name else "")
-                    .format(precision=precision)
+                    .format(precision=pd.get_option("vet.precision"))
                     ) # Add check name as column head
             else: # Print check name and data on separate lines
                 if name: 
@@ -92,18 +105,53 @@ def _check_data(data, check_fn=lambda df: df, modify_fn=lambda df: df, subset=No
             check_fn(   # 2. After applying the method's operation to the data, like value_counts() or dtypes. May return a DF, an int, etc
                 _modify_data(data, fn=modify_fn, subset=subset)   # 1. After first applying user's modifications to the data before checking it
             ),
-            name=check_name if check_name else subset,
-            precision= kwargs.get("precision", 2)
-            )
+            name=check_name if check_name else subset)
     )
 
 ## Public methods added to Pandas DataFrame
 @pd.api.extensions.register_dataframe_accessor("check")
 class DataFrameVet:
+    # _timer_start = None
 
     def __init__(self, pandas_obj):
         self._obj = pandas_obj
-    
+        # self._obj._vet_timer_start = getattr(pandas_obj, "_vet_timer_start", None)
+        self._vet_start_time_value = "Just created"
+        self._register_options()
+
+
+    def _register_option(self, name, default_value, description, validator):
+        try:
+            pd.get_option(name)
+        except pd.errors.OptionError: # It hasn't already been registered
+            with cf.config_prefix("vet"):
+                cf.register_option(name, default_value, description, validator)
+
+    def _register_options(self):
+        self._register_option(
+            name="precision",
+            default_value=2,
+            description="""
+                : int
+                    Set the precision of outputs from pandas_vet methods.
+                    Floating point output precision in terms of number of places after the
+                    decimal, for regular formatting as well as scientific notation. Similar
+                    to ``precision`` in :meth:`numpy.set_printoptions`.
+
+                    Does not change precision of other Pandas methods. Use pd.set_option('display.precision',...) instead.
+                """,
+            validator=is_nonnegative_int
+        )
+
+    def set_format(self, precision=2):
+        pd.set_option("vet.precision", precision)
+        return self._obj
+
+    def reset_format(self):
+        """Alias that runs set_format() with all defaults"""
+        self.set_format()
+        return self._obj
+
     def assert_data(
             self,
             condition,
@@ -131,8 +179,8 @@ class DataFrameVet:
             print(f"{pass_message}: {condition_str}")
         return self._obj
 
-    def describe(self, fn=lambda df: df, subset=None, check_name=None, **kwargs):
-        _check_data(self._obj, check_fn=lambda df: df.describe(), modify_fn=fn, subset=subset, check_name=check_name, **kwargs)
+    def describe(self, fn=lambda df: df, subset=None, check_name=None):
+        _check_data(self._obj, check_fn=lambda df: df.describe(), modify_fn=fn, subset=subset, check_name=check_name)
         return self._obj
 
     def dtypes(self, fn=lambda df: df, subset=None, check_name='Data types'):
