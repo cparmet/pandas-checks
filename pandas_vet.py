@@ -79,7 +79,28 @@ def _register_vet_options():
             """,
         validator=is_float
     )
+    # Text color for failure and success messages
+    for option, default in {
+        "fail_text_fg_color": "white",
+        "fail_text_bg_color": "on_red",
+        "success_text_fg_color": "black",
+        "success_text_bg_color": "on_green"
+        }.items():
+            _register_vet_option(
+                name=option,
+                default_value=default,
+                description=f"""
+                    : str
+                        Color of {"text" if "fg" in option else "background"} for Pandas Vet {option.split("_")[0]} messages.
+                    """,
+                validator=is_str
+            )
 
+def _format_success_message(message):
+    return colored(message, pd.get_option("vet.success_text_fg_color"), pd.get_option("vet.success_text_bg_color"))
+
+def _format_fail_message(message):
+    return colored(message, pd.get_option("vet.fail_text_fg_color"), pd.get_option("vet.fail_text_bg_color"))
 
 def _lambda_to_string(lambda_func):
     """TODO: This still returns all arguments to the calling function. They get entangled with the argument when it's a lambda function. Try other ways to get just the argument we want"""
@@ -169,8 +190,8 @@ class DataFrameVet:
             condition,
             subset=None,
             exception_class=DataError,
-            pass_message='✅ Passed',
-            fail_message='❌ Failed',
+            pass_message="✔️ Assertion passed ",
+            fail_message="ㄨ Assertion failed ",
             raise_exception=True,
             verbose=False
             ):
@@ -186,9 +207,9 @@ class DataFrameVet:
             if raise_exception:
                 raise exception_class(f"{fail_message}: {condition_str}") 
             else:
-                print(f"{fail_message}: {condition_str}")
+                print(f"{_format_fail_message(fail_message)}: {condition_str}")
         if verbose:
-            print(f"{pass_message}: {condition_str}")
+            print(f"{_format_success_message(pass_message)}: {condition_str}")
         return self._obj
 
     def describe(self, fn=lambda df: df, subset=None, check_name=None):
