@@ -133,7 +133,7 @@ def _display_check(data, name=None):
             print(f"{name}:" if name else "",
                   data
                   ) # Print check name and result in one line
-        elif _in_ipython():  
+        elif not is_terminal():
             if isinstance(data, pd.DataFrame):
                 display(
                     data
@@ -150,7 +150,7 @@ def _display_check(data, name=None):
                 if name: 
                     print(name)
                 display(data) # Use IPython rendering
-        else: # We're in a .py script, can't display Styled tables or use IPython rendering
+        else: # We're in a Terminal, like running a .py script, can't display Styled tables or use IPython rendering
             # Print check name and data on separate lines
             if name: 
                 print(name)
