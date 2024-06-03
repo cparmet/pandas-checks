@@ -64,6 +64,16 @@ class DataFrameVet:
             )
         return self._obj
 
+    def columns(self, fn=lambda df: df, subset=None, check_name='🏛️ Columns'):
+        _check_data(
+            self._obj,
+            check_fn=lambda df: df.columns.tolist(),
+            modify_fn=fn,
+            subset=subset,
+            check_name=check_name
+            )
+        return self._obj
+
     def dtypes(self, fn=lambda df: df, subset=None, check_name='🗂️ Data types'):
         _check_data(
             self._obj,
