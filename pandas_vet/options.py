@@ -48,6 +48,16 @@ def _initialize_format_options(options=None):
                 """,
             validator=cf.is_instance_factory(dict)
             )
+    if "use_emojis" in option_keys or options==None:
+        _register_vet_option(
+            name="use_emojis",
+            default_value=False,
+            description="""
+                : int
+                Whether Pandas Vet check_names should keep emojis. This includes default check_names from the factory and user-supplied check_names`.
+                """,
+            validator=cf.is_instance_factory(bool)
+            )
     # Text color for failure and success messages
     for option, default in {
         "fail_text_fg_color": "white",

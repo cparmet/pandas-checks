@@ -1,3 +1,4 @@
+from .utils import _filter_emojis
 from IPython.display import display
 import numpy as np
 import pandas as pd
@@ -29,9 +30,7 @@ def _display_check(data, name=None):
     try:
         print()
         if isinstance(data, (int, np.int8, np.int32, np.int64, str, float, np.float16, np.float32, np.float64, list, dict, tuple)):
-            print(f"{name}:" if name else "",
-                  data
-                  ) # Print check name and result in one line
+            print(f"{name}: {data}" if name else data) # Print check name and result in one line
         elif not pd.core.config_init.is_terminal():
             if isinstance(data, pd.DataFrame):
                 display(
@@ -65,6 +64,6 @@ def _check_data(data, check_fn=lambda df: df, modify_fn=lambda df: df, subset=No
             check_fn(   # 2. After applying the method's operation to the data, like value_counts() or dtypes. May return a DF, an int, etc
                 _modify_data(data, fn=modify_fn, subset=subset)   # 1. After first applying user's modifications to the data before checking it
             ),
-            name=check_name if check_name else subset)
+            name=_filter_emojis(check_name) if check_name else subset)
     )
 
