@@ -31,12 +31,16 @@ class DataFrameVet:
             self,
             condition,
             subset=None,
-            exception_class=DataError,
             pass_message=" ✔️ Assertion passed ",
             fail_message=" ㄨ Assertion failed ",
             raise_exception=True,
+            exception_to_raise=DataError,
             verbose=False
             ):
+        """Test whether dataframe meets condition, optionally raise an exception if not.
+
+        condition: can be a lambda function or an evaluable string referring to `df`, such as "df.shape[0]>10"
+        """
         data = self._obj[subset] if subset else self._obj
         if callable(condition):
             result = condition(data)
@@ -47,7 +51,7 @@ class DataFrameVet:
             raise TypeError(f"Argument `condition` is of unexpected type {type(condition)}")
         if not result:
             if raise_exception:
-                raise exception_class(f"{fail_message}: {condition_str}") 
+                raise exception_to_raise(f"{fail_message}: {condition_str}")
             else:
                 print(f"{_format_fail_message(fail_message)}: {condition_str}")
         if verbose:
@@ -85,6 +89,10 @@ class DataFrameVet:
         return self._obj
 
     def evaluate(self, fn=lambda df: df, subset=None, check_name=None):
+        """Run an arbitrary operation on a DataFrame and show the result.
+
+        fn: Can be a lambda function or an evaluable string referring to `df`, such as "df.shape[0]>10"
+        """
         _check_data(
             self._obj,
             modify_fn=fn,

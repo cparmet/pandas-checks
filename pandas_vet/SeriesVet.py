@@ -24,21 +24,21 @@ class SeriesVet:
     def assert_data(
             self,
             condition,
-            exception_class=DataError,
             pass_message=" ✔️ Assertion passed ",
             fail_message=" ㄨ Assertion failed ",
             raise_exception=True,
+            exception_to_raise=DataError,
             verbose=False
             ):
         """Run DataFrameVet's method"""
         pd.DataFrame(self._obj).check.assert_data(
             condition=condition,
-            exception_class=exception_class,
+            subset=None,
             pass_message=pass_message,
             fail_message=fail_message,
             raise_exception=raise_exception,
-            verbose=verbose,
-            subset=None
+            exception_to_raise=exception_to_raise,
+            verbose=verbose
             )
         return self._obj
 
