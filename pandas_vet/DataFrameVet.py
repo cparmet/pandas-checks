@@ -54,10 +54,10 @@ class DataFrameVet:
             print(f"{_format_success_message(pass_message)}: {condition_str}")
         return self._obj
 
-    def describe(self, fn=lambda df: df, subset=None, check_name='📏 Distributions'):
+    def describe(self, fn=lambda df: df, subset=None, check_name='📏 Distributions',**kwargs):
         _check_data(
             self._obj,
-            check_fn=lambda df: df.describe(),
+            check_fn=lambda df: df.describe(**kwargs),
             modify_fn=fn,
             subset=subset,
             check_name=check_name
@@ -102,10 +102,10 @@ class DataFrameVet:
             )
         return self._obj
 
-    def hist(self, fn=lambda df: df, subset=[], check_name=None):
+    def hist(self, fn=lambda df: df, subset=[], check_name=None, **kwargs):
         _ = (
             _modify_data(self._obj, fn, subset)
-            .hist()
+            .hist(**kwargs)
             )
         _ = plt.suptitle(
             check_name if check_name else "Distribution" if len(subset)==1 else "Distributions"
@@ -113,20 +113,20 @@ class DataFrameVet:
 
         return self._obj
 
-    def info(self, fn=lambda df: df, subset=None, check_name='ℹ️ Info'):
+    def info(self, fn=lambda df: df, subset=None, check_name='ℹ️ Info', **kwargs):
         """Don't use display or check_name comes below report """
         print()
         print(_filter_emojis(check_name))
         (
             _modify_data(self._obj, fn, subset)
-            .info() 
+            .info(**kwargs)
         )
         return self._obj
     
-    def memory_usage(self, fn=lambda df:df, subset=None, check_name='💾 Memory usage'):
+    def memory_usage(self, fn=lambda df:df, subset=None, check_name='💾 Memory usage', **kwargs):
         _check_data(
             self._obj,
-            check_fn=lambda df: df.memory_usage(),
+            check_fn=lambda df: df.memory_usage(**kwargs),
             modify_fn=fn,
             subset=subset,
             check_name=check_name
@@ -143,18 +143,19 @@ class DataFrameVet:
             )
         return self._obj
 
-    def ndups(self, fn=lambda df: df, subset=None, check_name=None):
-        """TODO: add kwargs like subset"""
+    def ndups(self, fn=lambda df: df, subset=None, check_name=None, **kwargs):
+        """kwargs are arguments to .duplicated() """
         _check_data(
             self._obj,
-            check_fn=lambda df: df.duplicated().sum(),
+            check_fn=lambda df: df.duplicated(**kwargs).sum(),
             modify_fn=fn,
             subset=subset,
             check_name=check_name if check_name else f'👯‍♂️ Rows with duplication in {subset}' if subset else '👯‍♂️ Duplicated rows')
         return self._obj
 
     def nnulls(self, fn=lambda df: df, subset=None, by_column=True, check_name=None):
-        """TODO: add kwargs like subset
+        """
+
         by_column = False to count rows that have any NaNs in any columns
         """
         print()
@@ -182,20 +183,28 @@ class DataFrameVet:
             )
         return self._obj
 
-    def nunique(self, column, fn=lambda df: df, check_name=None):
+    def nunique(self, column, fn=lambda df: df, check_name=None, **kwargs):
         _check_data(
             self._obj,
-            check_fn=lambda df: df.nunique(),
+            check_fn=lambda df: df.nunique(**kwargs),
             modify_fn=fn,
             subset=column,
             check_name=check_name if check_name else f"🌟 Unique values in {column}"
             )
         return self._obj
 
-    def plot(self, fn=lambda df: df, subset=None, check_name=None):
+    def plot(self, fn=lambda df: df, subset=None, check_name="", **kwargs):
+        """'title' kwarg overrides check_name as plot title"""
         _ = (
             _modify_data(self._obj, fn, subset)
-            .plot(title=_filter_emojis(check_name))
+            .plot(
+                # Pass along kwargs to Pandas plot() method
+                # If user hasn't included "title" in kwargs, use check_name
+                **(
+                {**kwargs, "title": _filter_emojis(check_name)} if "title" not in kwargs
+                else kwargs
+                )
+                  )
         )
         return self._obj
     
@@ -211,7 +220,13 @@ class DataFrameVet:
     
     def shape(self, fn=lambda df: df, subset=None, check_name='📐 Shape'):
         """See nrows, ncols"""
-        _check_data(self._obj, check_fn=lambda df: df.shape, modify_fn=fn, subset=subset, check_name=check_name)
+        _check_data(
+            self._obj,
+            check_fn=lambda df: df.shape,
+            modify_fn=fn,
+            subset=subset,
+            check_name=check_name
+            )
         return self._obj
 
     def start_timer(self, verbose=False):
@@ -235,17 +250,17 @@ class DataFrameVet:
     def unique(self, column, fn=lambda df: df, check_name=None):
         _check_data(
             self._obj,
-            check_fn=lambda df: df.unique().tolist(),
+            check_fn=lambda s: s.unique().tolist(),
             modify_fn=fn,
             subset=column,
             check_name=check_name if check_name else f"🌟 Unique values of {column}"
             )
         return self._obj
 
-    def value_counts(self, column, max_rows=10, fn=lambda df: df, check_name=None):
+    def value_counts(self, column, max_rows=10, fn=lambda df: df, check_name=None, **kwargs):
         _check_data(
             self._obj,
-            check_fn=lambda df: df.value_counts().head(max_rows),
+            check_fn=lambda df: df.value_counts(**kwargs).head(max_rows),
             modify_fn=fn,
             subset=column,
             check_name=check_name if check_name else f"🧮 Value counts, first {max_rows} values" if max_rows else f"🧮 Value counts"
