@@ -123,7 +123,7 @@ class DataFrameVet:
         )
         return self._obj
     
-    def memory_usage(self, fn=lambda df:df, subset=None, check_name='💾 Memory usage', **kwargs):
+    def memory_usage(self, fn=lambda df: df, subset=None, check_name='💾 Memory usage', **kwargs):
         _check_data(
             self._obj,
             check_fn=lambda df: df.memory_usage(**kwargs),
@@ -184,13 +184,21 @@ class DataFrameVet:
         return self._obj
 
     def nunique(self, column, fn=lambda df: df, check_name=None, **kwargs):
-        _check_data(
-            self._obj,
-            check_fn=lambda df: df.nunique(**kwargs),
-            modify_fn=fn,
-            subset=column,
-            check_name=check_name if check_name else f"🌟 Unique values in {column}"
+        """Run SeriesVet method.
+
+        Note that `fn` is applied to the dataframe _before_ filtering columns to `column`.
+
+        If you want to apply `fn` _after_ filtering to column, set `column=None`
+        and start `fn` with a column selection, i.e. `fn=lambda df: df["my_column"].stuff()`
+        """
+        (
+            _modify_data(self._obj, fn=fn, subset=column) # Apply fn, then filter to `column`
+            .check.nunique( # Use SeriesVet method
+                fn=lambda df: df, # Identity function
+                check_name=check_name,
+                **kwargs
             )
+        )
         return self._obj
 
     def plot(self, fn=lambda df: df, subset=None, check_name="", **kwargs):
@@ -248,23 +256,40 @@ class DataFrameVet:
         return self._obj
 
     def unique(self, column, fn=lambda df: df, check_name=None):
-        _check_data(
-            self._obj,
-            check_fn=lambda s: s.unique().tolist(),
-            modify_fn=fn,
-            subset=column,
-            check_name=check_name if check_name else f"🌟 Unique values of {column}"
-            )
+        """Run SeriesVet's method
+
+        Note that `fn` is applied to the dataframe _before_ filtering columns to `column`.
+
+        If you want to apply `fn` _after_ filtering to column, set `column=None`
+        and start `fn` with a column selection, i.e. `fn=lambda df: df["my_column"].stuff()`
+        """
+        (
+            _modify_data(self._obj, fn=fn, subset=column) # Apply fn, then filter to `column`
+            .check.unique( # Use SeriesVet method
+                fn=lambda df: df, # Identify function
+                check_name=check_name,
+                )
+        )
         return self._obj
 
     def value_counts(self, column, max_rows=10, fn=lambda df: df, check_name=None, **kwargs):
-        _check_data(
-            self._obj,
-            check_fn=lambda df: df.value_counts(**kwargs).head(max_rows),
-            modify_fn=fn,
-            subset=column,
-            check_name=check_name if check_name else f"🧮 Value counts, first {max_rows} values" if max_rows else f"🧮 Value counts"
+        """Run SeriesVet's method
+        
+        Note that `fn` is applied to the dataframe _before_ filtering columns to `column`.
+        
+        If you want to apply `fn` _after_ filtering to column, set `column=None` 
+        and start `fn` with a column selection, i.e. `fn=lambda df: df["my_column"].stuff()`
+
+        """
+        (
+            _modify_data(self._obj, fn=fn, subset=column) # Apply fn, then filter to `column``
+            .check.value_counts( # Use SeriesVet method
+                max_rows=max_rows,
+                fn=lambda df: df, # Identity function
+                check_name=check_name,
+                **kwargs
             )
+        )
         return self._obj
 
     def write(self, path, format=None, fn=lambda df: df, subset=None, verbose=False, **kwargs):

@@ -4,7 +4,9 @@ import numpy as np
 import pandas as pd
 
 def _modify_data(data, fn=lambda df: df, subset=None):
-    """Select columna and apply user's arbitrary modifications to a data object.
+    """Apply user's arbitrary modifications to a data object then subset the columns if requested.
+
+    If all arguments are defaults, this function returns `data` unchanged.
 
     `data` may a Pandas DataFrame, Series, string, or other variable
 
