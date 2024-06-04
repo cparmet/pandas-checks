@@ -30,7 +30,6 @@ def _get_vet_table_styles():
 def _display_check(data, name=None):
     """ Behave differently if we're in an IPython interactive session / Jupyter nobteook"""
     try:
-        print()
         if isinstance(data, (int, np.int8, np.int32, np.int64, str, float, np.float16, np.float32, np.float64, list, dict, tuple)):
             print(f"{name}: {data}" if name else data) # Print check name and result in one line
         elif not pd.core.config_init.is_terminal():
@@ -59,6 +58,7 @@ def _display_check(data, name=None):
             print(data)
     except TypeError:
         raise TypeError(f"Can't _display_data object of type {type(data)} in this environment.")
+
 
 def _check_data(data, check_fn=lambda df: df, modify_fn=lambda df: df, subset=None, check_name=None, **kwargs):
     return (

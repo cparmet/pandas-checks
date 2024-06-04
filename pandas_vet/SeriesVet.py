@@ -47,7 +47,7 @@ class SeriesVet:
         pd.DataFrame(self._obj).check.describe(fn=fn, check_name=check_name, subset=None, **kwargs)
         return self._obj
 
-    def columns(self, fn=lambda s: s, check_name='🏛️ Series name'):
+    def columns(self, fn=lambda s: s, check_name='🏛️ Columns in series'):
         """Run DataFrameVet's method"""
         pd.DataFrame(self._obj).check.columns(fn=fn, check_name=check_name, subset=None)
         return self._obj
@@ -83,7 +83,6 @@ class SeriesVet:
 
     def ndups(self, fn=lambda s: s, check_name=None, **kwargs):
         """Run DataFrameVet's method"""
-        print("KW:", **kwargs)
         pd.DataFrame(self._obj).check.ndups(fn, check_name=check_name, subset=None, **kwargs)
         return self._obj
 
