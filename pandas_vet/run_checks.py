@@ -1,7 +1,8 @@
-from .utils import _filter_emojis
+from .utils import _filter_emojis, _get_vet_table_styles
 from IPython.display import display
 import numpy as np
 import pandas as pd
+
 
 def _modify_data(data, fn=lambda df: df, subset=None):
     """Apply user's arbitrary modifications to a data object then subset the columns if requested.
@@ -21,11 +22,6 @@ def _modify_data(data, fn=lambda df: df, subset=None):
         raise TypeError(f"Argument `fn` is of unexpected type {type(fn)}")
     return data[subset] if subset else data
 
-def _get_vet_table_styles():
-    """Return empty list when all registered styles are {}"""
-    return (
-        [pd.get_option("vet.table_cell_hover_style")] if pd.get_option("vet.table_cell_hover_style") else []
-    )
 
 def _display_check(data, name=None):
     """ Behave differently if we're in an IPython interactive session / Jupyter nobteook"""

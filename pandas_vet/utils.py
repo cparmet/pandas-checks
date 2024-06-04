@@ -15,6 +15,12 @@ def _format_success_message(message):
 def _format_fail_message(message):
     return colored(message, pd.get_option("vet.fail_text_fg_color"), pd.get_option("vet.fail_text_bg_color"))
 
+def _get_vet_table_styles():
+    """Return empty list when all registered styles are {}"""
+    return (
+        [pd.get_option("vet.table_cell_hover_style")] if pd.get_option("vet.table_cell_hover_style") else []
+    )
+
 def _lambda_to_string(lambda_func):
     """TODO: This still returns all arguments to the calling function. They get entangled with the argument when it's a lambda function. Try other ways to get just the argument we want"""
     return (
