@@ -1,4 +1,4 @@
-from .options import _initialize_format_options
+from .options import _initialize_format_options, reset_format, set_format
 from .run_checks import _check_data, _modify_data
 from .timer import print_time_elapsed, start_timer
 from .utils import _filter_emojis, _format_fail_message, _format_success_message, _lambda_to_string
@@ -14,17 +14,12 @@ class DataFrameVet:
         self._obj = pandas_obj
 
     def set_format(self, **kwargs):
-        for arg, value in kwargs.items():
-            vet_option = arg if arg.startswith("vet.") else "vet." + arg # Fully qualified
-            if vet_option in pd._config.config._select_options("vet"):
-                pd.set_option(vet_option, value)
-            else:
-                raise AttributeError(f"No Pandas Vet option for {vet_option}. Available options: {pd._config.config._select_options('vet')}")
+        set_format(**kwargs)
         return self._obj
 
     def reset_format(self):
         """Re-initilaize all Pandas Vet options for formatting"""
-        _initialize_format_options()
+        reset_format()
         return self._obj
 
     def assert_data(

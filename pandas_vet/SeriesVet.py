@@ -1,6 +1,6 @@
-from .run_checks import _check_data, _modify_data
+from .options import _initialize_format_options, reset_format, set_format
+from .run_checks import _check_data
 from .timer import print_time_elapsed, start_timer
-from .utils import _filter_emojis, _format_fail_message, _format_success_message, _lambda_to_string
 import matplotlib.pyplot as plt
 import pandas as pd
 from pandas.core.groupby.groupby import DataError
@@ -12,13 +12,12 @@ class SeriesVet:
         self._obj = pandas_obj
     
     def set_format(self, **kwargs):
-        """Run DataFrameVet's method"""
-        pd.DataFrame(self._obj).check.set_format(**kwargs)
+        set_format(**kwargs)
         return self._obj
 
     def reset_format(self):
-        """Run DataFrameVet's method"""
-        pd.DataFrame(self._obj).check.reset_format()
+        """Re-initilaize all Pandas Vet options for formatting"""
+        reset_format()
         return self._obj
 
     def assert_data(

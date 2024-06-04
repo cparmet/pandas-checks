@@ -1,7 +1,28 @@
 import pandas as pd
 import pandas._config.config as cf
 
+# Public functions
+def set_format(**kwargs):
+    """Set PandasVet output format. Options include:"""
+    for arg, value in kwargs.items():
+        vet_option = arg if arg.startswith("vet.") else "vet." + arg # Fully qualified
+        if vet_option in pd._config.config._select_options("vet"):
+            pd.set_option(vet_option, value)
+        else:
+            raise AttributeError(f"No Pandas Vet option for {vet_option}. Available options: {pd._config.config._select_options('vet')}")
+
+def reset_format():
+    """Re-initilaize all Pandas Vet options for formatting"""
+    _initialize_format_options()
+
+
 # Private functions
+def _get_vet_table_styles():
+    """Return empty list when all registered styles are {}"""
+    return (
+        [pd.get_option("vet.table_cell_hover_style")] if pd.get_option("vet.table_cell_hover_style") else []
+    )
+
 def _register_vet_option(name, default_value, description, validator):
     """Add a Pandas Vet option to the Pandas configuration.
     This method enables us to set global formatting for Vet checks

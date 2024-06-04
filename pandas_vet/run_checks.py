@@ -1,4 +1,5 @@
-from .utils import _filter_emojis, _get_vet_table_styles
+from .options import _get_vet_table_styles
+from .utils import _filter_emojis
 from IPython.display import display
 import numpy as np
 import pandas as pd
