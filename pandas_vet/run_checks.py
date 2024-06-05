@@ -39,7 +39,11 @@ def _display_check(data, name=None):
                     ) 
             elif isinstance(data, pd.Series):
                 display(
-                    pd.DataFrame(data)
+                    pd.DataFrame(
+                        # For Series based on some Pandas outputs like memory_usage(),
+                        # don't show a column name of 0
+                        data.rename(data.name if data.name!=0 and data.name!=None else "")
+                        )
                     .style.set_caption(name if name else "")
                     .set_table_styles(_get_vet_table_styles())
                     .format(precision=pd.get_option("vet.precision"))

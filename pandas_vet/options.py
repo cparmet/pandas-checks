@@ -56,11 +56,11 @@ def _initialize_format_options(options=None):
                 """,
             validator=cf.is_nonnegative_int
             )
-    if "table_cell_hover_style" in option_keys or options==None:
+    if "table_row_hover_style" in option_keys or options==None:
         _register_vet_option(
             name="table_cell_hover_style",
             default_value={
-                'selector': 'td:hover',
+                'selector': 'tr:hover',
                 'props': [('background-color', '#2986cc')]
                         },
             description="""
@@ -72,7 +72,7 @@ def _initialize_format_options(options=None):
     if "use_emojis" in option_keys or options==None:
         _register_vet_option(
             name="use_emojis",
-            default_value=False,
+            default_value=True,
             description="""
                 : int
                 Whether Pandas Vet check_names should keep emojis. This includes default check_names from the factory and user-supplied check_names`.
