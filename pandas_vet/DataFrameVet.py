@@ -1,7 +1,13 @@
 from .options import _initialize_format_options, reset_format, set_format
 from .run_checks import _check_data, _modify_data
 from .timer import print_time_elapsed, start_timer
-from .utils import _filter_emojis, _format_fail_message, _format_success_message, _lambda_to_string
+from .utils import (
+    _display_plot_now,
+    _filter_emojis,
+    _format_fail_message,
+    _format_success_message,
+    _lambda_to_string
+)
 import matplotlib.pyplot as plt
 import pandas as pd
 from pandas.core.groupby.groupby import DataError
@@ -113,7 +119,7 @@ class DataFrameVet:
         _ = plt.suptitle(
             check_name if check_name else "Distribution" if len(subset)==1 else "Distributions"
             )
-
+        _display_plot_now()
         return self._obj
 
     def info(self, fn=lambda df: df, subset=None, check_name='ℹ️ Info', **kwargs):
@@ -217,6 +223,7 @@ class DataFrameVet:
                 )
                   )
         )
+        _display_plot_now()
         return self._obj
     
     def print(self, text=None, fn=lambda df: df, subset=None, check_name=None, max_rows=10):

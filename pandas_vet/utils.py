@@ -1,7 +1,16 @@
 import emoji
 from inspect import getsourcelines
+from IPython.display import display
+import matplotlib.pyplot as plt
 import pandas as pd
 from termcolor import colored
+
+def _display_plot_now():
+    """Display the plot in cell outputs in the chronological order of chain execution,
+    instead of attaching the plot at the bottom of a notebook cell"""
+    if not pd.core.config_init.is_terminal():
+        display(plt.gcf()) # Show it now
+        plt.close() # Don't show it at the bottom of the cell too
 
 def _filter_emojis(text):
     """Depending on user's global settings, remove emojis."""
