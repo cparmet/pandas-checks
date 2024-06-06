@@ -1,5 +1,5 @@
 from .options import _register_vet_option
-from .utils import _filter_emojis
+from .display import _display_line
 import numpy as np
 import pandas as pd
 from pandas._config.config import is_instance_factory
@@ -28,13 +28,13 @@ def start_timer(verbose=False):
     else:
         pd.set_option("vet.timer_start_time", time())
     if verbose:
-        print(_filter_emojis("⏱️ Started timer at:"), pd.get_option("vet.timer_start_time"))
+        _display_line(f"⏱️ Started timer at: {pd.get_option('vet.timer_start_time')}")
 
 def print_time_elapsed(check_name="Time elapsed", units="auto"):
     """Reminder: If you change default arg values, change in .check.print_time_elapsed too"""
     start = pd.get_option("vet.timer_start_time")
     if start==np.nan:
-        print("Timer hasn't been started. Call .check.start_time() before .check.get_time_elapsed()")
+        _display_line("Timer hasn't been started. Call .check.start_time() before .check.get_time_elapsed()")
     elapsed = time() - start
     if units=="auto":
         if elapsed>60:
@@ -49,4 +49,4 @@ def print_time_elapsed(check_name="Time elapsed", units="auto"):
         elapsed/=60*60
     elif units!="seconds":
         raise ValueError(f"Unexpected value for argument `units`: {units}")
-    print(check_name + ": " if check_name else _filter_emojis("⏱️ Time elapsed:"), elapsed, units)
+    _display_line(f"{check_name + ':' if check_name else '⏱️ Time elapsed:'} {elapsed} {units}")

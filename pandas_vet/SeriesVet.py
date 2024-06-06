@@ -1,4 +1,4 @@
-from .options import reset_format, set_format
+from .display import reset_format, set_format
 from .run_checks import _check_data
 from .timer import print_time_elapsed, start_timer
 import matplotlib.pyplot as plt

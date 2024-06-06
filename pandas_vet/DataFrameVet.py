@@ -1,13 +1,18 @@
-from .options import _initialize_format_options, reset_format, set_format
-from .run_checks import _check_data, _modify_data
-from .timer import print_time_elapsed, start_timer
-from .utils import (
+from .display import (
+    _display_line,
     _display_plot_now,
-    _filter_emojis,
+    _display_plot_title,
+    _display_table_title,
     _format_fail_message,
     _format_success_message,
-    _lambda_to_string
+    reset_format,
+    set_format
 )
+from .options import _initialize_format_options
+from .run_checks import _check_data, _modify_data
+from .timer import print_time_elapsed, start_timer
+from .utils import _lambda_to_string
+
 import matplotlib.pyplot as plt
 import pandas as pd
 from pandas.core.groupby.groupby import DataError
@@ -54,9 +59,9 @@ class DataFrameVet:
             if raise_exception:
                 raise exception_to_raise(f"{fail_message}: {condition_str}")
             else:
-                print(f"{_format_fail_message(fail_message)}: {condition_str}")
+                _display_line(f"{_format_fail_message(fail_message)}: {condition_str}")
         if verbose:
-            print(f"{_format_success_message(pass_message)}: {condition_str}")
+            _display_line(f"{_format_success_message(pass_message)}: {condition_str}")
         return self._obj
 
     def describe(self, fn=lambda df: df, subset=None, check_name='📏 Distributions',**kwargs):
@@ -112,20 +117,22 @@ class DataFrameVet:
         return self._obj
 
     def hist(self, fn=lambda df: df, subset=[], check_name=None, **kwargs):
+        _display_plot_title(
+                check_name if check_name else "📏 Distribution" if len(subset)==1 else "Distributions"
+            )
         _ = (
             _modify_data(self._obj, fn, subset)
             .hist(**kwargs)
             )
-        _ = plt.suptitle(
-            check_name if check_name else "Distribution" if len(subset)==1 else "Distributions"
-            )
+        # _ = plt.suptitle(
+        #     check_name if check_name else "Distribution" if len(subset)==1 else "Distributions"
+        #     )
         _display_plot_now()
         return self._obj
 
     def info(self, fn=lambda df: df, subset=None, check_name='ℹ️ Info', **kwargs):
         """Don't use display or check_name comes below report """
-        print()
-        print(_filter_emojis(check_name))
+        _display_table_title(check_name)
         (
             _modify_data(self._obj, fn, subset)
             .info(**kwargs)
@@ -167,19 +174,18 @@ class DataFrameVet:
 
         by_column = False to count rows that have any NaNs in any columns
         """
-        print()
         data = _modify_data(self._obj, fn, subset)
         na_counts = data.isna().any(axis=1).sum() if isinstance(data, pd.DataFrame) and not by_column else data.isna().sum()
         if not check_name:
             if isinstance(na_counts, (pd.DataFrame, pd.Series)): # Report result as a pandas object
                 _check_data(na_counts, check_name=f'👻 Rows with NaNs in {subset}' if subset else '👻 Rows with NaNs')
             else: # Report on one line
-                print(
-                    _filter_emojis(f'👻 Rows with NaNs in {subset}: ' if subset else '👻 Rows with NaNs: ')
+                _display_line(
+                    (f'👻 Rows with NaNs in {subset}: ' if subset else '👻 Rows with NaNs: ')
                     + f"{na_counts} out of {data.shape[0]}" 
                 )  
         else:
-            print(f"{_filter_emojis(check_name)}: {na_counts}")
+            _display_line(f"{check_name}: {na_counts}")
         return self._obj
 
     def nrows(self, fn=lambda df: df, subset=None, check_name='☰ Rows'):
@@ -212,16 +218,10 @@ class DataFrameVet:
 
     def plot(self, fn=lambda df: df, subset=None, check_name="", **kwargs):
         """'title' kwarg overrides check_name as plot title"""
+        _display_plot_title(check_name if "title" not in kwargs else kwargs["title"])
         _ = (
             _modify_data(self._obj, fn, subset)
-            .plot(
-                # Pass along kwargs to Pandas plot() method
-                # If user hasn't included "title" in kwargs, use check_name
-                **(
-                {**kwargs, "title": _filter_emojis(check_name)} if "title" not in kwargs
-                else kwargs
-                )
-                  )
+            .plot(**kwargs)
         )
         _display_plot_now()
         return self._obj
@@ -318,7 +318,7 @@ class DataFrameVet:
         else:
             raise AttributeError(f"Can't write data to file. Unknown file extension in: {path}. ")
         if verbose:
-            print(_filter_emojis("📦 Wrote file {path}"))
+            _display_line("📦 Wrote file {path}")
         return self._obj
 
 

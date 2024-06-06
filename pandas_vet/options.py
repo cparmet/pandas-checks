@@ -1,28 +1,6 @@
 import pandas as pd
 import pandas._config.config as cf
 
-# Public functions
-def set_format(**kwargs):
-    """Set PandasVet output format. Options include:"""
-    for arg, value in kwargs.items():
-        vet_option = arg if arg.startswith("vet.") else "vet." + arg # Fully qualified
-        if vet_option in pd._config.config._select_options("vet"):
-            pd.set_option(vet_option, value)
-        else:
-            raise AttributeError(f"No Pandas Vet option for {vet_option}. Available options: {pd._config.config._select_options('vet')}")
-
-def reset_format():
-    """Re-initilaize all Pandas Vet options for formatting"""
-    _initialize_format_options()
-
-
-# Private functions
-def _get_vet_table_styles():
-    """Return empty list when all registered styles are {}"""
-    return (
-        [pd.get_option("vet.table_cell_hover_style")] if pd.get_option("vet.table_cell_hover_style") else []
-    )
-
 def _register_vet_option(name, default_value, description, validator):
     """Add a Pandas Vet option to the Pandas configuration.
     This method enables us to set global formatting for Vet checks
@@ -58,7 +36,7 @@ def _initialize_format_options(options=None):
             )
     if "table_row_hover_style" in option_keys or options==None:
         _register_vet_option(
-            name="table_cell_hover_style",
+            name="table_row_hover_style",
             default_value={
                 'selector': 'tr:hover',
                 'props': [('background-color', '#2986cc')]
@@ -79,8 +57,11 @@ def _initialize_format_options(options=None):
                 """,
             validator=cf.is_instance_factory(bool)
             )
-    # Text color for failure and success messages
+    # Text styling
     for option, default in {
+        "check_text_tag": "h5",
+        "table_title_tag": "h5",
+        "plot_title_tag": "h5",
         "fail_text_fg_color": "white",
         "fail_text_bg_color": "on_red",
         "success_text_fg_color": "black",
@@ -92,7 +73,7 @@ def _initialize_format_options(options=None):
                     default_value=default,
                     description=f"""
                         : str
-                            Color of {"text" if "fg" in option else "background"} for Pandas Vet {option.split("_")[0]} messages.
+                        {"A single HTML tag (h1, h5, p, etc)" if "tag" in option else "Foreground color" if "fg" in option else "Background color"} for Pandas Vet {option.replace("_tag","").replace("_fg_color","").replace("_fg_color","")}.
                         """,
                     validator=cf.is_instance_factory(str)
                 )
