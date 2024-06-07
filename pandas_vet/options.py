@@ -57,6 +57,16 @@ def _initialize_format_options(options=None):
                 """,
             validator=cf.is_instance_factory(bool)
             )
+    if "indent_table_terminal" in option_keys or options==None:
+        _register_vet_option(
+            name="indent_table_terminal",
+            default_value=4,
+            description="""
+                : int
+                Number of spaces to indent Pandas Vet tables in terminal display.
+                """,
+            validator=cf.is_instance_factory(int)
+            )
     # Text styling
     for option, default in {
         "check_text_tag": "h5",

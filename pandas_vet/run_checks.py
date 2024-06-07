@@ -2,6 +2,7 @@ from .display import (
     _get_vet_table_styles,
     _display_line,
     _display_table_title,
+    _print_table_terminal,
     _filter_emojis
 )
 
@@ -30,11 +31,13 @@ def _modify_data(data, fn=lambda df: df, subset=None):
 
 
 def _display_check(data, name=None):
-    """ Behave differently if we're in an IPython interactive session / Jupyter nobteook"""
+    """ Render the result of our check.
+    Behave differently if we're in an IPython interactive session / Jupyter nobteook"""
     try:
         # Is it a one-liner result?
         if isinstance(data, (int, np.int8, np.int32, np.int64, str, float, np.float16, np.float32, np.float64, list, dict, tuple)):
             _display_line(f"{name}: {data}" if name else data) # Print check name and result in one line
+        # This is a Pandas dataframe or Series, or other multi-line object
         # Are we in IPython/Jupyter?
         elif not pd.core.config_init.is_terminal():
             # Is it a DF?
@@ -66,7 +69,7 @@ def _display_check(data, name=None):
             # Print check name and data on separate lines
             if name: 
                 print(_filter_emojis(name))
-            print(data)
+            _print_table_terminal(data)
     except TypeError:
         raise TypeError(f"Can't _display_data object of type {type(data)} in this environment.")
 

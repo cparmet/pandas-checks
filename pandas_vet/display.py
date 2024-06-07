@@ -4,6 +4,7 @@ from IPython.display import display, Markdown
 import matplotlib.pyplot as plt
 import pandas as pd
 from termcolor import colored
+import textwrap
 
 # Public functions
 def set_format(**kwargs):
@@ -20,6 +21,17 @@ def reset_format():
     _initialize_format_options()
 
 # Private functions
+def _print_table_terminal(table):
+    """Print a Pandas DF or Series in a terminal, with optional indent """
+    indent_prefix = pd.get_option("vet.indent_table_terminal")
+    print(
+        textwrap.indent
+        (
+        text=table.to_string(),
+            prefix=' ' * indent_prefix if indent_prefix else ''
+        )
+    )
+
 def _format_background_color(color):
     """Cleans background color for termcolor rendering"""
     return color if not color else f"on_{color}" if not color.startswith("on_") else color
