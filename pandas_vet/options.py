@@ -67,6 +67,16 @@ def _initialize_format_options(options=None):
                 """,
             validator=cf.is_instance_factory(int)
             )
+    if "indent_table_plot_ipython" in option_keys or options==None:
+        _register_vet_option(
+            name="indent_table_plot_ipython",
+            default_value=30,
+            description="""
+                : int
+                Number of pixels to indent Pandas Vet tables or plots in IPython/Jupyter display.
+                """,
+            validator=cf.is_instance_factory(int)
+            )
     # Text styling
     for option, default in {
         "check_text_tag": "h5",
