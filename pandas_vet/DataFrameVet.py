@@ -3,8 +3,6 @@ from .display import (
     _display_plot_now,
     _display_plot_title,
     _display_table_title,
-    _format_fail_message,
-    _format_success_message,
     reset_format,
     set_format
 )
@@ -59,9 +57,23 @@ class DataFrameVet:
             if raise_exception:
                 raise exception_to_raise(f"{fail_message}: {condition_str}")
             else:
-                _display_line(f"{_format_fail_message(fail_message)}: {condition_str}")
+                _display_line(
+                    lead_in=fail_message,
+                    line=condition_str,
+                    colors={
+                        "lead_in_text_color":pd.get_option("vet.fail_text_fg_color"),
+                        "lead_in_background_color":pd.get_option("vet.fail_text_bg_color")
+                        }
+                    )
         if verbose:
-            _display_line(f"{_format_success_message(pass_message)}: {condition_str}")
+            _display_line(
+                lead_in=pass_message,
+                line=condition_str,
+                colors={
+                    "lead_in_text_color":pd.get_option("vet.success_text_fg_color"),
+                    "lead_in_background_color":pd.get_option("vet.success_text_bg_color")
+                }
+            )
         return self._obj
 
     def describe(self, fn=lambda df: df, subset=None, check_name='📏 Distributions',**kwargs):

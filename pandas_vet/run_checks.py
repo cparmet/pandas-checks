@@ -61,7 +61,8 @@ def _display_check(data, name=None):
             else:
                 _display_line(name)
                 display(data) # Use IPython rendering
-        else: # We're in a Terminal, like running a .py script, can't display Styled tables or use IPython rendering
+        else: # We're in a Terminal. Can't display Styled tables or use IPython rendering
+            print() # White space for terminal display
             # Print check name and data on separate lines
             if name: 
                 print(_filter_emojis(name))
