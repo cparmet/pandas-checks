@@ -2,6 +2,7 @@ from .options import _initialize_format_options
 import emoji
 from IPython.display import display, Markdown
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 from termcolor import colored
 import textwrap
@@ -106,3 +107,46 @@ def _get_vet_table_styles():
     return (
         [pd.get_option("vet.table_row_hover_style")] if pd.get_option("vet.table_row_hover_style") else []
     )
+
+def _display_check(data, name=None):
+    """ Render the result of our check.
+    Behave differently if we're in an IPython interactive session / Jupyter nobteook"""
+    try:
+        # Is it a one-liner result?
+        if isinstance(data, (int, np.int8, np.int32, np.int64, str, float, np.float16, np.float32, np.float64, list, dict, tuple)):
+            _display_line(f"{name}: {data}" if name else data) # Print check name and result in one line
+        # This is a Pandas dataframe or Series, or other multi-line object
+        # Are we in IPython/Jupyter?
+        elif not pd.core.config_init.is_terminal():
+            # Is it a DF?
+            if isinstance(data, pd.DataFrame):
+                _display_table_title(name)
+                display(
+                    data
+                    .style.set_table_styles(_get_vet_table_styles())
+                    .format(precision=pd.get_option("vet.precision"))
+                    )
+            # Or a Series we should format as a DF?
+            elif isinstance(data, pd.Series):
+                _display_table_title(name)
+                display(
+                    pd.DataFrame(
+                        # For Series based on some Pandas outputs like memory_usage(),
+                        # don't show a column name of 0
+                        data.rename(data.name if data.name!=0 and data.name!=None else "")
+                        )
+                    .style.set_table_styles(_get_vet_table_styles())
+                    .format(precision=pd.get_option("vet.precision"))
+                    ) # Add check name as column head
+            # Otherwise, show check name and data on separate lines
+            else:
+                _display_line(name)
+                display(data) # Use IPython rendering
+        else: # We're in a Terminal. Can't display Styled tables or use IPython rendering
+            print() # White space for terminal display
+            # Print check name and data on separate lines
+            if name:
+                print(_filter_emojis(name))
+            _print_table_terminal(data)
+    except TypeError:
+        raise TypeError(f"Can't _display_data object of type {type(data)} in this environment.")
