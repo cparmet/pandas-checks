@@ -66,7 +66,7 @@ class SeriesVet:
         return self._obj
 
     def hist(self, fn=lambda s: s, check_name=None, **kwargs):
-        """Run DataFrameVet's method"""
+        """Display a histogram. Only renders in IPython/Jupyter"""
         pd.DataFrame(self._obj).check.hist(fn=fn, check_name=check_name, subset=[], **kwargs)
         return self._obj
 
@@ -106,7 +106,8 @@ class SeriesVet:
         return self._obj
 
     def plot(self, fn=lambda s: s, check_name="", **kwargs):
-        """Run DataFrameVet's method"""
+        """Show Pandas plot. Only renders in IPython/Jupyter
+        'title' kwarg overrides check_name as plot title"""
         pd.DataFrame(self._obj).check.plot(fn, check_name=check_name, subset=None, **kwargs)
         return self._obj
 

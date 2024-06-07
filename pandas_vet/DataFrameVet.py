@@ -129,17 +129,16 @@ class DataFrameVet:
         return self._obj
 
     def hist(self, fn=lambda df: df, subset=[], check_name=None, **kwargs):
-        _display_plot_title(
-                check_name if check_name else "📏 Distribution" if len(subset)==1 else "Distributions"
-            )
-        _ = (
-            _modify_data(self._obj, fn, subset)
-            .hist(**kwargs)
-            )
-        # _ = plt.suptitle(
-        #     check_name if check_name else "Distribution" if len(subset)==1 else "Distributions"
-        #     )
-        _display_plot_now()
+        """Display a histogram. Only renders in IPython/Jupyter"""
+        if not pd.core.config_init.is_terminal(): # Only display if in IPython/Jupyter, or we'd just print the title
+            _display_plot_title(
+                    check_name if check_name else "📏 Distribution" if len(subset)==1 else "Distributions"
+                )
+            _ = (
+                _modify_data(self._obj, fn, subset)
+                .hist(**kwargs)
+                )
+            _display_plot_now()
         return self._obj
 
     def info(self, fn=lambda df: df, subset=None, check_name='ℹ️ Info', **kwargs):
@@ -229,13 +228,15 @@ class DataFrameVet:
         return self._obj
 
     def plot(self, fn=lambda df: df, subset=None, check_name="", **kwargs):
-        """'title' kwarg overrides check_name as plot title"""
-        _display_plot_title(check_name if "title" not in kwargs else kwargs["title"])
-        _ = (
-            _modify_data(self._obj, fn, subset)
-            .plot(**kwargs)
-        )
-        _display_plot_now()
+        """Show Pandas plot. Only renders in IPython/Jupyter
+        'title' kwarg overrides check_name as plot title"""
+        if not pd.core.config_init.is_terminal(): # Only display if in IPython/Jupyter, or we'd just print the title
+            _display_plot_title(check_name if "title" not in kwargs else kwargs["title"])
+            _ = (
+                _modify_data(self._obj, fn, subset)
+                .plot(**kwargs)
+            )
+            _display_plot_now()
         return self._obj
     
     def print(self, text=None, fn=lambda df: df, subset=None, check_name=None, max_rows=10):
