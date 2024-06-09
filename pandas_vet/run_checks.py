@@ -1,4 +1,5 @@
 from .display import _display_check
+from .options import get_mode
 
 def _modify_data(data, fn=lambda df: df, subset=None):
     """Apply user's arbitrary modifications to a data object then subset the columns if requested.
@@ -20,6 +21,8 @@ def _modify_data(data, fn=lambda df: df, subset=None):
 
 
 def _check_data(data, check_fn=lambda df: df, modify_fn=lambda df: df, subset=None, check_name=None, **kwargs):
+    if not get_mode()["enable_checks"]:
+        return None
     return (
         _display_check( # 3. Report the result
             check_fn(   # 2. After applying the method's operation to the data, like value_counts() or dtypes. May return a DF, an int, etc

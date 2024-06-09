@@ -1,4 +1,4 @@
-from .options import _register_vet_option
+from .options import _register_option, get_mode
 from .display import _display_line
 import numpy as np
 import pandas as pd
@@ -13,9 +13,11 @@ def start_timer(verbose=False):
     They return newly initialized DataFrames at each method which reset all of a DataFrame's attributes.
     And we want to avoid global variables in the pandas_vet.py.
     """
+    if not get_mode()["enable_checks"]:
+        return None
     # Do we need to register option while setting it?
     if "vet.timer_start_time" not in pd._config.config._select_options("vet"):
-        _register_vet_option(
+        _register_option(
             name="timer_start_time",
             default_value=time(),
             description="""
@@ -32,6 +34,8 @@ def start_timer(verbose=False):
 
 def print_time_elapsed(check_name="Time elapsed", units="auto"):
     """Reminder: If you change default arg values, change in .check.print_time_elapsed too"""
+    if not get_mode()["enable_checks"]:
+        return None
     start = pd.get_option("vet.timer_start_time")
     if start==np.nan:
         _display_line("Timer hasn't been started. Call .check.start_time() before .check.get_time_elapsed()")

@@ -1,4 +1,20 @@
-from .display import reset_format, set_format
+"""
+Add PandasVet methods to Pandas's Series class.
+
+These methods call DataFrameVet methods whenever possible.
+
+Reminder: If adding a new method and it doesn't either A) call the DataFrameVet method, B) use _check_data(),
+or C) timer functions, make sure to preface the method with `if not get_mode()["enable_checks"]: return self._obj`.
+That ensures the method will be disabled if the global option vet.enable_checks is set to False.
+"""
+
+from .options import (
+    enable_checks,
+    disable_checks,
+    reset_format,
+    set_format,
+    set_mode
+)
 from .run_checks import _check_data
 from .timer import print_time_elapsed, start_timer
 import matplotlib.pyplot as plt
@@ -11,15 +27,6 @@ class SeriesVet:
     def __init__(self, pandas_obj):
         self._obj = pandas_obj
     
-    def set_format(self, **kwargs):
-        set_format(**kwargs)
-        return self._obj
-
-    def reset_format(self):
-        """Re-initilaize all Pandas Vet options for formatting"""
-        reset_format()
-        return self._obj
-
     def assert_data(
             self,
             condition,
@@ -51,13 +58,25 @@ class SeriesVet:
         pd.DataFrame(self._obj).check.columns(fn=fn, check_name=check_name, subset=None)
         return self._obj
     
+    def disable_checks(self, enable_asserts=True):
+        disable_checks(enable_asserts)
+        return self._obj
+
     def dtype(self, fn=lambda s: s, check_name='🗂️ Data type'):
         """Run DataFrameVet's method"""
         pd.DataFrame(self._obj).check.columns(fn=fn, check_name=check_name, subset=None)
         return self._obj
 
+    def enable_checks(self, enable_asserts=True):
+        enable_checks(enable_asserts)
+        return self._obj
+
     def evaluate(self, fn=lambda s: s, check_name=None):
         pd.DataFrame(self._obj).check.evaluate(fn=fn, check_name=check_name, subset=None)
+        return self._obj
+
+    def get_mode(self, check_name = "⚙️ PandasVet mode"):
+        pd.DataFrame(self._obj).check.get_mode(check_name=check_name)
         return self._obj
 
     def head(self, n=5, fn=lambda s: s, check_name=None):
@@ -116,6 +135,23 @@ class SeriesVet:
         pd.DataFrame(self._obj).check.print(text=text, fn=fn, check_name=check_name, max_rows=max_rows, subset=None)
         return self._obj
 
+    def print_time_elapsed(self, check_name="Time elapsed", units="auto"):
+        print_time_elapsed(check_name=check_name, units=units) # Call the public function
+        return self._obj
+
+    def reset_format(self):
+        """Re-initilaize all Pandas Vet options for formatting"""
+        reset_format()
+        return self._obj
+
+    def set_format(self, **kwargs):
+        set_format(**kwargs)
+        return self._obj
+
+    def set_mode(self, enable_checks, enable_asserts):
+        set_mode(enable_checks, enable_asserts)
+        return self._obj
+
     def shape(self, fn=lambda s: s, check_name='📐 Shape'):
         """Run DataFrameVet's method"""
         pd.DataFrame(self._obj).check.shape(fn=fn, check_name=check_name, subset=None)
@@ -130,10 +166,6 @@ class SeriesVet:
         pd.DataFrame(self._obj).check.tail(n=n, fn=fn, check_name=check_name, subset=None)
         return self._obj
     
-    def print_time_elapsed(self, check_name="Time elapsed", units="auto"):
-        print_time_elapsed(check_name=check_name, units=units) # Call the public function
-        return self._obj
-
     def unique(self, fn=lambda s: s, check_name=None):
         _check_data(
             self._obj,

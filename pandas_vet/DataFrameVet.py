@@ -1,35 +1,40 @@
+"""
+Add PandasVet methods to Pandas's DataFrame class.
+
+Methods are also shared by the SeriesVet class.
+
+Reminder: If adding a new method and it doesn't either A) call the SeriesVet method, B) use _check_data(),
+or C) timer functions, make sure to preface the method with `if not get_mode()["enable_checks"]: return self._obj`.
+That ensures the method will be disabled if the global option vet.enable_checks is set to False.
+"""
+
+
 from .display import (
     _display_line,
     _display_plot,
     _display_plot_title,
     _display_table_title,
+)
+from .options import (
+    enable_checks,
+    disable_checks,
+    get_mode,
+    set_mode,
     reset_format,
     set_format
 )
-from .options import _initialize_format_options
 from .run_checks import _check_data, _modify_data
 from .timer import print_time_elapsed, start_timer
 from .utils import _lambda_to_string
-
 import matplotlib.pyplot as plt
 import pandas as pd
 from pandas.core.groupby.groupby import DataError
 
 
-## Public methods added to Pandas DataFrame
 @pd.api.extensions.register_dataframe_accessor("check")
 class DataFrameVet:
     def __init__(self, pandas_obj):
         self._obj = pandas_obj
-
-    def set_format(self, **kwargs):
-        set_format(**kwargs)
-        return self._obj
-
-    def reset_format(self):
-        """Re-initilaize all Pandas Vet options for formatting"""
-        reset_format()
-        return self._obj
 
     def assert_data(
             self,
@@ -45,6 +50,8 @@ class DataFrameVet:
 
         condition: can be a lambda function or an evaluable string referring to `df`, such as "df.shape[0]>10"
         """
+        if not get_mode()["enable_asserts"]:
+            return self._obj
         data = self._obj[subset] if subset else self._obj
         if callable(condition):
             result = condition(data)
@@ -76,16 +83,6 @@ class DataFrameVet:
             )
         return self._obj
 
-    def describe(self, fn=lambda df: df, subset=None, check_name='📏 Distributions',**kwargs):
-        _check_data(
-            self._obj,
-            check_fn=lambda df: df.describe(**kwargs),
-            modify_fn=fn,
-            subset=subset,
-            check_name=check_name
-            )
-        return self._obj
-
     def columns(self, fn=lambda df: df, subset=None, check_name='🏛️ Columns'):
         _check_data(
             self._obj,
@@ -96,6 +93,20 @@ class DataFrameVet:
             )
         return self._obj
 
+    def describe(self, fn=lambda df: df, subset=None, check_name='📏 Distributions',**kwargs):
+        _check_data(
+            self._obj,
+            check_fn=lambda df: df.describe(**kwargs),
+            modify_fn=fn,
+            subset=subset,
+            check_name=check_name
+            )
+        return self._obj
+
+    def disable_checks(self, enable_asserts=True):
+        disable_checks(enable_asserts)
+        return self._obj
+
     def dtypes(self, fn=lambda df: df, subset=None, check_name='🗂️ Data types'):
         _check_data(
             self._obj,
@@ -104,6 +115,10 @@ class DataFrameVet:
             subset=subset,
             check_name=check_name
             )
+        return self._obj
+
+    def enable_checks(self, enable_asserts=True):
+        enable_checks(enable_asserts)
         return self._obj
 
     def evaluate(self, fn=lambda df: df, subset=None, check_name=None):
@@ -118,6 +133,10 @@ class DataFrameVet:
             check_name=check_name)
         return self._obj
     
+    def get_mode(self, check_name = "⚙️ PandasVet mode"):
+        _display_line(lead_in=check_name, line=get_mode())
+        return self._obj
+
     def head(self, n=5, fn=lambda df: df, subset=None, check_name=None):
         _check_data(
             self._obj,
@@ -130,7 +149,7 @@ class DataFrameVet:
 
     def hist(self, fn=lambda df: df, subset=[], check_name=None, **kwargs):
         """Display a histogram. Only renders in IPython/Jupyter"""
-        if not pd.core.config_init.is_terminal(): # Only display if in IPython/Jupyter, or we'd just print the title
+        if get_mode()["enable_checks"] and not pd.core.config_init.is_terminal(): # Only display if in IPython/Jupyter, or we'd just print the title
             _display_plot_title(
                     check_name if check_name else "📏 Distribution" if len(subset)==1 else "Distributions"
                 )
@@ -143,11 +162,12 @@ class DataFrameVet:
 
     def info(self, fn=lambda df: df, subset=None, check_name='ℹ️ Info', **kwargs):
         """Don't use display or check_name comes below report """
-        _display_table_title(check_name)
-        (
-            _modify_data(self._obj, fn, subset)
-            .info(**kwargs)
-        )
+        if get_mode()["enable_checks"]:
+            _display_table_title(check_name)
+            (
+                _modify_data(self._obj, fn, subset)
+                .info(**kwargs)
+            )
         return self._obj
     
     def memory_usage(self, fn=lambda df: df, subset=None, check_name='💾 Memory usage', **kwargs):
@@ -185,6 +205,8 @@ class DataFrameVet:
 
         by_column = False to count rows that have any NaNs in any columns
         """
+        if not get_mode()["enable_checks"]:
+            return self._obj
         data = _modify_data(self._obj, fn, subset)
         na_counts = data.isna().any(axis=1).sum() if isinstance(data, pd.DataFrame) and not by_column else data.isna().sum()
         if not check_name:
@@ -217,20 +239,22 @@ class DataFrameVet:
         If you want to apply `fn` _after_ filtering to column, set `column=None`
         and start `fn` with a column selection, i.e. `fn=lambda df: df["my_column"].stuff()`
         """
-        (
-            _modify_data(self._obj, fn=fn, subset=column) # Apply fn, then filter to `column`
-            .check.nunique( # Use SeriesVet method
-                fn=lambda df: df, # Identity function
-                check_name=check_name,
-                **kwargs
+        if get_mode()["enable_checks"]:
+            (
+                _modify_data(self._obj, fn=fn, subset=column) # Apply fn, then filter to `column`
+                .check.nunique( # Use SeriesVet method
+                    fn=lambda df: df, # Identity function
+                    check_name=check_name,
+                    **kwargs
+                )
             )
-        )
         return self._obj
 
     def plot(self, fn=lambda df: df, subset=None, check_name="", **kwargs):
         """Show Pandas plot. Only renders in IPython/Jupyter
         'title' kwarg overrides check_name as plot title"""
-        if not pd.core.config_init.is_terminal(): # Only display if in IPython/Jupyter, or we'd just print the title
+
+        if get_mode()["enable_checks"] and not pd.core.config_init.is_terminal(): # Only display if in IPython/Jupyter, or we'd just print the title
             _display_plot_title(check_name if "title" not in kwargs else kwargs["title"])
             _ = (
                 _modify_data(self._obj, fn, subset)
@@ -248,7 +272,20 @@ class DataFrameVet:
             check_name=check_name
             )
         return self._obj
-    
+
+    def reset_format(self):
+        """Re-initilaize all Pandas Vet options for formatting"""
+        reset_format()
+        return self._obj
+
+    def set_format(self, **kwargs):
+        set_format(**kwargs)
+        return self._obj
+
+    def set_mode(self, enable_checks, enable_asserts):
+        set_mode(enable_checks, enable_asserts)
+        return self._obj
+
     def shape(self, fn=lambda df: df, subset=None, check_name='📐 Shape'):
         """See nrows, ncols"""
         _check_data(
@@ -286,13 +323,14 @@ class DataFrameVet:
         If you want to apply `fn` _after_ filtering to column, set `column=None`
         and start `fn` with a column selection, i.e. `fn=lambda df: df["my_column"].stuff()`
         """
-        (
-            _modify_data(self._obj, fn=fn, subset=column) # Apply fn, then filter to `column`
-            .check.unique( # Use SeriesVet method
-                fn=lambda df: df, # Identify function
-                check_name=check_name,
-                )
-        )
+        if get_mode()["enable_checks"]:
+            (
+                _modify_data(self._obj, fn=fn, subset=column) # Apply fn, then filter to `column`
+                .check.unique( # Use SeriesVet method
+                    fn=lambda df: df, # Identify function
+                    check_name=check_name,
+                    )
+            )
         return self._obj
 
     def value_counts(self, column, max_rows=10, fn=lambda df: df, check_name=None, **kwargs):
@@ -304,20 +342,24 @@ class DataFrameVet:
         and start `fn` with a column selection, i.e. `fn=lambda df: df["my_column"].stuff()`
 
         """
-        (
-            _modify_data(self._obj, fn=fn, subset=column) # Apply fn, then filter to `column``
-            .check.value_counts( # Use SeriesVet method
-                max_rows=max_rows,
-                fn=lambda df: df, # Identity function
-                check_name=check_name,
-                **kwargs
+        if get_mode()["enable_checks"]:
+            (
+                _modify_data(self._obj, fn=fn, subset=column) # Apply fn, then filter to `column``
+                .check.value_counts( # Use SeriesVet method
+                    max_rows=max_rows,
+                    fn=lambda df: df, # Identity function
+                    check_name=check_name,
+                    **kwargs
+                )
             )
-        )
         return self._obj
 
     def write(self, path, format=None, fn=lambda df: df, subset=None, verbose=False, **kwargs):
         """File format is inferred from path extension (.csv). Or pass `format` to force
         Kwargs are passed to to_excel/to_csv/to_parquet"""
+
+        if not get_mode()["enable_checks"]:
+            return self._obj
         format_clean = format.lower().replace(".", "").strip() if format else None
         data = _modify_data(self._obj, fn, subset)
         if path.endswith(".xls") or path.endswith(".xlsx") or format_clean in ["xlsx", "xls", "excel"]:
@@ -333,7 +375,3 @@ class DataFrameVet:
         if verbose:
             _display_line("📦 Wrote file {path}")
         return self._obj
-
-
-# Initialize configuration
-_initialize_format_options()
