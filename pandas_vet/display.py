@@ -104,16 +104,16 @@ def _get_vet_table_styles():
 # Plots
 # -----------------------
 
-def _display_plot(fig):
-    """Renders the plot object in an IPython/Jupyter environment, with optional indent.
+def _display_plot():
+    """Renders a PandasVet plot object in an IPython/Jupyter environment, with optional indent. Also displays the plot in the chronological order of chain execution, instead of attaching the plot at the bottom of a notebook cell
 
-    Also displays the plot in the chronological order of chain execution,
-    instead of attaching the plot at the bottom of a notebook cell
+    TODO: Presumes matplotlib is the Pandas plotting back end.
     """
     if not pd.core.config_init.is_terminal():
         indent = pd.get_option("vet.indent_table_plot_ipython") # In pixels
         # Save the figure to a bytes buffer
         buffer = io.BytesIO()
+        fig = plt.gcf() # TODO: Get the figure from passing the `fig` argument to _display_plot() but without generating a UserWarning from matplotlib.
         fig.savefig(buffer, format='png')
         plt.close(fig)  # Don't show it at the bottom of the cell too
         buffer.seek(0)
@@ -139,56 +139,6 @@ def _display_plot(fig):
                 """
                 )
             )
-
-
-        # out = widgets.Output()
-        # with out:
-        #     plt.show(fig)
-        # # Create a left indent
-        # if indent:
-        #     left_indent_box = widgets.HBox([out], layout=widgets.Layout(padding=f'0 0 0 {indent}px'))
-        #     display(left_indent_box)
-        # plt.close() # Don't show it at the bottom of the cell too
-
-        # indent=100
-        # if indent:         # Create a CSS style for the indent and put it in a div
-        #     display(
-        #         HTML(
-        #             f"""
-        #             <style>
-        #             .indent-plot {{
-        #                 display: flex;
-        #                 justify-content: right;
-        #             }}
-        #             </style>
-        #                 """
-        #             )
-        #     )
-        # display(HTML('<div class="indent-plot">'))
-        # display(HTML('<div class="indent-plot">Hello</div>'))
-        # display(fig) # Show the plot
-        # if indent:
-        #     display(HTML('</div>')) # Close the indent
-        # plt.close() # Don't show it at the bottom of the cell too
-
-        # # # fig, ax = plt.subplots()
-        # # # df.plot(ax=ax)
-        # # # display(HTML('<div class="center-plot">'))
-        # # display(fig)
-        # # display(HTML('</div>'))
-
-
-        # # _render_html_with_indent(
-        # #     plt.gcf()
-        # #     .get_figure()
-        # #     .to_html(include_plotlyjs='cdn') # Argument makes them interactive
-        # #     )
-# def _display_plot_now():
-#     """Display the plot in cell outputs in the chronological order of chain execution,
-#     instead of attaching the plot at the bottom of a notebook cell"""
-#     if not pd.core.config_init.is_terminal():
-#         display(plt.gcf()) # Show it now
-#         plt.close() # Don't show it at the bottom of the cell too
 
 def _display_plot_title(line, lead_in=None, colors={}):
     """This allows us to align plot titles, table titles, and other check outputs

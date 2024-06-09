@@ -134,12 +134,11 @@ class DataFrameVet:
             _display_plot_title(
                     check_name if check_name else "📏 Distribution" if len(subset)==1 else "Distributions"
                 )
-            fig, ax = plt.subplots()
             _ = (
                 _modify_data(self._obj, fn, subset)
-                .hist(ax=ax, **kwargs)
+                .hist(**kwargs)
                 )
-            _display_plot(fig)
+            _display_plot()
         return self._obj
 
     def info(self, fn=lambda df: df, subset=None, check_name='ℹ️ Info', **kwargs):
@@ -233,12 +232,11 @@ class DataFrameVet:
         'title' kwarg overrides check_name as plot title"""
         if not pd.core.config_init.is_terminal(): # Only display if in IPython/Jupyter, or we'd just print the title
             _display_plot_title(check_name if "title" not in kwargs else kwargs["title"])
-            fig, ax = plt.subplots()
             _ = (
                 _modify_data(self._obj, fn, subset)
-                .plot(ax=ax, **kwargs)
+                .plot(**kwargs)
             )
-            _display_plot(fig)
+            _display_plot()
         return self._obj
     
     def print(self, text=None, fn=lambda df: df, subset=None, check_name=None, max_rows=10):
