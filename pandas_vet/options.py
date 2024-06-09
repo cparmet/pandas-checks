@@ -83,9 +83,9 @@ def _initialize_format_options(options=None):
         "table_title_tag": "h5",
         "plot_title_tag": "h5",
         "fail_text_fg_color": "white",
-        "fail_text_bg_color": "on_red",
+        "fail_text_bg_color": "red",
         "success_text_fg_color": "black",
-        "success_text_bg_color": "on_green"
+        "success_text_bg_color": "green"
         }.items():
             if "option" in option_keys or options==None:
                 _register_vet_option(

@@ -54,13 +54,13 @@ def _render_text(text, tag, lead_in=None, colors={}):
         lead_in_background_color = colors.get("lead_in_background_color", None)
         if pd.core.config_init.is_terminal(): # If we're not in IPython, display as text
                 print() # White space for terminal display
-                print(
-                    f"{colored(_filter_emojis(lead_in), text_color, _format_background_color(lead_in_background_color))}:" if lead_in else "" + f"{colored(_filter_emojis(text), text_color, _format_background_color(text_background_color))}")
-                
+                lead_in_rendered = f"{colored(_filter_emojis(lead_in), text_color, _format_background_color(lead_in_background_color))}:" if lead_in else ""
+                print(lead_in_rendered + f"{colored(_filter_emojis(text), text_color, _format_background_color(text_background_color))}")
         else: # Print stylish!
+            lead_in_rendered = _lead_in(lead_in, lead_in_text_color, lead_in_background_color)
             display(
                 Markdown(
-                    f"<{tag} style='text-align: left'>{_lead_in(lead_in, lead_in_text_color, lead_in_background_color)}" + f"<span 'color:{text_color};' 'background-color:{text_background_color}'>{_filter_emojis(text)}</span>" + f"</{tag}>"
+                    f"<{tag} style='text-align: left'>{lead_in_rendered + ' ' if lead_in_rendered else ''}<span 'color:{text_color};' 'background-color:{text_background_color}'>{_filter_emojis(text)}</span></{tag}>"
                     )
                 )
 
@@ -159,7 +159,7 @@ def _format_background_color(color):
     return color if not color else f"on_{color}" if not color.startswith("on_") else color
 
 def _lead_in(lead_in, foreground, background):
-    return f"<span style='color:{foreground}; background-color:{background}'>{_filter_emojis(lead_in).strip()}: </span>" if lead_in else ""
+    return f"<span style='color:{foreground}; background-color:{background}'>{_filter_emojis(lead_in).strip()}:</span>" if lead_in else ""
 
 def _display_line(line, lead_in=None, colors={}):
     """This allows us to align plot titles, table titles, and other check outputs
