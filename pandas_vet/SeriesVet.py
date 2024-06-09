@@ -71,8 +71,8 @@ class SeriesVet:
         enable_checks(enable_asserts)
         return self._obj
 
-    def evaluate(self, fn=lambda s: s, check_name=None):
-        pd.DataFrame(self._obj).check.evaluate(fn=fn, check_name=check_name, subset=None)
+    def function(self, fn=lambda s: s, check_name=None):
+        pd.DataFrame(self._obj).check.function(fn=fn, check_name=check_name, subset=None)
         return self._obj
 
     def get_mode(self, check_name = "⚙️ PandasVet mode"):

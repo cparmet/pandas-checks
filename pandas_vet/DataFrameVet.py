@@ -121,8 +121,12 @@ class DataFrameVet:
         enable_checks(enable_asserts)
         return self._obj
 
-    def evaluate(self, fn=lambda df: df, subset=None, check_name=None):
-        """Run an arbitrary operation on a DataFrame and show the result.
+    def function(self, fn=lambda df: df, subset=None, check_name=None):
+        """Apply an arbitrary function on a DataFrame and show the result.
+
+        Example
+        .check.function(fn=lambda df: df.shape[0]>10, check_name='Has at least 10 rows?')
+        which will result in 'True' or 'False'
 
         fn: Can be a lambda function or an evaluable string referring to `df`, such as "df.shape[0]>10"
         """
