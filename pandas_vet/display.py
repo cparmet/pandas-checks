@@ -66,7 +66,14 @@ def _print_table_terminal(table):
 
 def _display_table(table):
     """Render a Pandas DF or Series in an IPython/Jupyter environment, with optional indent """
-    _render_html_with_indent(table.to_html())
+    _render_html_with_indent(
+        table
+        .style.set_table_styles(
+             [pd.get_option("vet.table_row_hover_style")] if pd.get_option("vet.table_row_hover_style") else []
+             )
+        .format(precision=pd.get_option("vet.precision"))
+        .to_html()
+        )
 
 
 def _display_table_title(line, lead_in=None, colors={}):
@@ -78,12 +85,6 @@ def _display_table_title(line, lead_in=None, colors={}):
         lead_in=lead_in,
         colors=colors
         )
-
-def _get_vet_table_styles():
-    """Return empty list when all registered styles are {}"""
-    return (
-        [pd.get_option("vet.table_row_hover_style")] if pd.get_option("vet.table_row_hover_style") else []
-    )
 
 # -----------------------
 # Plots
@@ -173,11 +174,7 @@ def _display_check(data, name=None):
             # Is it a DF?
             if isinstance(data, pd.DataFrame):
                 _display_table_title(name)
-                _display_table(
-                    data
-                    .style.set_table_styles(_get_vet_table_styles())
-                    .format(precision=pd.get_option("vet.precision"))
-                    )
+                _display_table(data)
             # Or a Series we should format as a DF?
             elif isinstance(data, pd.Series):
                 _display_table_title(name)
@@ -187,9 +184,7 @@ def _display_check(data, name=None):
                         # don't show a column name of 0
                         data.rename(data.name if data.name!=0 and data.name!=None else "")
                         )
-                    .style.set_table_styles(_get_vet_table_styles())
-                    .format(precision=pd.get_option("vet.precision"))
-                    ) # Add check name as column head
+                    )
             # Otherwise, show check name and data on separate lines
             else:
                 _display_line(name)
