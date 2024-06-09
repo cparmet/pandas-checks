@@ -49,6 +49,21 @@ def _render_text(text, tag, lead_in=None, colors={}):
                     )
                 )
 
+def _warning(message, lead_in="🐼🩺 PandasVet warning", clean_type=False):
+    _display_line(
+        lead_in=lead_in,
+        line=(
+             message
+             .replace("<class ","") # Funny story: _display_line() of text including a Python class type will think it's html :D
+             .rstrip(">.")
+             if clean_type else message
+        ),
+        colors ={
+            "lead_in_text_color": "black",
+            "lead_in_background_color": "yellow"
+            }
+            )
+
 # -----------------------
 # Tables
 # -----------------------
@@ -185,10 +200,9 @@ def _display_check(data, name=None):
                         data.rename(data.name if data.name!=0 and data.name!=None else "")
                         )
                     )
-            # Otherwise, show check name and data on separate lines
             else:
-                _display_line(name)
-                display(data) # Use IPython rendering
+                _warning(f"Check '{name}' encountered an unexpected data type: {type(data)}.", clean_type=True)
+
         else: # We're in a Terminal. Can't display Styled tables or use IPython rendering
             print() # White space for terminal display
             # Print check name and data on separate lines
@@ -196,4 +210,4 @@ def _display_check(data, name=None):
                 print(_filter_emojis(name))
             _print_table_terminal(data)
     except TypeError:
-        raise TypeError(f"Can't _display_data object of type {type(data)} in this environment.")
+        _warning(f"Check '{name}' can't display object of type {type(data)} in this environment.", clean_type=True)

@@ -133,7 +133,7 @@ class DataFrameVet:
             check_name=check_name)
         return self._obj
     
-    def get_mode(self, check_name = "⚙️ PandasVet mode"):
+    def get_mode(self, check_name = "🐼🩺 PandasVet mode"):
         _display_line(lead_in=check_name, line=get_mode())
         return self._obj
 
