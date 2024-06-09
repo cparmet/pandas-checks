@@ -355,21 +355,27 @@ class DataFrameVet:
         return self._obj
 
     def write(self, path, format=None, fn=lambda df: df, subset=None, verbose=False, **kwargs):
-        """File format is inferred from path extension (.csv). Or pass `format` to force
-        Kwargs are passed to to_excel/to_csv/to_parquet"""
+        """Write DataFrame to file, with format inferred from path extension (.csv).
+
+        Pass `format` to force
+        Kwargs are passed to Pandas's export function (e.g. to_csv() for .csv)"""
 
         if not get_mode()["enable_checks"]:
             return self._obj
         format_clean = format.lower().replace(".", "").strip() if format else None
         data = _modify_data(self._obj, fn, subset)
-        if path.endswith(".xls") or path.endswith(".xlsx") or format_clean in ["xlsx", "xls", "excel"]:
-            data.to_excel(path, **kwargs)
-        elif path.endswith(".csv") or format_clean == "csv":
+        if path.endswith(".csv") or format_clean == "csv":
             data.to_csv(path, **kwargs)
-        elif path.endswith(".tsv") or format_clean == "tsv":
-            data.to_csv(path, sep="\t", **kwargs)
+        elif path.endswith(".feather") or format_clean == "feather":
+            data.to_feather(path, **kwargs)
         elif path.endswith(".parquet") or format_clean == "parquet":
             data.to_parquet(path, **kwargs)
+        elif path.endswith(".pkl") or format_clean == "pickle":
+            data.to_pickle(path, **kwargs)
+        elif path.endswith(".tsv") or format_clean == "tsv":
+            data.to_csv(path, sep="\t", **kwargs)
+        elif path.endswith(".xls") or path.endswith(".xlsx") or format_clean in ["xlsx", "xls", "excel"]:
+            data.to_excel(path, **kwargs)
         else:
             raise AttributeError(f"Can't write data to file. Unknown file extension in: {path}. ")
         if verbose:
