@@ -1,6 +1,7 @@
 from .display import _display_check
 from .options import get_mode
 
+
 def _modify_data(data, fn=lambda df: df, subset=None):
     """Apply user's arbitrary modifications to a data object then subset the columns if requested.
 

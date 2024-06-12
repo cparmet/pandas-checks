@@ -8,18 +8,15 @@ or C) timer functions, make sure to preface the method with `if not get_mode()["
 That ensures the method will be disabled if the global option vet.enable_checks is set to False.
 """
 
-from .options import (
-    enable_checks,
-    disable_checks,
-    reset_format,
-    set_format,
-    set_mode
-)
-from .run_checks import _check_data
-from .timer import print_time_elapsed, start_timer
 import matplotlib.pyplot as plt
 import pandas as pd
 from pandas.core.groupby.groupby import DataError
+
+from .options import (disable_checks, enable_checks, reset_format, set_format,
+                      set_mode)
+from .timer import print_time_elapsed, start_timer
+from .run_checks import _check_data
+
 
 @pd.api.extensions.register_series_accessor("check")
 class SeriesVet:

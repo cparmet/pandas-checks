@@ -1,9 +1,12 @@
-from .options import _register_option, get_mode
-from .display import _display_line
+from time import time
+
 import numpy as np
 import pandas as pd
 from pandas._config.config import is_instance_factory
-from time import time
+
+from .display import _display_line
+from .options import _register_option, get_mode
+
 
 # Public functions
 def start_timer(verbose=False):

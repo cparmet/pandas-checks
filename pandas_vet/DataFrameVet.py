@@ -8,27 +8,17 @@ or C) timer functions, make sure to preface the method with `if not get_mode()["
 That ensures the method will be disabled if the global option vet.enable_checks is set to False.
 """
 
-
-from .display import (
-    _display_line,
-    _display_plot,
-    _display_plot_title,
-    _display_table_title,
-)
-from .options import (
-    enable_checks,
-    disable_checks,
-    get_mode,
-    set_mode,
-    reset_format,
-    set_format
-)
-from .run_checks import _check_data, _modify_data
-from .timer import print_time_elapsed, start_timer
-from .utils import _lambda_to_string
 import matplotlib.pyplot as plt
 import pandas as pd
 from pandas.core.groupby.groupby import DataError
+
+from .display import (_display_line, _display_plot, _display_plot_title,
+                      _display_table_title)
+from .options import (disable_checks, enable_checks, get_mode, reset_format,
+                      set_format, set_mode)
+from .run_checks import _check_data, _modify_data
+from .timer import print_time_elapsed, start_timer
+from .utils import _lambda_to_string
 
 
 @pd.api.extensions.register_dataframe_accessor("check")

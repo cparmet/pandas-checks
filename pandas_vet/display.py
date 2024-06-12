@@ -1,14 +1,15 @@
-from .options import _initialize_format_options
-import emoji
-from IPython.display import display, HTML, Markdown
-import io
 import base64
+import io
+import textwrap
+
+import emoji
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from IPython.display import HTML, Markdown, display
 from termcolor import colored
-import textwrap
 
+from .options import _initialize_format_options
 
 # -----------------------
 # Utilities
