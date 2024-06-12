@@ -57,7 +57,8 @@ class DataFrameVet:
             result = condition(data)
             condition_str = _lambda_to_string(condition)
         elif isinstance(condition, str):
-            result = eval(condition_str:=condition, {}, {"df": data})
+            result = eval(condition, {}, {"df": data})
+            condition_str = condition
         else:
             raise TypeError(f"Argument `condition` is of unexpected type {type(condition)}")
         if not result:
@@ -359,10 +360,13 @@ class DataFrameVet:
         return self._obj
 
     def write(self, path, format=None, fn=lambda df: df, subset=None, verbose=False, **kwargs):
-        """Write DataFrame to file, with format inferred from path extension (.csv).
+        """Write DataFrame to file, with format inferred from path extension like .csv.
 
-        Pass `format` to force
-        Kwargs are passed to Pandas's export function (e.g. to_csv() for .csv)"""
+        Pass `format` argument to force
+
+        This functions uses the corresponding Pandas export function such as to_csv().
+        Exporting to some formats such as Excel, Feather, and Parquet may require additional installs.
+        """
 
         if not get_mode()["enable_checks"]:
             return self._obj
