@@ -1,5 +1,8 @@
 __pycache__
 .DS_Store
+
+poetry.lock
+
 *.csv
 *.tsv
 *.xlsx
@@ -7,3 +10,5 @@ __pycache__
 *.feather
 *.pkl
 archive/*
+dev.ipynb
+dev_script.py

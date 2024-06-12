@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "pandas-vet"
+version = "0.1.0"
+description = "Non-invasive checks for Pandas method chains"
+authors = ["Chad Parmet <cparmet@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.8.1,<4.0"
+emoji = ">=2.12.1"
+Jinja2 = ">=3.1.4"
+matplotlib = ">=3.5.3"
+pandas = ">=1.4,<3.0"
+termcolor = ">=2.3.0"
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = ">=6.16.2"
+black = "^24.4.2"
+isort = "^5.13.2"
+flake8 = "^7.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
