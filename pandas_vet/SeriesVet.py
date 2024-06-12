@@ -14,8 +14,8 @@ from pandas.core.groupby.groupby import DataError
 
 from .options import (disable_checks, enable_checks, reset_format, set_format,
                       set_mode)
-from .timer import print_time_elapsed, start_timer
 from .run_checks import _check_data
+from .timer import print_time_elapsed, start_timer
 
 
 @pd.api.extensions.register_series_accessor("check")
@@ -23,7 +23,7 @@ class SeriesVet:
     # Where possible we point to DataFrameVet, setting subset=None"""
     def __init__(self, pandas_obj):
         self._obj = pandas_obj
-    
+
     def assert_data(
             self,
             condition,
@@ -54,7 +54,7 @@ class SeriesVet:
         """Run DataFrameVet's method"""
         pd.DataFrame(self._obj).check.columns(fn=fn, check_name=check_name, subset=None)
         return self._obj
-    
+
     def disable_checks(self, enable_asserts=True):
         disable_checks(enable_asserts)
         return self._obj
@@ -162,7 +162,7 @@ class SeriesVet:
         """Run DataFrameVet's method"""
         pd.DataFrame(self._obj).check.tail(n=n, fn=fn, check_name=check_name, subset=None)
         return self._obj
-    
+
     def unique(self, fn=lambda s: s, check_name=None):
         _check_data(
             self._obj,

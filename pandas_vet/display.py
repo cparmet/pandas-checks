@@ -26,7 +26,7 @@ def _render_html_with_indent(object_as_html):
     indent = pd.get_option("vet.indent_table_plot_ipython") # In pixels
     display(
         HTML(
-            f'<div style="margin-left: {indent}px;">{object_as_html}</div>' 
+            f'<div style="margin-left: {indent}px;">{object_as_html}</div>'
             if indent else object_as_html
         )
     )

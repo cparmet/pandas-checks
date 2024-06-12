@@ -127,7 +127,7 @@ class DataFrameVet:
             subset=subset,
             check_name=check_name)
         return self._obj
-    
+
     def get_mode(self, check_name = "🐼🩺 PandasVet mode"):
         _display_line(lead_in=check_name, line=get_mode())
         return self._obj
@@ -164,7 +164,7 @@ class DataFrameVet:
                 .info(**kwargs)
             )
         return self._obj
-    
+
     def memory_usage(self, fn=lambda df: df, subset=None, check_name='💾 Memory usage', **kwargs):
         _check_data(
             self._obj,
@@ -174,7 +174,7 @@ class DataFrameVet:
             check_name=check_name
             )
         return self._obj
-        
+
     def ncols(self, fn=lambda df: df, subset=None, check_name='🏛️ Columns'):
         _check_data(
             self._obj,
@@ -210,8 +210,8 @@ class DataFrameVet:
             else: # Report on one line
                 _display_line(
                     (f'👻 Rows with NaNs in {subset}: ' if subset else '👻 Rows with NaNs: ')
-                    + f"{na_counts} out of {data.shape[0]}" 
-                )  
+                    + f"{na_counts} out of {data.shape[0]}"
+                )
         else:
             _display_line(f"{check_name}: {na_counts}")
         return self._obj
@@ -257,7 +257,7 @@ class DataFrameVet:
             )
             _display_plot()
         return self._obj
-    
+
     def print(self, text=None, fn=lambda df: df, subset=None, check_name=None, max_rows=10):
         _check_data(
             text if text else self._obj,
@@ -296,7 +296,7 @@ class DataFrameVet:
         start_timer(verbose) # Call the public function
         return self._obj
 
-    def tail(self, n=5, fn=lambda df: df, subset=None, check_name=None):            
+    def tail(self, n=5, fn=lambda df: df, subset=None, check_name=None):
         _check_data(
             self._obj,
             check_fn=lambda df: df.tail(n),
@@ -305,7 +305,7 @@ class DataFrameVet:
             check_name=check_name if check_name else f"⬇️ Last {n} rows"
             )
         return self._obj
-    
+
     def print_time_elapsed(self, check_name="Time elapsed", units="auto"):
         print_time_elapsed(check_name=check_name, units=units) # Call the public function
         return self._obj
@@ -330,10 +330,10 @@ class DataFrameVet:
 
     def value_counts(self, column, max_rows=10, fn=lambda df: df, check_name=None, **kwargs):
         """Run SeriesVet's method
-        
+
         Note that `fn` is applied to the dataframe _before_ filtering columns to `column`.
-        
-        If you want to apply `fn` _after_ filtering to column, set `column=None` 
+
+        If you want to apply `fn` _after_ filtering to column, set `column=None`
         and start `fn` with a column selection, i.e. `fn=lambda df: df["my_column"].stuff()`
 
         """

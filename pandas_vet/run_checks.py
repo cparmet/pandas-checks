@@ -10,7 +10,7 @@ def _modify_data(data, fn=lambda df: df, subset=None):
     `data` may a Pandas DataFrame, Series, string, or other variable
 
     fn may be a lambda function or a string describing an operation that can be performed with 'eval()'
-    
+
     """
     if callable(fn):
         data = fn(data)
@@ -31,4 +31,3 @@ def _check_data(data, check_fn=lambda df: df, modify_fn=lambda df: df, subset=No
             ),
             name=check_name if check_name else subset)
     )
-
