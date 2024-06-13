@@ -1,12 +1,18 @@
 """
 Add PandasVet methods to Pandas's DataFrame class.
 
+New nethods are accessible with pd.DataFrame.check.[method]
+
+All new, public methods return the unchanged DataFrame. Checks do not modify the data that is returned.
+
 Methods are also shared by the SeriesVet class.
 
 Reminder: If adding a new method and it doesn't either A) call the SeriesVet method, B) use _check_data(),
 or C) timer functions, make sure to preface the method with `if not get_mode()["enable_checks"]: return self._obj`.
 That ensures the method will be disabled if the global option vet.enable_checks is set to False.
 """
+
+from typing import Any, Callable, List, Type, Union
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -33,19 +39,19 @@ from .utils import _in_terminal, _lambda_to_string
 
 @pd.api.extensions.register_dataframe_accessor("check")
 class DataFrameVet:
-    def __init__(self, pandas_obj):
+    def __init__(self, pandas_obj: Union[pd.DataFrame, pd.Series]) -> None:
         self._obj = pandas_obj
 
     def assert_data(
         self,
-        condition,
-        subset=None,
-        pass_message=" ✔️ Assertion passed ",
-        fail_message=" ㄨ Assertion failed ",
-        raise_exception=True,
-        exception_to_raise=DataError,
-        verbose=False,
-    ):
+        condition: Union[str, Callable],
+        subset: Union[str, List, None] = None,
+        pass_message: str = " ✔️ Assertion passed ",
+        fail_message: str = " ㄨ Assertion failed ",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
         """Test whether dataframe meets condition, optionally raise an exception if not.
 
         condition: can be a lambda function or an evaluable string referring to `df`, such as "df.shape[0]>10"
@@ -90,7 +96,12 @@ class DataFrameVet:
             )
         return self._obj
 
-    def columns(self, fn=lambda df: df, subset=None, check_name="🏛️ Columns"):
+    def columns(
+        self,
+        fn: Union[Callable, str] = lambda df: df,
+        subset: Union[str, List, None] = None,
+        check_name: Union[str, None] = "🏛️ Columns",
+    ) -> pd.DataFrame:
         _check_data(
             self._obj,
             check_fn=lambda df: df.columns.tolist(),
@@ -101,8 +112,12 @@ class DataFrameVet:
         return self._obj
 
     def describe(
-        self, fn=lambda df: df, subset=None, check_name="📏 Distributions", **kwargs
-    ):
+        self,
+        fn: Union[Callable, str] = lambda df: df,
+        subset: Union[str, List, None] = None,
+        check_name: Union[str, None] = "📏 Distributions",
+        **kwargs: Any,
+    ) -> pd.DataFrame:
         _check_data(
             self._obj,
             check_fn=lambda df: df.describe(**kwargs),
@@ -112,11 +127,16 @@ class DataFrameVet:
         )
         return self._obj
 
-    def disable_checks(self, enable_asserts=True):
+    def disable_checks(self, enable_asserts: bool = True) -> pd.DataFrame:
         disable_checks(enable_asserts)
         return self._obj
 
-    def dtypes(self, fn=lambda df: df, subset=None, check_name="🗂️ Data types"):
+    def dtypes(
+        self,
+        fn: Union[Callable, str] = lambda df: df,
+        subset: Union[str, List, None] = None,
+        check_name: Union[str, None] = "🗂️ Data types",
+    ) -> pd.DataFrame:
         _check_data(
             self._obj,
             check_fn=lambda df: df.dtypes,
@@ -126,11 +146,16 @@ class DataFrameVet:
         )
         return self._obj
 
-    def enable_checks(self, enable_asserts=True):
+    def enable_checks(self, enable_asserts: bool = True) -> pd.DataFrame:
         enable_checks(enable_asserts)
         return self._obj
 
-    def function(self, fn=lambda df: df, subset=None, check_name=None):
+    def function(
+        self,
+        fn: Union[Callable, str] = lambda df: df,
+        subset: Union[str, List, None] = None,
+        check_name: Union[str, None] = None,
+    ) -> pd.DataFrame:
         """Apply an arbitrary function on a DataFrame and show the result.
 
         Example
@@ -142,11 +167,19 @@ class DataFrameVet:
         _check_data(self._obj, modify_fn=fn, subset=subset, check_name=check_name)
         return self._obj
 
-    def get_mode(self, check_name="🐼🩺 PandasVet mode"):
-        _display_line(lead_in=check_name, line=get_mode())
+    def get_mode(
+        self, check_name: Union[str, None] = "🐼🩺 PandasVet mode"
+    ) -> pd.DataFrame:
+        _display_line(lead_in=check_name, line=str(get_mode()))
         return self._obj
 
-    def head(self, n=5, fn=lambda df: df, subset=None, check_name=None):
+    def head(
+        self,
+        n: int = 5,
+        fn: Union[Callable, str] = lambda df: df,
+        subset: Union[str, List, None] = None,
+        check_name: Union[str, None] = None,
+    ) -> pd.DataFrame:
         _check_data(
             self._obj,
             check_fn=lambda df: df.head(n),
@@ -156,7 +189,13 @@ class DataFrameVet:
         )
         return self._obj
 
-    def hist(self, fn=lambda df: df, subset=[], check_name=None, **kwargs):
+    def hist(
+        self,
+        fn: Union[Callable, str] = lambda df: df,
+        subset: Union[str, List, None] = [],
+        check_name: Union[str, None] = None,
+        **kwargs: Any,
+    ) -> pd.DataFrame:
         """Display a histogram. Only renders in IPython/Jupyter"""
         if (
             get_mode()["enable_checks"] and not _in_terminal()
@@ -165,23 +204,34 @@ class DataFrameVet:
                 check_name
                 if check_name
                 else "📏 Distribution"
-                if len(subset) == 1
+                if subset and len(subset) == 1
                 else "Distributions"
             )
             _ = _modify_data(self._obj, fn, subset).hist(**kwargs)
             _display_plot()
         return self._obj
 
-    def info(self, fn=lambda df: df, subset=None, check_name="ℹ️ Info", **kwargs):
+    def info(
+        self,
+        fn: Union[Callable, str] = lambda df: df,
+        subset: Union[str, List, None] = None,
+        check_name: Union[str, None] = "ℹ️ Info",
+        **kwargs: Any,
+    ) -> pd.DataFrame:
         """Don't use display or check_name comes below report"""
         if get_mode()["enable_checks"]:
-            _display_table_title(check_name)
+            if check_name:
+                _display_table_title(check_name)
             (_modify_data(self._obj, fn, subset).info(**kwargs))
         return self._obj
 
     def memory_usage(
-        self, fn=lambda df: df, subset=None, check_name="💾 Memory usage", **kwargs
-    ):
+        self,
+        fn: Union[Callable, str] = lambda df: df,
+        subset: Union[str, List, None] = None,
+        check_name: Union[str, None] = "💾 Memory usage",
+        **kwargs: Any,
+    ) -> pd.DataFrame:
         _check_data(
             self._obj,
             check_fn=lambda df: df.memory_usage(**kwargs),
@@ -191,7 +241,12 @@ class DataFrameVet:
         )
         return self._obj
 
-    def ncols(self, fn=lambda df: df, subset=None, check_name="🏛️ Columns"):
+    def ncols(
+        self,
+        fn: Union[Callable, str] = lambda df: df,
+        subset: Union[str, List, None] = None,
+        check_name: Union[str, None] = "🏛️ Columns",
+    ) -> pd.DataFrame:
         _check_data(
             self._obj,
             check_fn=lambda df: df.shape[1],
@@ -201,7 +256,13 @@ class DataFrameVet:
         )
         return self._obj
 
-    def ndups(self, fn=lambda df: df, subset=None, check_name=None, **kwargs):
+    def ndups(
+        self,
+        fn: Union[Callable, str] = lambda df: df,
+        subset: Union[str, List, None] = None,
+        check_name: Union[str, None] = None,
+        **kwargs: Any,
+    ) -> pd.DataFrame:
         """kwargs are arguments to .duplicated()"""
         _check_data(
             self._obj,
@@ -216,7 +277,13 @@ class DataFrameVet:
         )
         return self._obj
 
-    def nnulls(self, fn=lambda df: df, subset=None, by_column=True, check_name=None):
+    def nnulls(
+        self,
+        fn: Union[Callable, str] = lambda df: df,
+        subset: Union[str, List, None] = None,
+        by_column: bool = True,
+        check_name: Union[str, None] = None,
+    ) -> pd.DataFrame:
         """
 
         by_column = False to count rows that have any NaNs in any columns
@@ -252,7 +319,12 @@ class DataFrameVet:
             _display_line(f"{check_name}: {na_counts}")
         return self._obj
 
-    def nrows(self, fn=lambda df: df, subset=None, check_name="☰ Rows"):
+    def nrows(
+        self,
+        fn: Union[Callable, str] = lambda df: df,
+        subset: Union[str, List, None] = None,
+        check_name: Union[str, None] = "☰ Rows",
+    ) -> pd.DataFrame:
         _check_data(
             self._obj,
             check_fn=lambda df: df.shape[0],
@@ -262,7 +334,13 @@ class DataFrameVet:
         )
         return self._obj
 
-    def nunique(self, column, fn=lambda df: df, check_name=None, **kwargs):
+    def nunique(
+        self,
+        column: str,
+        fn: Union[Callable, str] = lambda df: df,
+        check_name: Union[str, None] = None,
+        **kwargs: Any,
+    ) -> pd.DataFrame:
         """Run SeriesVet method.
 
         Note that `fn` is applied to the dataframe _before_ filtering columns to `column`.
@@ -282,7 +360,13 @@ class DataFrameVet:
             )
         return self._obj
 
-    def plot(self, fn=lambda df: df, subset=None, check_name="", **kwargs):
+    def plot(
+        self,
+        fn: Union[Callable, str] = lambda df: df,
+        subset: Union[str, List, None] = None,
+        check_name: Union[str, None] = "",
+        **kwargs: Any,
+    ) -> pd.DataFrame:
         """Show Pandas plot. Only renders in IPython/Jupyter
         'title' kwarg overrides check_name as plot title"""
 
@@ -296,31 +380,41 @@ class DataFrameVet:
         return self._obj
 
     def print(
-        self, text=None, fn=lambda df: df, subset=None, check_name=None, max_rows=10
-    ):
+        self,
+        object: Any = None,  # Anything printable: str, int, list, DataFrame, etc
+        fn: Union[Callable, str] = lambda df: df,
+        subset: Union[str, List, None] = None,
+        check_name: Union[str, None] = None,
+        max_rows: int = 10,
+    ) -> pd.DataFrame:
         _check_data(
-            text if text else self._obj,
-            check_fn=lambda data: data if text else data.head(max_rows),
+            object if object else self._obj,
+            check_fn=lambda data: data if object else data.head(max_rows),
             modify_fn=fn,
             subset=subset,
             check_name=check_name,
         )
         return self._obj
 
-    def reset_format(self):
+    def reset_format(self) -> pd.DataFrame:
         """Re-initilaize all Pandas Vet options for formatting"""
         reset_format()
         return self._obj
 
-    def set_format(self, **kwargs):
+    def set_format(self, **kwargs: Any) -> pd.DataFrame:
         set_format(**kwargs)
         return self._obj
 
-    def set_mode(self, enable_checks, enable_asserts):
+    def set_mode(self, enable_checks: bool, enable_asserts: bool) -> pd.DataFrame:
         set_mode(enable_checks, enable_asserts)
         return self._obj
 
-    def shape(self, fn=lambda df: df, subset=None, check_name="📐 Shape"):
+    def shape(
+        self,
+        fn: Union[Callable, str] = lambda df: df,
+        subset: Union[str, List, None] = None,
+        check_name: Union[str, None] = "📐 Shape",
+    ) -> pd.DataFrame:
         """See nrows, ncols"""
         _check_data(
             self._obj,
@@ -331,11 +425,17 @@ class DataFrameVet:
         )
         return self._obj
 
-    def start_timer(self, verbose=False):
+    def start_timer(self, verbose: bool = False) -> pd.DataFrame:
         start_timer(verbose)  # Call the public function
         return self._obj
 
-    def tail(self, n=5, fn=lambda df: df, subset=None, check_name=None):
+    def tail(
+        self,
+        n: int = 5,
+        fn: Union[Callable, str] = lambda df: df,
+        subset: Union[str, List, None] = None,
+        check_name: Union[str, None] = None,
+    ) -> pd.DataFrame:
         _check_data(
             self._obj,
             check_fn=lambda df: df.tail(n),
@@ -345,13 +445,20 @@ class DataFrameVet:
         )
         return self._obj
 
-    def print_time_elapsed(self, check_name="Time elapsed", units="auto"):
+    def print_time_elapsed(
+        self, check_name: Union[str, None] = "Time elapsed", units: str = "auto"
+    ) -> pd.DataFrame:
         print_time_elapsed(
             check_name=check_name, units=units
         )  # Call the public function
         return self._obj
 
-    def unique(self, column, fn=lambda df: df, check_name=None):
+    def unique(
+        self,
+        column: str,
+        fn: Union[Callable, str] = lambda df: df,
+        check_name: Union[str, None] = None,
+    ) -> pd.DataFrame:
         """Run SeriesVet's method
 
         Note that `fn` is applied to the dataframe _before_ filtering columns to `column`.
@@ -371,8 +478,13 @@ class DataFrameVet:
         return self._obj
 
     def value_counts(
-        self, column, max_rows=10, fn=lambda df: df, check_name=None, **kwargs
-    ):
+        self,
+        column: str,
+        max_rows: int = 10,
+        fn: Union[Callable, str] = lambda df: df,
+        check_name: Union[str, None] = None,
+        **kwargs: Any,
+    ) -> pd.DataFrame:
         """Run SeriesVet's method
 
         Note that `fn` is applied to the dataframe _before_ filtering columns to `column`.
@@ -395,8 +507,14 @@ class DataFrameVet:
         return self._obj
 
     def write(
-        self, path, format=None, fn=lambda df: df, subset=None, verbose=False, **kwargs
-    ):
+        self,
+        path: str,
+        format: Union[str, None] = None,
+        fn: Union[Callable, str] = lambda df: df,
+        subset: Union[str, List, None] = None,
+        verbose: bool = False,
+        **kwargs: Any,
+    ) -> pd.DataFrame:
         """Write DataFrame to file, with format inferred from path extension like .csv.
 
         Pass `format` argument to force

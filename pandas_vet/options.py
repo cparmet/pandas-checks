@@ -1,3 +1,5 @@
+from typing import Any, Callable, Dict, List, Union
+
 import pandas as pd
 import pandas._config.config as cf
 
@@ -5,7 +7,7 @@ import pandas._config.config as cf
 # -----------------------
 # Helpers
 # -----------------------
-def _set_option(option, value):
+def _set_option(option: str, value: Any) -> None:
     vet_option = (
         option if option.startswith("vet.") else "vet." + option
     )  # Fully qualified
@@ -17,7 +19,9 @@ def _set_option(option, value):
         )
 
 
-def _register_option(name, default_value, description, validator):
+def _register_option(
+    name: str, default_value: Any, description: str, validator: Callable
+) -> None:
     """Add a Pandas Vet option to the Pandas configuration.
     This method enables us to set global formatting for Vet checks
     and store variables that will persist across Pandas method chains
@@ -40,18 +44,18 @@ def _register_option(name, default_value, description, validator):
 # -----------------------
 
 
-def set_format(**kwargs):
+def set_format(**kwargs: Any) -> None:
     """Set PandasVet output format. Options include: ..."""
     for arg, value in kwargs.items():
         _set_option(arg, value)
 
 
-def reset_format():
+def reset_format() -> None:
     """Re-initilaize all Pandas Vet options for formatting"""
     _initialize_format_options()
 
 
-def _initialize_format_options(options=None):
+def _initialize_format_options(options: Union[List[str], None] = None) -> None:
     """Set up or reset Pandas Vet options for formatting
     None=initalize/reset all options
 
@@ -136,36 +140,36 @@ def _initialize_format_options(options=None):
 # -----------------------
 # General options
 # -----------------------
-def describe_options():
+def describe_options() -> None:
     """Print all global options for PandasVet, their default values, and current values."""
     for option in pd._config.config._select_options("vet"):
         print()
         pd.describe_option(option)
 
 
-def set_mode(enable_checks, enable_asserts):
+def set_mode(enable_checks: bool, enable_asserts: bool) -> None:
     _set_option("enable_checks", enable_checks)
     _set_option("enable_asserts", enable_asserts)
 
 
-def get_mode():
+def get_mode() -> Dict[str, bool]:
     return {
         "enable_checks": pd.get_option("vet.enable_checks"),
         "enable_asserts": pd.get_option("vet.enable_asserts"),
     }
 
 
-def enable_checks(enable_asserts=True):
+def enable_checks(enable_asserts: bool = True) -> None:
     """Convenience function to enable checks +/- asserts"""
     set_mode(enable_checks=True, enable_asserts=enable_asserts)
 
 
-def disable_checks(enable_asserts=True):
+def disable_checks(enable_asserts: bool = True) -> None:
     """Convenience function to disable checks +/- asserts"""
     set_mode(enable_checks=False, enable_asserts=enable_asserts)
 
 
-def _initialize_options():
+def _initialize_options() -> None:
     """Set up, or reset, Pandas Vet options
     NOTE: We separate this function from _initialize_format_options() so user can reset just formatting if desired"""
 

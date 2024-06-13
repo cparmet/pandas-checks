@@ -1,6 +1,7 @@
 import base64
 import io
 import textwrap
+from typing import Any, Dict, Union
 
 import emoji
 import matplotlib.pyplot as plt
@@ -9,7 +10,6 @@ import pandas as pd
 from IPython.display import HTML, Markdown, display
 from termcolor import colored
 
-from .options import _initialize_format_options
 from .utils import _in_terminal
 
 # -----------------------
@@ -17,14 +17,14 @@ from .utils import _in_terminal
 # -----------------------
 
 
-def _filter_emojis(text):
+def _filter_emojis(text: str) -> str:
     """Depending on user's global settings, remove emojis."""
     if pd.get_option("vet.use_emojis"):
         return text
     return emoji.replace_emoji(text, replace="").strip()
 
 
-def _render_html_with_indent(object_as_html):
+def _render_html_with_indent(object_as_html: str) -> None:
     indent = pd.get_option("vet.indent_table_plot_ipython")  # In pixels
     display(
         HTML(
@@ -35,7 +35,9 @@ def _render_html_with_indent(object_as_html):
     )
 
 
-def _render_text(text, tag, lead_in=None, colors={}):
+def _render_text(
+    text: str, tag: str, lead_in: Union[str, None] = None, colors: Dict = {}
+) -> None:
     if text:
         # Format background_color for term_colors
         text_color = colors.get("text_color", None)
@@ -65,7 +67,9 @@ def _render_text(text, tag, lead_in=None, colors={}):
             )
 
 
-def _warning(message, lead_in="🐼🩺 PandasVet warning", clean_type=False):
+def _warning(
+    message: str, lead_in: str = "🐼🩺 PandasVet warning", clean_type: bool = False
+) -> None:
     _display_line(
         lead_in=lead_in,
         line=(
@@ -86,7 +90,7 @@ def _warning(message, lead_in="🐼🩺 PandasVet warning", clean_type=False):
 # -----------------------
 
 
-def _print_table_terminal(table):
+def _print_table_terminal(table: Union[pd.DataFrame, pd.Series]) -> None:
     """Print a Pandas DF or Series in a terminal, with optional indent"""
     indent_prefix = pd.get_option("vet.indent_table_terminal")  # In spaces
     print(
@@ -96,8 +100,9 @@ def _print_table_terminal(table):
     )
 
 
-def _display_table(table):
-    """Render a Pandas DF or Series in an IPython/Jupyter environment, with optional indent"""
+def _display_table(table: Union[pd.DataFrame, pd.Series]) -> None:
+    """Render a Pandas DF or Series in an IPython/Jupyter environment,
+    with optional indent"""
     _render_html_with_indent(
         table.style.set_table_styles(
             [pd.get_option("vet.table_row_hover_style")]
@@ -109,7 +114,9 @@ def _display_table(table):
     )
 
 
-def _display_table_title(line, lead_in=None, colors={}):
+def _display_table_title(
+    line: str, lead_in: Union[str, None] = None, colors: Dict = {}
+) -> None:
     """This allows us to align plot titles, table titles, and other check outputs
     for a cleaner output cell."""
     _render_text(
@@ -122,7 +129,7 @@ def _display_table_title(line, lead_in=None, colors={}):
 # -----------------------
 
 
-def _display_plot():
+def _display_plot() -> None:
     """Renders a PandasVet plot object in an IPython/Jupyter environment, with optional indent. Also displays the plot in the chronological order of chain execution, instead of attaching the plot at the bottom of a notebook cell
 
     TODO: Presumes matplotlib is the Pandas plotting back end.
@@ -161,7 +168,10 @@ def _display_plot():
         )
 
 
-def _display_plot_title(line, lead_in=None, colors={}):
+def _display_plot_title(
+    line: str, lead_in: Union[str, None] = None, colors: Dict = {}
+) -> None:
+
     """This allows us to align plot titles, table titles, and other check outputs
     for a cleaner output cell."""
     _render_text(
@@ -174,14 +184,15 @@ def _display_plot_title(line, lead_in=None, colors={}):
 # -----------------------
 
 
-def _format_background_color(color):
+def _format_background_color(color: str) -> str:
     """Cleans background color for termcolor rendering"""
     return (
         color if not color else f"on_{color}" if not color.startswith("on_") else color
     )
 
 
-def _lead_in(lead_in, foreground, background):
+def _lead_in(lead_in: Union[str, None], foreground: str, background: str) -> str:
+
     return (
         f"<span style='color:{foreground}; background-color:{background}'>{_filter_emojis(lead_in).strip()}:</span>"
         if lead_in
@@ -189,7 +200,10 @@ def _lead_in(lead_in, foreground, background):
     )
 
 
-def _display_line(line, lead_in=None, colors={}):
+def _display_line(
+    line: str, lead_in: Union[str, None] = None, colors: Dict = {}
+) -> None:
+
     """This allows us to align plot titles, table titles, and other check outputs
     for a cleaner output cell."""
     _render_text(
@@ -202,13 +216,14 @@ def _display_line(line, lead_in=None, colors={}):
 # ---------------------------------------------
 
 
-def _display_check(data, name=None):
+def _display_check(data: Any, name: Union[str, None] = None) -> None:
     """Render the result of our check.
-    Behave differently if we're in an IPython interactive session / Jupyter nobteook"""
+    Behave differently if we're in an IPython interactive session / Jupyter notebook"""
     try:
         # Is it a one-liner result?
         if isinstance(
             data,
+            # TODO: Simpler, more comprehensive way
             (
                 int,
                 np.int8,

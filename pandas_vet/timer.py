@@ -1,4 +1,5 @@
 from time import time
+from typing import Union
 
 import numpy as np
 import pandas as pd
@@ -9,7 +10,7 @@ from .options import _register_option, get_mode
 
 
 # Public functions
-def start_timer(verbose=False):
+def start_timer(verbose: bool = False) -> None:
     """
     TODO: Ideally we wouldn't use pandas config to store the start time.
     See if there's a better way store variables that will persist across Pandas method chains.
@@ -36,7 +37,9 @@ def start_timer(verbose=False):
         _display_line(f"⏱️ Started timer at: {pd.get_option('vet.timer_start_time')}")
 
 
-def print_time_elapsed(check_name="Time elapsed", units="auto"):
+def print_time_elapsed(
+    check_name: Union[str, None] = "Time elapsed", units: str = "auto"
+) -> None:
     """Reminder: If you change default arg values, change in .check.print_time_elapsed too"""
     if not get_mode()["enable_checks"]:
         return None
