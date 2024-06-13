@@ -21,13 +21,21 @@ def _modify_data(data, fn=lambda df: df, subset=None):
     return data[subset] if subset else data
 
 
-def _check_data(data, check_fn=lambda df: df, modify_fn=lambda df: df, subset=None, check_name=None, **kwargs):
+def _check_data(
+    data,
+    check_fn=lambda df: df,
+    modify_fn=lambda df: df,
+    subset=None,
+    check_name=None,
+    **kwargs,
+):
     if not get_mode()["enable_checks"]:
         return None
-    return (
-        _display_check( # 3. Report the result
-            check_fn(   # 2. After applying the method's operation to the data, like value_counts() or dtypes. May return a DF, an int, etc
-                _modify_data(data, fn=modify_fn, subset=subset)   # 1. After first applying user's modifications to the data before checking it
-            ),
-            name=check_name if check_name else subset)
+    return _display_check(  # 3. Report the result
+        check_fn(  # 2. After applying the method's operation to the data, like value_counts() or dtypes. May return a DF, an int, etc
+            _modify_data(
+                data, fn=modify_fn, subset=subset
+            )  # 1. After first applying user's modifications to the data before checking it
+        ),
+        name=check_name if check_name else subset,
     )

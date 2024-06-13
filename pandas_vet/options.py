@@ -6,11 +6,15 @@ import pandas._config.config as cf
 # Helpers
 # -----------------------
 def _set_option(option, value):
-        vet_option = option if option.startswith("vet.") else "vet." + option # Fully qualified
-        if vet_option in pd._config.config._select_options("vet"):
-            pd.set_option(vet_option, value)
-        else:
-            raise AttributeError(f"No Pandas Vet option for {vet_option}. Available options: {pd._config.config._select_options('vet')}")
+    vet_option = (
+        option if option.startswith("vet.") else "vet." + option
+    )  # Fully qualified
+    if vet_option in pd._config.config._select_options("vet"):
+        pd.set_option(vet_option, value)
+    else:
+        raise AttributeError(
+            f"No Pandas Vet option for {vet_option}. Available options: {pd._config.config._select_options('vet')}"
+        )
 
 
 def _register_option(name, default_value, description, validator):
@@ -19,31 +23,33 @@ def _register_option(name, default_value, description, validator):
     and store variables that will persist across Pandas method chains
     which return newly initialized DataFrames at each method
     (resetting DataFrame's attributes)."""
-    key_name = name if "vet." not in name else name.replace("vet,","") # If we passed vet.name, strip vet., since we'll be working in "vet" config namespace
-    try: # See if this option is already registered
+    key_name = (
+        name if "vet." not in name else name.replace("vet,", "")
+    )  # If we passed vet.name, strip vet., since we'll be working in "vet" config namespace
+    try:  # See if this option is already registered
         pd.get_option(f"vet.{key_name}")
         # If so, reset its value
         pd.set_option(f"vet.{key_name}", default_value)
-    except pd.errors.OptionError: # Register it!
+    except pd.errors.OptionError:  # Register it!
         with cf.config_prefix("vet"):
-            cf.register_option(
-                key_name,
-                default_value,
-                description,validator
-                )
+            cf.register_option(key_name, default_value, description, validator)
+
 
 # -----------------------
 # Formatting
 # -----------------------
 
+
 def set_format(**kwargs):
-    """Set PandasVet output format. Options include: ... """
+    """Set PandasVet output format. Options include: ..."""
     for arg, value in kwargs.items():
         _set_option(arg, value)
+
 
 def reset_format():
     """Re-initilaize all Pandas Vet options for formatting"""
     _initialize_format_options()
+
 
 def _initialize_format_options(options=None):
     """Set up or reset Pandas Vet options for formatting
@@ -52,7 +58,7 @@ def _initialize_format_options(options=None):
     Separate from _initialize_options so user can reset just formatting if desired
     """
     option_keys = [option.replace("vet.", "") for option in options] if options else []
-    if "precision" in option_keys or options==None:
+    if "precision" in option_keys or options == None:
         _register_option(
             name="precision",
             default_value=2,
@@ -60,22 +66,22 @@ def _initialize_format_options(options=None):
     : float
     The floating point output precision of Pandas Vet outputs, in terms of number of places after the decimal, for regular formatting as well as scientific notation. Similar to ``precision`` in :meth:`numpy.set_printoptions`. Does not change precision of other Pandas methods. Use pd.set_option('display.precision',...) instead.
     """,
-            validator=cf.is_nonnegative_int
-            )
-    if "table_row_hover_style" in option_keys or options==None:
+            validator=cf.is_nonnegative_int,
+        )
+    if "table_row_hover_style" in option_keys or options == None:
         _register_option(
             name="table_row_hover_style",
             default_value={
-                'selector': 'tr:hover',
-                'props': [('background-color', '#2986cc')]
-                        },
+                "selector": "tr:hover",
+                "props": [("background-color", "#2986cc")],
+            },
             description="""
     : dict
     The background color to show when hovering over a Pandas Vet table`.
     """,
-            validator=cf.is_instance_factory(dict)
-            )
-    if "use_emojis" in option_keys or options==None:
+            validator=cf.is_instance_factory(dict),
+        )
+    if "use_emojis" in option_keys or options == None:
         _register_option(
             name="use_emojis",
             default_value=True,
@@ -83,9 +89,9 @@ def _initialize_format_options(options=None):
     : bool
     Whether Pandas Vet check_names should keep emojis. This includes default check_names from the factory and user-supplied check_names`.
     """,
-            validator=cf.is_instance_factory(bool)
-            )
-    if "indent_table_terminal" in option_keys or options==None:
+            validator=cf.is_instance_factory(bool),
+        )
+    if "indent_table_terminal" in option_keys or options == None:
         _register_option(
             name="indent_table_terminal",
             default_value=4,
@@ -93,9 +99,9 @@ def _initialize_format_options(options=None):
     : int
     Number of spaces to indent Pandas Vet tables in terminal display.
     """,
-            validator=cf.is_instance_factory(int)
-            )
-    if "indent_table_plot_ipython" in option_keys or options==None:
+            validator=cf.is_instance_factory(int),
+        )
+    if "indent_table_plot_ipython" in option_keys or options == None:
         _register_option(
             name="indent_table_plot_ipython",
             default_value=30,
@@ -103,8 +109,8 @@ def _initialize_format_options(options=None):
     : int
     Number of pixels to indent Pandas Vet tables or plots in IPython/Jupyter display.
     """,
-            validator=cf.is_instance_factory(int)
-            )
+            validator=cf.is_instance_factory(int),
+        )
     # Text styling
     for option, default in {
         "check_text_tag": "h5",
@@ -113,32 +119,34 @@ def _initialize_format_options(options=None):
         "fail_text_fg_color": "white",
         "fail_text_bg_color": "red",
         "success_text_fg_color": "black",
-        "success_text_bg_color": "green"
-        }.items():
-            if "option" in option_keys or options==None:
-                _register_option(
-                    name=option,
-                    default_value=default,
-                    description=f"""
+        "success_text_bg_color": "green",
+    }.items():
+        if "option" in option_keys or options == None:
+            _register_option(
+                name=option,
+                default_value=default,
+                description=f"""
     : str
     {"A single HTML tag (h1, h5, p, etc)" if "tag" in option else "Foreground color" if "fg" in option else "Background color"} for Pandas Vet {option.replace("_tag","").replace("_fg_color","").replace("_fg_color","")}.
     """,
-                    validator=cf.is_instance_factory(str)
-                )
+                validator=cf.is_instance_factory(str),
+            )
+
 
 # -----------------------
 # General options
 # -----------------------
 def describe_options():
-    """Print all global options for PandasVet, their default values, and current values.
-    """
+    """Print all global options for PandasVet, their default values, and current values."""
     for option in pd._config.config._select_options("vet"):
         print()
         pd.describe_option(option)
 
+
 def set_mode(enable_checks, enable_asserts):
     _set_option("enable_checks", enable_checks)
     _set_option("enable_asserts", enable_asserts)
+
 
 def get_mode():
     return {
@@ -146,13 +154,16 @@ def get_mode():
         "enable_asserts": pd.get_option("vet.enable_asserts"),
     }
 
+
 def enable_checks(enable_asserts=True):
     """Convenience function to enable checks +/- asserts"""
     set_mode(enable_checks=True, enable_asserts=enable_asserts)
 
+
 def disable_checks(enable_asserts=True):
     """Convenience function to disable checks +/- asserts"""
     set_mode(enable_checks=False, enable_asserts=enable_asserts)
+
 
 def _initialize_options():
     """Set up, or reset, Pandas Vet options
@@ -171,7 +182,7 @@ def _initialize_options():
 
     This option does not affect .check.assertion(). Use separate option: `vet.enable_asserts`
     """,
-        validator=cf.is_instance_factory(bool)
+        validator=cf.is_instance_factory(bool),
     )
     _register_option(
         name="enable_asserts",
@@ -180,7 +191,7 @@ def _initialize_options():
     : bool
     Global setting for PandasVet to run .check.assertion() methods. Set to False to disable assertions
     """,
-        validator=cf.is_instance_factory(bool)
+        validator=cf.is_instance_factory(bool),
     )
     # Register default format options
     _initialize_format_options()

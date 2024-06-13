@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
 emoji = ">=2.12.1"
+ipython = ">=7.23.1"
 Jinja2 = ">=3.1.4"
 matplotlib = ">=3.5.3"
 pandas = ">=1.4,<3.0"

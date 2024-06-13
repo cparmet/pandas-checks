@@ -27,7 +27,7 @@ def start_timer(verbose=False):
                 : int
                 Internal timer from the package pandas_vet. Used to create a global timer that will persist over method chains. Since Pandas returns a new, re-initialized DataFrame at each method to avoid mutating objects.
                 """,
-            validator=is_instance_factory(float)
+            validator=is_instance_factory(float),
         )
     # The option has already been registered. Re-set its value
     else:
@@ -35,25 +35,30 @@ def start_timer(verbose=False):
     if verbose:
         _display_line(f"⏱️ Started timer at: {pd.get_option('vet.timer_start_time')}")
 
+
 def print_time_elapsed(check_name="Time elapsed", units="auto"):
     """Reminder: If you change default arg values, change in .check.print_time_elapsed too"""
     if not get_mode()["enable_checks"]:
         return None
     start = pd.get_option("vet.timer_start_time")
-    if start==np.nan:
-        _display_line("Timer hasn't been started. Call .check.start_time() before .check.get_time_elapsed()")
+    if start == np.nan:
+        _display_line(
+            "Timer hasn't been started. Call .check.start_time() before .check.get_time_elapsed()"
+        )
     elapsed = time() - start
-    if units=="auto":
-        if elapsed>60:
-            units="minutes"
-        elif elapsed>60*60:
-            units="hours"
+    if units == "auto":
+        if elapsed > 60:
+            units = "minutes"
+        elif elapsed > 60 * 60:
+            units = "hours"
         else:
-            units="seconds"
-    if units=="minutes":
-        elapsed/=60
-    elif units=="hours":
-        elapsed/=60*60
-    elif units!="seconds":
+            units = "seconds"
+    if units == "minutes":
+        elapsed /= 60
+    elif units == "hours":
+        elapsed /= 60 * 60
+    elif units != "seconds":
         raise ValueError(f"Unexpected value for argument `units`: {units}")
-    _display_line(f"{check_name + ':' if check_name else '⏱️ Time elapsed:'} {elapsed} {units}")
+    _display_line(
+        f"{check_name + ':' if check_name else '⏱️ Time elapsed:'} {elapsed} {units}"
+    )
