@@ -473,7 +473,7 @@ class SeriesVet:
         return self._obj
 
     def reset_format(self) -> pd.Series:
-        """Restores all Pandas Vet formatting options to their default "factory" settings. Does not modify the Series itself.
+        """Globally restores all Pandas Vet formatting options to their default "factory" settings. Does not modify the Series itself.
 
         Returns:
             The original Series, unchanged.

@@ -41,7 +41,7 @@ from .options import (
     set_format,
     set_mode,
 )
-from .run_checks import _check_data, _modify_data
+from .run_checks import _apply_modifications, _check_data
 from .timer import print_time_elapsed, start_timer
 from .utils import _in_terminal, _lambda_to_string
 
@@ -344,7 +344,7 @@ class DataFrameVet:
                 if subset and len(subset) == 1
                 else "Distributions"
             )
-            _ = _modify_data(self._obj, fn, subset).hist(**kwargs)
+            _ = _apply_modifications(self._obj, fn, subset).hist(**kwargs)
             _display_plot()
         return self._obj
 
@@ -377,7 +377,7 @@ class DataFrameVet:
         if get_mode()["enable_checks"]:
             if check_name:
                 _display_table_title(check_name)
-            (_modify_data(self._obj, fn, subset).info(**kwargs))
+            (_apply_modifications(self._obj, fn, subset).info(**kwargs))
         return self._obj
 
     def memory_usage(
@@ -512,7 +512,7 @@ class DataFrameVet:
         """
         if not get_mode()["enable_checks"]:
             return self._obj
-        data = _modify_data(self._obj, fn, subset)
+        data = _apply_modifications(self._obj, fn, subset)
         na_counts = (
             data.isna().any(axis=1).sum()
             if isinstance(data, pd.DataFrame) and not by_column
@@ -600,7 +600,7 @@ class DataFrameVet:
 
         if get_mode()["enable_checks"]:
             (
-                _modify_data(
+                _apply_modifications(
                     self._obj, fn=fn, subset=column
                 ).check.nunique(  # Apply fn, then filter to `column`  # Use SeriesVet method
                     fn=lambda df: df,  # Identity function
@@ -646,7 +646,7 @@ class DataFrameVet:
             _display_plot_title(
                 check_name if "title" not in kwargs else kwargs["title"]
             )
-            _ = _modify_data(self._obj, fn, subset).plot(**kwargs)
+            _ = _apply_modifications(self._obj, fn, subset).plot(**kwargs)
             _display_plot()
         return self._obj
 
@@ -703,7 +703,7 @@ class DataFrameVet:
         return self._obj
 
     def reset_format(self) -> pd.DataFrame:
-        """Restores all Pandas Vet formatting options to their default "factory" settings. Does not modify the DataFrame itself.
+        """Globally restores all Pandas Vet formatting options to their default "factory" settings. Does not modify the DataFrame itself.
 
         Returns:
             The original DataFrame, unchanged.
@@ -854,7 +854,7 @@ class DataFrameVet:
         """
         if get_mode()["enable_checks"]:
             (
-                _modify_data(
+                _apply_modifications(
                     self._obj, fn=fn, subset=column
                 ).check.unique(  # Apply fn, then filter to `column`  # Use SeriesVet method
                     fn=lambda df: df,  # Identify function
@@ -895,7 +895,7 @@ class DataFrameVet:
         """
         if get_mode()["enable_checks"]:
             (
-                _modify_data(
+                _apply_modifications(
                     self._obj, fn=fn, subset=column
                 ).check.value_counts(  # Apply fn, then filter to `column``  # Use SeriesVet method
                     max_rows=max_rows,
@@ -943,7 +943,7 @@ class DataFrameVet:
         if not get_mode()["enable_checks"]:
             return self._obj
         format_clean = format.lower().replace(".", "").strip() if format else None
-        data = _modify_data(self._obj, fn, subset)
+        data = _apply_modifications(self._obj, fn, subset)
         if path.endswith(".csv") or format_clean == "csv":
             data.to_csv(path, **kwargs)
         elif path.endswith(".feather") or format_clean == "feather":

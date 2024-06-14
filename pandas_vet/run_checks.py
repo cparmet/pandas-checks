@@ -8,7 +8,7 @@ from .display import _display_check
 from .options import get_mode
 
 
-def _modify_data(
+def _apply_modifications(
     data: Any,
     fn: Union[Callable, Any] = lambda df: df,
     subset: Union[str, List, None] = None,
@@ -60,7 +60,7 @@ def _check_data(
                 check_fn(
                     # 1. After first applying user's modifications to the data
                     # before checking it.
-                    _modify_data(data, fn=modify_fn, subset=subset)
+                    _apply_modifications(data, fn=modify_fn, subset=subset)
                 ),
                 name=check_name if check_name else str(subset),
             )

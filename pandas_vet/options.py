@@ -99,7 +99,7 @@ def set_format(**kwargs: Any) -> None:
 
 
 def reset_format() -> None:
-    """Restores all Pandas Vet formatting options to their default "factory" settings.
+    """Globally restores all Pandas Vet formatting options to their default "factory" settings.
 
     Returns:
         None
