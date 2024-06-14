@@ -1,3 +1,7 @@
+"""
+This module imports and initializes Pandas Vet.
+"""
+
 # Select what functions are included in `from pandas_vet import *`
 # i.e. don't expose DataFrameVet and SeriesVet, which aren't needed
 __all__ = [

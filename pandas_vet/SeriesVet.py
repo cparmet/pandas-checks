@@ -1,13 +1,24 @@
 """
-Add PandasVet methods to Pandas's Series class.
+This module installs Pandas Vet methods in the Pandas Series class.
 
-All new, public methods return the unchanged Series. Checks do not modify the data that is returned.
+To use Pandas Vet, don't access anything in this module directly. Instead just run `import pandas_vet` in your code. That changes what happens when you use regular Pandas Series:
+    ```
+    import pandas as pd
+    import pandas_vet
+    ```
 
-These methods call DataFrameVet methods whenever possible, setting subset=None.
+Now vet methods are accessible to Pandas Series as ".check":
 
-Reminder: If adding a new method and it doesn't either A) call the DataFrameVet method, B) use _check_data(),
-or C) timer functions, make sure to preface the method with `if not get_mode()["enable_checks"]: return self._obj`.
-That ensures the method will be disabled if the global option vet.enable_checks is set to False.
+    ```
+    (
+        pd.Series(my_data)
+        .rename("new_name")
+        .check.hist()           # <-- New methods available
+        .dropna()
+    )
+    ```
+
+All public .check methods display the result but then return the unchanged Series, so a method chain continues unbroken.
 """
 
 from typing import Any, Callable, Type, Union
@@ -35,7 +46,21 @@ class SeriesVet:
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
     ) -> pd.Series:
-        """Run DataFrameVet's method"""
+        """Tests whether Series meets condition, optionally raise an exception if not. Does not modify the Series itself.
+
+        Args:
+            condition: Assertion criteria in the form of either
+                - A lambda function, such as `lambda s: s.shape[0]>10` or
+                - An evaluable string that references `s`, such as "s.shape[0]>10"
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original Series, unchanged.
+        """
         pd.DataFrame(self._obj).check.assert_data(
             condition=condition,
             subset=None,
@@ -53,22 +78,34 @@ class SeriesVet:
         check_name: Union[str, None] = "📏 Distribution",
         **kwargs: Any,
     ) -> pd.Series:
-        """Run DataFrameVet's method"""
+        """Displays descriptive statistics about a Series, without modifying the Series itself.
+
+        See Pandas docs for describe() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+
+        Args:
+            fn: An optional function to apply to the Series before running Pandas describe(). May be in the form of:
+                - A lambda function, such as `lambda s: s.dropna().head()` or
+                - An evaluable string that references `s`, such as "s.dropna().head()"
+            check_name: An optional name for the check to preface the result with.
+            **kwargs: Optional, additional arguments that are accepted by Pandas describe() method.
+
+        Returns:
+            The original Series, unchanged.
+        """
         pd.DataFrame(self._obj).check.describe(
             fn=fn, check_name=check_name, subset=None, **kwargs
         )
         return self._obj
 
-    def columns(
-        self,
-        fn: Union[Callable, str] = lambda s: s,
-        check_name: Union[str, None] = "🏛️ Columns in series",
-    ) -> pd.Series:
-        """Run DataFrameVet's method"""
-        pd.DataFrame(self._obj).check.columns(fn=fn, check_name=check_name, subset=None)
-        return self._obj
-
     def disable_checks(self, enable_asserts: bool = True) -> pd.Series:
+        """Turns off Pandas Vet checks globally, such as in production mode. Does not modify the Series itself.
+
+        Args
+            enable_assert: Optionally, whether to also enable or disable assert statements
+
+        Returns:
+            The original Series, unchanged.
+        """
         disable_checks(enable_asserts)
         return self._obj
 
@@ -77,11 +114,31 @@ class SeriesVet:
         fn: Union[Callable, str] = lambda s: s,
         check_name: Union[str, None] = "🗂️ Data type",
     ) -> pd.Series:
-        """Run DataFrameVet's method"""
-        pd.DataFrame(self._obj).check.columns(fn=fn, check_name=check_name, subset=None)
+        """Displays the data type of a Series, without modifying the Series itself.
+
+        See Pandas docs for .dtype for additional usage information.
+
+        Args:
+            fn: An optional function to apply to the Series before running Pandas .dtype. May be in the form of:
+                - A lambda function, such as `lambda s: s.dropna().head()` or
+                - An evaluable string that references `s`, such as "s.dropna().head()"
+            check_name: An optional name for the check to preface the result with.
+
+        Returns:
+            The original Series, unchanged.
+        """
+        pd.DataFrame(self._obj).check.dtypes(fn=fn, check_name=check_name, subset=None)
         return self._obj
 
     def enable_checks(self, enable_asserts: bool = True) -> pd.Series:
+        """Globally enables Pandas Vet checks. Does not modify the Series itself.
+
+        Args:
+            enable_asserts: Optionally, whether to globally enable or disable Pandas Vet assertions.
+
+        Returns:
+            The original Series, unchanged.
+        """
         enable_checks(enable_asserts)
         return self._obj
 
@@ -90,12 +147,37 @@ class SeriesVet:
         fn: Union[Callable, str] = lambda s: s,
         check_name: Union[str, None] = None,
     ) -> pd.Series:
+        """Applies an arbitrary function on a Series and shows the result, without modifying the Series itself.
+
+        Example:
+            .check.function(fn=lambda s: s.shape[0]>10, check_name='Has at least 10 rows?')
+            which will result in 'True' or 'False'
+
+        Args:
+            fn: The function to apply to the Series. May be in the form of:
+                - A lambda function, such as `lambda s: s.dropna().head()` or
+                - An evaluable string that references `s`, such as "s.dropna().head()"
+            check_name: An optional name for the check to preface the result with.
+
+        Returns:
+            The original Series, unchanged.
+        """
         pd.DataFrame(self._obj).check.function(
             fn=fn, check_name=check_name, subset=None
         )
         return self._obj
 
-    def get_mode(self, check_name: Union[str, None] = "⚙️ PandasVet mode") -> pd.Series:
+    def get_mode(
+        self, check_name: Union[str, None] = "⚙️ Pandas Vet mode"
+    ) -> pd.Series:
+        """Displays the current values of Pandas Vet global options enable_checks and enable_asserts. Does not modify the Series itself.
+
+        Args:
+            check_name: An optional name for the check. Will be used as a preface the printed result.
+
+        Returns:
+            The original Series, unchanged.
+        """
         pd.DataFrame(self._obj).check.get_mode(check_name=check_name)
         return self._obj
 
@@ -105,7 +187,20 @@ class SeriesVet:
         fn: Union[Callable, str] = lambda s: s,
         check_name: Union[str, None] = None,
     ) -> pd.Series:
-        """Run DataFrameVet's method"""
+        """Displays the first n rows of a Series, without modifying the Series itself.
+
+        See Pandas docs for head() for additional usage information.
+
+        Args:
+            n: The number of rows to display.
+            fn: An optional function to apply to the Series before running Pandas head(). May be in the form of:
+                - A lambda function, such as `lambda s: s.dropna()` or
+                - An evaluable string that references `s`, such as "s.dropna()"
+            check_name: An optional name for the check, to be printed as preface to the result.
+
+        Returns:
+            The original Series, unchanged.
+        """
         pd.DataFrame(self._obj).check.head(
             n=n, fn=fn, check_name=check_name, subset=None
         )
@@ -117,7 +212,26 @@ class SeriesVet:
         check_name: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.Series:
-        """Display a histogram. Only renders in IPython/Jupyter"""
+        """Displays a histogram for the Series's distribution, without modifying the Series itself.
+
+        See Pandas docs for hist() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+
+        Args:
+            fn: An optional function to apply to the Series before
+                running Pandas hist(). May be in the form of:
+                - A lambda function, such as `lambda s: s.dropna().head()` or
+                - An evaluable string that references `s`, such as "s.dropna().head()"
+            check_name: An optional name for the check, to be printed
+                as preface to the result.
+            **kwargs: Optional, additional arguments that are accepted
+                by Pandas hist() method.
+
+        Returns:
+            The original Series, unchanged.
+
+        Note:
+            Only renders in IPython/Jupyter, not when run in Terminal
+        """
         pd.DataFrame(self._obj).check.hist(
             fn=fn, check_name=check_name, subset=[], **kwargs
         )
@@ -129,7 +243,23 @@ class SeriesVet:
         check_name: Union[str, None] = "ℹ️ Series info",
         **kwargs: Any,
     ) -> pd.Series:
-        """Run DataFrameVet's method"""
+        """Displays summary information about a Series, without modifying the Series itself.
+
+        See Pandas docs for info() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+
+        Args:
+            fn: An optional function to apply to the Series before
+                running Pandas info(). May be in the form of:
+                - A lambda function, such as `lambda s: s.dropna().head()` or
+                - An evaluable string that references `s`, such as "s.dropna().head()"
+            check_name: An optional name for the check, to be printed
+                as preface to the result.
+            **kwargs: Optional, additional arguments that are accepted
+                by Pandas info() method.
+
+        Returns:
+            The original Series, unchanged.
+        """
         pd.DataFrame(self._obj).check.info(
             fn=fn, check_name=check_name, subset=None, **kwargs
         )
@@ -141,7 +271,24 @@ class SeriesVet:
         check_name: Union[str, None] = "💾 Memory usage",
         **kwargs: Any,
     ) -> pd.Series:
-        """Run DataFrameVet's method"""
+        """Displays the memory footprint of a Series, without modifying the Series itself.
+
+        See Pandas docs for memory_usage() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+
+        Args:
+            fn: An optional function to apply to the Series before
+                running Pandas memory_usage(). May be in the form of:
+                    - A lambda function, such as `lambda s: s.dropna().head()` or
+                    - An evaluable string that references `s`, such as "s.dropna().head()"
+            check_name: An optional name for the check, to be printed as preface to the result.
+            **kwargs: Optional, additional arguments that are accepted by Pandas memory_usage() method.
+
+        Returns:
+            The original Series, unchanged.
+
+        Note:
+            Include argument `deep=True` to get further memory usage of object dtypes. See Pandas docs for memory_usage() for more info.
+        """
         pd.DataFrame(self._obj).check.memory_usage(
             fn=fn, check_name=check_name, subset=None, **kwargs
         )
@@ -153,7 +300,20 @@ class SeriesVet:
         check_name: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.Series:
-        """Run DataFrameVet's method"""
+        """Displays the number of duplicated rows in the Series, without modifying the Series itself.
+
+        See Pandas docs for duplicated() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+
+        Args:
+            fn: An optional function to apply to the Series before counting the number of duplicates. May be in the form of:
+                    - A lambda function, such as `lambda s: s.dropna().head()` or
+                    - An evaluable string that references `s`, such as "s.dropna().head()"
+            check_name: An optional name for the check, to be printed as preface to the result.
+            **kwargs: Optional, additional arguments that are accepted by Pandas duplicated() method.
+
+        Returns:
+            The original Series, unchanged.
+        """
         pd.DataFrame(self._obj).check.ndups(
             fn, check_name=check_name, subset=None, **kwargs
         )
@@ -162,12 +322,25 @@ class SeriesVet:
     def nnulls(
         self,
         fn: Union[Callable, str] = lambda s: s,
-        by_column: bool = True,
         check_name: Union[str, None] = None,
     ) -> pd.Series:
-        """Run DataFrameVet's method"""
+        """Displays the number of rows with null values in the Series, without modifying the Series itself.
+
+        See Pandas docs for isna() for additional usage information.
+
+        Args:
+            fn: An optional function to apply to the Series before
+                counting nulls. May be in the form of:
+                    - A lambda function, such as `lambda s: s.dropna().head()` or
+                    - An evaluable string that references `s`, such as "s.dropna().head()"
+            check_name: An optional name for the check, to be printed
+                as preface to the result.
+
+        Returns:
+            The original Series, unchanged.
+        """
         pd.DataFrame(self._obj).check.nnulls(
-            fn=fn, by_column=by_column, check_name=check_name, subset=None
+            fn=fn, by_column=True, check_name=check_name, subset=None
         )
         return self._obj
 
@@ -176,7 +349,19 @@ class SeriesVet:
         fn: Union[Callable, str] = lambda s: s,
         check_name: Union[str, None] = "☰ Rows",
     ) -> pd.Series:
-        """Run DataFrameVet's method"""
+        """Displays the number of rows in a Series, without modifying the Series itself.
+
+        Args:
+            fn: An optional function to apply to the Series before
+                counting the number of rows. May be in the form of:
+                    - A lambda function, such as `lambda s: s.dropna().head()` or
+                    - An evaluable string that references `s`, such as "s.dropna().head()"
+            check_name: An optional name for the check, to be printed
+                as preface to the result.
+
+        Returns:
+            The original Series, unchanged.
+        """
         pd.DataFrame(self._obj).check.nrows(fn=fn, check_name=check_name, subset=None)
         return self._obj
 
@@ -186,7 +371,22 @@ class SeriesVet:
         check_name: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.Series:
-        """"""
+        """Displays the number of unique rows in a Series, without modifying the Series itself.
+
+        See Pandas docs for nunique() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+
+        Args:
+            fn: An optional function to apply to the Series before
+                counting the number of uniques. May be in the form of:
+                    - A lambda function, such as `lambda s: s.dropna().head()` or
+                    - An evaluable string that references `s`, such as "s.dropna().head()"
+            check_name: An optional name for the check, to be printed
+                as preface to the result.
+            **kwargs: Optional, additional arguments that are accepted by Pandas nunique() method.
+
+        Returns:
+            The original Series, unchanged.
+        """
         _check_data(
             self._obj,
             check_fn=lambda s: s.nunique(**kwargs),
@@ -203,8 +403,26 @@ class SeriesVet:
         check_name: Union[str, None] = "",
         **kwargs: Any,
     ) -> pd.Series:
-        """Show Pandas plot. Only renders in IPython/Jupyter
-        'title' kwarg overrides check_name as plot title"""
+        """Displays a plot of the Series, without modifying the Series itself.
+
+        See Pandas docs for plot() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+
+        Args:
+            fn: An optional function to apply to the Series before
+                plotting. May be in the form of:
+                    - A lambda function, such as `lambda s: s.dropna().head()` or
+                    - An evaluable string that references `s`, such as "s.dropna().head()"
+            check_name: An optional title for the plot.
+            **kwargs: Optional, additional arguments that are accepted by Pandas plot() method.
+
+        Returns:
+            The original Series, unchanged.
+
+        Note:
+            Plots are not displayed when run in Terminal.
+
+            If you pass a 'title' kwarg, it becomes the plot title, overriding check_name
+        """
         pd.DataFrame(self._obj).check.plot(
             fn, check_name=check_name, subset=None, **kwargs
         )
@@ -217,30 +435,78 @@ class SeriesVet:
         check_name: Union[str, None] = None,
         max_rows: int = 10,
     ) -> pd.Series:
-        """Run DataFrameVet's method"""
+        """Displays text, another object, or (by default) the current DataFrame's head. Does not modify the Series itself.
+
+        Args:
+            object: Object to print. Can be anything printable: str,
+                int, list, another DataFrame, etc. If None, print the Series's head (with `max_rows` rows).
+            fn: An optional function to apply to the Series before
+                printing. May be in the form of:
+                    - A lambda function, such as `lambda s: s.dropna().head()` or
+                    - An evaluable string that references `s`, such as "s.dropna().head()"
+            check_name: An optional name for the check, to be printed
+                as preface to the result.
+            max_rows: Maximum number of rows to print if object=None.
+
+        Returns:
+            The original Series, unchanged.
+        """
         pd.DataFrame(self._obj).check.print(
             object=object, fn=fn, check_name=check_name, max_rows=max_rows, subset=None
         )
         return self._obj
 
     def print_time_elapsed(
-        self, check_name: Union[str, None] = "Time elapsed", units: str = "auto"
+        self, lead_in: Union[str, None] = "Time elapsed", units: str = "auto"
     ) -> pd.Series:
-        print_time_elapsed(
-            check_name=check_name, units=units
-        )  # Call the public function
+        """Displays the time elapsed since the Pandas Vet stopwatch was started with start_timer(). Does not modify the Series itself.
+
+        Args:
+        lead_in: Optional text to print before the elapsed time.
+        units: The units in which to display the elapsed time. Can be
+            "auto", "seconds", "minutes", or "hours".
+
+        Returns:
+            The original Series, unchanged.
+        """
+        print_time_elapsed(lead_in=lead_in, units=units)  # Call the public function
         return self._obj
 
     def reset_format(self) -> pd.Series:
-        """Re-initilaize all Pandas Vet options for formatting"""
+        """Restores all Pandas Vet formatting options to their default "factory" settings. Does not modify the Series itself.
+
+        Returns:
+            The original Series, unchanged.
+        """
         reset_format()
         return self._obj
 
     def set_format(self, **kwargs: Any) -> pd.Series:
+        """Configures selected formatting options for Pandas Vet. Run pandas_vet.describe_options() to see a list of available options. Does not modify the Series itself
+
+        For example, .check.set_format(check_text_tag= "h1", use_emojis=False`)
+        will globally change Pandas Vet to display text results as H1 headings and remove all emojis.
+
+        Args:
+            **kwargs: Pairs of setting name and its new value.
+
+        Returns:
+            The original Series, unchanged.
+        """
         set_format(**kwargs)
         return self._obj
 
     def set_mode(self, enable_checks: bool, enable_asserts: bool) -> pd.Series:
+        """Configures the operation mode for Pandas Vet globally. Does not modify the Series itself.
+
+        Args:
+            enable_checks: Whether to run Pandas Vet checks globally.
+            enable_asserts: Whether to run Pandas Vet .check.assertion
+                statements globally.
+
+        Returns:
+            The original Series, unchanged.
+        """
         set_mode(enable_checks, enable_asserts)
         return self._obj
 
@@ -249,11 +515,37 @@ class SeriesVet:
         fn: Union[Callable, str] = lambda s: s,
         check_name: Union[str, None] = "📐 Shape",
     ) -> pd.Series:
-        """Run DataFrameVet's method"""
+        """Displays the Series's dimensions, without modifying the Series itself.
+
+        See Pandas docs for `shape` for additional usage information.
+
+        Args:
+            fn: An optional function to apply to the Series before
+                printing its shape. May be in the form of:
+                    - A lambda function, such as `lambda s: s.dropna().head()` or
+                    - An evaluable string that references `s`, such as "s.dropna().head()"
+            check_name: An optional name for the check, to be printed
+                as preface to the result.
+
+        Returns:
+            The original Series, unchanged.
+
+        Note:
+            See also .check.nrows()
+        """
         pd.DataFrame(self._obj).check.shape(fn=fn, check_name=check_name, subset=None)
         return self._obj
 
     def start_timer(self, verbose: bool = False) -> pd.Series:
+        """Starts a Pandas Vet stopwatch to measure run time between operations, such as steps in a Pandas method chain. Does not modify the Series itself.
+
+        Use .check.print_elapsed_time() to get timings.
+
+        Args:
+            verbose: Whether to print a message that the timer has started.
+        Returns:
+            The original Series, unchanged.
+        """
         start_timer(verbose)  # Call the public function
         return self._obj
 
@@ -263,7 +555,22 @@ class SeriesVet:
         fn: Union[Callable, str] = lambda s: s,
         check_name: Union[str, None] = None,
     ) -> pd.Series:
-        """Run DataFrameVet's method"""
+        """Displays the last n rows of the Series, without modifying the Series itself.
+
+        See Pandas docs for tail() for additional usage information.
+
+        Args:
+            n: Number of rows to show.
+            fn: An optional function to apply to the Series before
+                displaying the tail. May be in the form of:
+                    - A lambda function, such as `lambda s: s.dropna()` or
+                    - An evaluable string that references `s`, such as "s.dropna()"
+            check_name: An optional name for the check, to be printed
+                as preface to the result.
+
+        Returns:
+            The original Series, unchanged.
+        """
         pd.DataFrame(self._obj).check.tail(
             n=n, fn=fn, check_name=check_name, subset=None
         )
@@ -274,6 +581,21 @@ class SeriesVet:
         fn: Union[Callable, str] = lambda s: s,
         check_name: Union[str, None] = None,
     ) -> pd.Series:
+        """Displays the unique values in a Series, without modifying the Series itself.
+
+        See Pandas docs for unique() for additional usage information.
+
+        Args:
+            fn: An optional function to apply to the Series before
+                displaying the unique values. May be in the form of:
+                    - A lambda function, such as `lambda s: s.dropna().head()` or
+                    - An evaluable string that references `s`, such as "s.dropna().head()"
+            check_name: An optional name for the check, to be printed
+                as preface to the result.
+
+        Returns:
+            The original Series, unchanged.
+        """
         _check_data(
             self._obj,
             check_fn=lambda s: s.unique().tolist(),
@@ -291,6 +613,24 @@ class SeriesVet:
         check_name: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.Series:
+        """Displays the value counts for a Series, without modifying the Series itself.
+
+        See Pandas docs for value_counts() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+
+        Args:
+            max_rows: Maximum number of rows to show in the value counts.
+            fn: An optional function to apply to the Series before
+                displaying value_counts. May be in the form of:
+                    - A lambda function, such as `lambda s: s.dropna().head()` or
+                    - An evaluable string that references `s`, such as "s.dropna().head()"
+            check_name: An optional name for the check, to be printed
+                as preface to the result.
+            **kwargs: Optional, additional arguments that are accepted
+                by Pandas value_counts() method.
+
+        Returns:
+            The original Series, unchanged.
+        """
         _check_data(
             self._obj,
             check_fn=lambda s: s.value_counts(**kwargs).head(max_rows),
@@ -311,7 +651,27 @@ class SeriesVet:
         verbose: bool = False,
         **kwargs: Any,
     ) -> pd.Series:
-        """Run DataFrameVet's method"""
+        """Exports Series to file, without modifying the Series itself.
+
+        Format is inferred from path extension like .csv.
+
+        This functions uses the corresponding Pandas export function such as to_csv(). See Pandas docs for those functions for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+
+        Args:
+            path: Path to write the file to.
+            format: Optional file format to force for the export. If None, format is inferred from the file's extension in `path`.
+            fn: An optional function to apply to the Series before export. May be in the form of:
+                    - A lambda function, such as `lambda s: s.dropna()` or
+                    - An evaluable string that references `s`, such as "s.dropna()"
+            verbose: Whether to print a message when the file is written.
+            **kwargs: Optional, additional keyword arguments to pass to the Pandas export function (.to_csv).
+
+        Returns:
+            The original Series, unchanged.
+
+        Note:
+            Exporting to some formats such as Excel, Feather, and Parquet may require you to install additional packages.
+        """
         (
             pd.DataFrame(self._obj).check.write(
                 path=path, format=format, fn=fn, subset=None, verbose=verbose, **kwargs

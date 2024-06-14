@@ -1,3 +1,9 @@
+"""Utilities for configuring Pandas Vet options.
+
+This module provides functions for setting and managing global options for
+Pandas Vet, including formatting and disabling checks and assertions.
+"""
+
 from typing import Any, Callable, Dict, List, Union
 
 import pandas as pd
@@ -8,6 +14,18 @@ import pandas._config.config as cf
 # Helpers
 # -----------------------
 def _set_option(option: str, value: Any) -> None:
+    """Updates the value of a Pandas Vet option in the global Pandas context manager.
+
+    Args:
+        option: The name of the option to set.
+        value: The value to set for the option.
+
+    Returns:
+        None
+
+    Raises:
+        AttributeError: If the `option` is not a valid Pandas Vet option.
+    """
     vet_option = (
         option if option.startswith("vet.") else "vet." + option
     )  # Fully qualified
@@ -22,20 +40,39 @@ def _set_option(option: str, value: Any) -> None:
 def _register_option(
     name: str, default_value: Any, description: str, validator: Callable
 ) -> None:
-    """Add a Pandas Vet option to the Pandas configuration.
-    This method enables us to set global formatting for Vet checks
-    and store variables that will persist across Pandas method chains
-    which return newly initialized DataFrames at each method
-    (resetting DataFrame's attributes)."""
+    """Registers a Pandas Vet option in the global Pandas context manager.
+
+    If the option has already been registered, reset its value.
+
+    This method enables setting global formatting for Vet checks and storing
+    variables that will persist across Pandas method chains, which return newly
+    initialized DataFrames at each method (and so reset the DataFrame's attributes).
+
+    Args:
+        name: The name of the option to register.
+        default_value: The default value for the option.
+        description: A description of the option.
+        validator: A function to validate the option value.
+
+    Returns:
+        None
+
+    Note:
+        For more details on the arguments, see the documentation for
+        pandas._config.config.register_option()
+    """
     key_name = (
         name if "vet." not in name else name.replace("vet,", "")
     )  # If we passed vet.name, strip vet., since we'll be working in "vet" config namespace
-    try:  # See if this option is already registered
+
+    # Option already registered?
+    try:
         pd.get_option(f"vet.{key_name}")
-        # If so, reset its value
-        pd.set_option(f"vet.{key_name}", default_value)
-    except pd.errors.OptionError:  # Register it!
+        pd.set_option(f"vet.{key_name}", default_value)  # Reset its value
+    # Option not registered yet?
+    except pd.errors.OptionError:
         with cf.config_prefix("vet"):
+            # Register it!
             cf.register_option(key_name, default_value, description, validator)
 
 
@@ -45,21 +82,43 @@ def _register_option(
 
 
 def set_format(**kwargs: Any) -> None:
-    """Set PandasVet output format. Options include: ..."""
+    """Configures selected formatting options for Pandas Vet. Run pandas_vet.describe_options() to see a list of available options.
+
+    For example, set_format(check_text_tag= "h1", use_emojis=False`)
+    will globally change Pandas Vet to display text results as H1 headings and remove all emojis.
+
+    Returns:
+        None
+
+    Args:
+        **kwargs: Pairs of setting name and its new value.
+
+    """
     for arg, value in kwargs.items():
         _set_option(arg, value)
 
 
 def reset_format() -> None:
-    """Re-initilaize all Pandas Vet options for formatting"""
+    """Restores all Pandas Vet formatting options to their default "factory" settings.
+
+    Returns:
+        None
+    """
     _initialize_format_options()
 
 
 def _initialize_format_options(options: Union[List[str], None] = None) -> None:
-    """Set up or reset Pandas Vet options for formatting
-    None=initalize/reset all options
+    """Initializes or resets Pandas Vet formatting options.
 
-    Separate from _initialize_options so user can reset just formatting if desired
+    Args:
+        options (Union[List[str], None], optional): A list of option names to initialize or reset.
+            If None, all formatting options will be initialized or reset.
+    Returns:
+        None
+
+    Note:
+        We separate this function from _initialize_options() so user can reset just formatting without changing mode or resetting timer
+
     """
     option_keys = [option.replace("vet.", "") for option in options] if options else []
     if "precision" in option_keys or options == None:
@@ -141,18 +200,37 @@ def _initialize_format_options(options: Union[List[str], None] = None) -> None:
 # General options
 # -----------------------
 def describe_options() -> None:
-    """Print all global options for PandasVet, their default values, and current values."""
+    """Prints all global options for Pandas Vet, their default values, and current values.
+
+    Returns:
+        None
+    """
     for option in pd._config.config._select_options("vet"):
         print()
         pd.describe_option(option)
 
 
 def set_mode(enable_checks: bool, enable_asserts: bool) -> None:
+    """Configures the operation mode for Pandas Vet globally.
+
+    Args:
+        enable_checks: Whether to run Pandas Vet checks globally.
+        enable_asserts: Whether to run Pandas Vet .check.assertion
+            statements globally.
+
+    Returns:
+        None
+    """
     _set_option("enable_checks", enable_checks)
     _set_option("enable_asserts", enable_asserts)
 
 
 def get_mode() -> Dict[str, bool]:
+    """Returns whether Pandas Vet is currently running checks and assertions.
+
+    Returns:
+        A dictionary containing the current settings.
+    """
     return {
         "enable_checks": pd.get_option("vet.enable_checks"),
         "enable_asserts": pd.get_option("vet.enable_asserts"),
@@ -160,18 +238,44 @@ def get_mode() -> Dict[str, bool]:
 
 
 def enable_checks(enable_asserts: bool = True) -> None:
-    """Convenience function to enable checks +/- asserts"""
+    """Turns on all Pandas Vet checks globally.
+
+    Args:
+        enable_asserts: Whether to also enable or disable check.assertion().
+
+    Returns:
+        None
+    """
     set_mode(enable_checks=True, enable_asserts=enable_asserts)
 
 
 def disable_checks(enable_asserts: bool = True) -> None:
-    """Convenience function to disable checks +/- asserts"""
+    """Disables all Pandas Vet checks and optionally enables or disables check.assertion.
+
+    Typically used to
+        1) Globally turn off all Pandas Vet checks, say for production. or
+        2) Temporarily turn off Pandas Vet checks, say for a completed cell of a notebook.
+
+    Args:
+        enable_asserts: Whether to also enable or disable check.assertion()
+
+    Returns:
+        None
+    """
     set_mode(enable_checks=False, enable_asserts=enable_asserts)
 
 
 def _initialize_options() -> None:
-    """Set up, or reset, Pandas Vet options
-    NOTE: We separate this function from _initialize_format_options() so user can reset just formatting if desired"""
+    """Initializes (or resets) all Pandas Vet options to their default values.
+
+    Returns:
+        None
+
+    Note:
+        This will also reset the Pandas Vet timer.
+
+        We separate this function from _initialize_format_options() so user can reset just formatting if desired without changing mode or resetting timer
+    """
 
     # Register default mode options
     _register_option(
@@ -179,7 +283,7 @@ def _initialize_options() -> None:
         default_value=True,
         description="""
     : bool
-    Global setting for PandasVet to run checks and report all results.
+    Global setting for Pandas Vet to run checks and report all results.
     Set to False to disable checks and reporting, such as in a production environment.
 
     This option also enables/disables the timer functions.
@@ -193,7 +297,7 @@ def _initialize_options() -> None:
         default_value=True,
         description="""
     : bool
-    Global setting for PandasVet to run .check.assertion() methods. Set to False to disable assertions
+    Global setting for Pandas Vet to run .check.assertion() methods. Set to False to disable assertions
     """,
         validator=cf.is_instance_factory(bool),
     )
