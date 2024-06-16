@@ -1,14 +1,13 @@
-import pandas as pd
 import pytest
 from pytest_cases import parametrize_with_cases
 
-# from .conftest import DF_METHODS
 from pandas_vet import disable_checks, enable_checks
 
 
 # Helper function
 def assert_equal_df(df1, df2):
-    if df1.ne(df2).all().all():  # Reminder: NaN!=NaN
+    # Since NaN!=NaN, make them strings
+    if not (df1.fillna("NULL").eq(df2.fillna("NULL")).all().all()):
         raise AssertionError
 
 

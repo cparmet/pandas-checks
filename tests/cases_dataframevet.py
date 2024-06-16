@@ -19,8 +19,8 @@ def df_attention():
     return pd.read_csv("tests/data/attention.csv")
 
 
-def df_brain_networks():
-    return pd.read_csv("tests/data/brain_networks.csv", header=[0, 1, 2])
+# def df_brain_networks():
+#     return pd.read_csv("tests/data/brain_networks.csv", header=[0, 1, 2])
 
 
 def df_car_crashes():
@@ -81,8 +81,8 @@ def df_seaice():
     return pd.read_csv("tests/data/seaice.csv")
 
 
-def df_taxis():
-    return pd.read_csv("tests/data/taxis.csv")
+# def df_taxis():
+#     return pd.read_csv("tests/data/taxis.csv")
 
 
 def df_tips():
