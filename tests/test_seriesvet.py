@@ -11,7 +11,7 @@ def assert_equal_series(s1, s2):
         raise AssertionError
 
 
-@parametrize_with_cases("df", cases=".cases_dataframevet", prefix="df_")
+@parametrize_with_cases("df", cases=".datasets", prefix="df_")
 @parametrize_with_cases("test_method", prefix="method_")
 @pytest.mark.parametrize("enable_checks_flag", [True, False])
 def test_seriesvet_methods_dont_change_series(
