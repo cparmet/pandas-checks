@@ -1,4 +1,4 @@
-"""Assets used for test_dataframevet.py"""
+"""Assets used for test_seriesvet.py"""
 import pandas as pd
 
 
@@ -57,6 +57,10 @@ def method_nnulls():
     return lambda s, _: s.check.nnulls()
 
 
+def method_nrows():
+    return lambda s, _: s.check.nrows()
+
+
 def method_nunique():
     return lambda s, _: s.check.nunique()
 
@@ -102,8 +106,8 @@ def method_unique():
 
 
 def method_value_counts():
-    return lambda df, _: df.check.value_counts()
+    return lambda s, _: s.check.value_counts()
 
 
 def method_write():
-    return lambda df, args: df.check.write(f'{args["tmp_path"]}/test.csv')
+    return lambda s, args: s.check.write(f'{args["tmp_path"]}/test.csv')

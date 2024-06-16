@@ -64,6 +64,10 @@ def method_nnulls():
     return lambda df, _: df.check.nnulls()
 
 
+def method_nrows():
+    return lambda df, _: df.check.nrows()
+
+
 def method_nunique():
     return lambda df, args: df.check.nunique(args["first_num_col"])
 
