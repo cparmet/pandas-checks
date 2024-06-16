@@ -733,7 +733,7 @@ class DataFrameVet:
 
         Args:
             enable_checks: Whether to run Pandas Vet checks globally.
-            enable_asserts: Whether to run Pandas Vet .check.assertion
+            enable_asserts: Whether to run calls to Pandas Vet .check.assert_data()
                 statements globally.
 
         Returns:

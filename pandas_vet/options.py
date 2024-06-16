@@ -215,7 +215,7 @@ def set_mode(enable_checks: bool, enable_asserts: bool) -> None:
 
     Args:
         enable_checks: Whether to run Pandas Vet checks globally.
-        enable_asserts: Whether to run Pandas Vet .check.assertion
+        enable_asserts: Whether to run calls to Pandas Vet .check.assert_data()
             statements globally.
 
     Returns:
@@ -241,7 +241,7 @@ def enable_checks(enable_asserts: bool = True) -> None:
     """Turns on all Pandas Vet checks globally.
 
     Args:
-        enable_asserts: Whether to also enable or disable check.assertion().
+        enable_asserts: Whether to also enable or disable check.assert_data().
 
     Returns:
         None
@@ -250,14 +250,14 @@ def enable_checks(enable_asserts: bool = True) -> None:
 
 
 def disable_checks(enable_asserts: bool = True) -> None:
-    """Disables all Pandas Vet checks and optionally enables or disables check.assertion.
+    """Disables all Pandas Vet checks and optionally enables or disables check.assert_data().
 
     Typically used to
         1) Globally turn off all Pandas Vet checks, say for production. or
         2) Temporarily turn off Pandas Vet checks, say for a completed cell of a notebook.
 
     Args:
-        enable_asserts: Whether to also enable or disable check.assertion()
+        enable_asserts: Whether to also run calls to Pandas Vet .check.assert_data()
 
     Returns:
         None
@@ -288,7 +288,7 @@ def _initialize_options() -> None:
 
     This option also enables/disables the timer functions.
 
-    This option does not affect .check.assertion(). Use separate option: `vet.enable_asserts`
+    This option does not affect .check.assert_data(). Use separate option: `vet.enable_asserts`
     """,
         validator=cf.is_instance_factory(bool),
     )
@@ -297,7 +297,7 @@ def _initialize_options() -> None:
         default_value=True,
         description="""
     : bool
-    Global setting for Pandas Vet to run .check.assertion() methods. Set to False to disable assertions
+    Global setting for Pandas Vet to run .check.assert_data() methods. Set to False to disable assertions
     """,
         validator=cf.is_instance_factory(bool),
     )

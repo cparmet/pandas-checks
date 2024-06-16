@@ -16,12 +16,9 @@ termcolor = ">=2.3.0"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = ">=6.16.2"
-# black = "^24.4.2"
-# isort = "^5.13.2"
-# flake8 = "^7.0.0"
 pre-commit = "3.5.0" # Pin to fix trouble
-# filelock = "3.8.0"
-# virtualenv = "20.16.5"
+pytest = "^8.2.2"
+pytest-cases = "^3.8.5"
 
 [build-system]
 requires = ["poetry-core"]

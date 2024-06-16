@@ -13,7 +13,7 @@ repos:
     - id: debug-statements
     - id: detect-private-key
     - id: end-of-file-fixer
-    - id: name-tests-test
+    # - id: name-tests-test
     - id: trailing-whitespace
 
 -   repo: https://github.com/psf/black
@@ -26,4 +26,5 @@ repos:
   rev: v1.5.0
   hooks:
     - id: mypy
+      exclude: "^tests/*"
       args: [--ignore-missing-imports, --disallow-untyped-defs, --disallow-incomplete-defs, --disallow-untyped-calls]
