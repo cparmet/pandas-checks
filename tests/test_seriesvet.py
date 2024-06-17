@@ -17,8 +17,10 @@ def assert_equal_series(s1, s2):
 def test_seriesvet_methods_dont_change_series(
     df, test_method, tmp_path, enable_checks_flag
 ):
+    enable_checks() if enable_checks_flag else disable_checks()
     for col in df.columns:
-        enable_checks() if enable_checks_flag else disable_checks()
         assert_equal_series(
             s1=test_method(df[col], {"tmp_path": tmp_path}), s2=df[col]  # Args
         )
+    if not enable_checks_flag:
+        enable_checks()

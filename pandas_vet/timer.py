@@ -13,15 +13,14 @@ from .options import get_mode
 
 
 # Public functions
-def start_timer(verbose: bool = False) -> Union[float, int]:
+def start_timer(verbose: bool = False) -> float:
     """Starts a Pandas Vet stopwatch to measure run time between operations, such as steps in a Pandas method chain. Use print_elapsed_time() to get timings.
 
     Args:
         verbose: Whether to print a message that the timer has started.
 
     Returns:
-        Timestamp as an integer
-
+        Timestamp as a float
     """
     if not get_mode()["enable_checks"]:
         return np.nan
@@ -32,7 +31,7 @@ def start_timer(verbose: bool = False) -> Union[float, int]:
 
 
 def print_time_elapsed(
-    start_time: int, lead_in: Union[str, None] = "Time elapsed", units: str = "auto"
+    start_time: float, lead_in: Union[str, None] = "Time elapsed", units: str = "auto"
 ) -> None:
     """Displays the time elapsed since start_time.
 

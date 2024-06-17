@@ -688,7 +688,7 @@ class DataFrameVet:
 
     def print_time_elapsed(
         self,
-        start_time: int,
+        start_time: float,
         lead_in: Union[str, None] = "Time elapsed",
         units: str = "auto",
     ) -> pd.DataFrame:

@@ -101,7 +101,7 @@ def _render_text(
         if _in_terminal():
             print()  # White space for terminal display
             lead_in_rendered = (
-                f"{colored(_filter_emojis(lead_in), text_color, _format_background_color(lead_in_background_color))}:"
+                f"{colored(_filter_emojis(lead_in), text_color, _format_background_color(lead_in_background_color))}: "
                 if lead_in
                 else ""
             )

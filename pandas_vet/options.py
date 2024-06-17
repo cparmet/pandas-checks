@@ -62,7 +62,7 @@ def _register_option(
         pandas._config.config.register_option()
     """
     key_name = (
-        name if "vet." not in name else name.replace("vet,", "")
+        name if "vet." not in name else name.replace("vet.", "")
     )  # If we passed vet.name, strip vet., since we'll be working in "vet" config namespace
 
     # Option already registered?
