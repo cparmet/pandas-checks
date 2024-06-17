@@ -676,7 +676,6 @@ class DataFrameVet:
         Returns:
             The original DataFrame, unchanged.
         """
-
         _check_data(
             object if object else self._obj,
             check_fn=lambda data: data if object else data.head(max_rows),
@@ -960,5 +959,5 @@ class DataFrameVet:
                 f"Can't write data to file. Unknown file extension in: {path}. "
             )
         if verbose:
-            _display_line("📦 Wrote file {path}")
+            _display_line(f"📦 Wrote file {path}")
         return self._obj
