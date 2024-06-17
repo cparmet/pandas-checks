@@ -127,7 +127,7 @@ def _initialize_format_options(options: Union[List[str], None] = None) -> None:
             default_value=2,
             description="""
     : float
-    The floating point output precision of Pandas Vet outputs, in terms of number of places after the decimal, for regular formatting as well as scientific notation. Similar to ``precision`` in :meth:`numpy.set_printoptions`. Does not change precision of other Pandas methods. Use pd.set_option('display.precision',...) instead.
+    The floating point output precision of Pandas Vet outputs in IPython/Jupyter, in terms of number of places after the decimal, for regular formatting as well as scientific notation. Similar to ``precision`` in :meth:`numpy.set_printoptions`. Does not change precision in Pandas Vet output in terminal. Does not change precision of other Pandas operations, only Pandas Vet: to change Pandas precision, use pd.set_option('display.precision',...).
     """,
             validator=cf.is_nonnegative_int,
         )
