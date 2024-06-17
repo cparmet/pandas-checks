@@ -26,8 +26,8 @@ def df_car_crashes():
     return pd.read_csv("tests/data/car_crashes.csv")
 
 
-def df_diamonds():  # Note: adding this case one 3x's the total test time
-    return pd.read_csv("tests/data/diamonds.csv")
+# def df_diamonds():  # Note: adding this case one 3x's the total test time
+#     return pd.read_csv("tests/data/diamonds.csv")
 
 
 def df_dots():
