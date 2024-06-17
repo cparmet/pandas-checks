@@ -18,16 +18,18 @@ def df_attention():
     return pd.read_csv("tests/data/attention.csv")
 
 
-# def df_brain_networks():
-#     return pd.read_csv("tests/data/brain_networks.csv", header=[0, 1, 2])
+def df_brain_networks():
+    return pd.read_csv("tests/data/brain_networks.csv", header=[0, 1, 2])
 
 
 def df_car_crashes():
     return pd.read_csv("tests/data/car_crashes.csv")
 
 
-# def df_diamonds(): # Adding this case one doubles the total test time
-#     return pd.read_csv('tests/data/diamonds.csv')
+def df_diamonds():  # Note: adding this case one 3x's the total test time
+    return pd.read_csv("tests/data/diamonds.csv")
+
+
 def df_dots():
     return pd.read_csv("tests/data/dots.csv")
 
@@ -80,8 +82,8 @@ def df_seaice():
     return pd.read_csv("tests/data/seaice.csv")
 
 
-# def df_taxis():
-#     return pd.read_csv("tests/data/taxis.csv")
+def df_taxis():
+    return pd.read_csv("tests/data/taxis.csv")
 
 
 def df_tips():
