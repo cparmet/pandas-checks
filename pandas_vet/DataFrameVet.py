@@ -42,7 +42,7 @@ from .options import (
     set_mode,
 )
 from .run_checks import _apply_modifications, _check_data
-from .timer import print_time_elapsed, start_timer
+from .timer import print_time_elapsed
 from .utils import _in_terminal, _lambda_to_string
 
 
@@ -687,19 +687,28 @@ class DataFrameVet:
         return self._obj
 
     def print_time_elapsed(
-        self, lead_in: Union[str, None] = "Time elapsed", units: str = "auto"
+        self,
+        start_time: int,
+        lead_in: Union[str, None] = "Time elapsed",
+        units: str = "auto",
     ) -> pd.DataFrame:
-        """Displays the time elapsed since the Pandas Vet stopwatch was started with start_timer(). Does not modify the DataFrame itself.
+        """Displays the time elapsed since start_time.
 
         Args:
+        start_time: The index time when the stopwatch started, which comes from the Pandas Vet start_timer()
         lead_in: Optional text to print before the elapsed time.
         units: The units in which to display the elapsed time. Can be
             "auto", "seconds", "minutes", or "hours".
 
+        Raises:
+            ValueError: If `units` is not one of "auto", "seconds", "minutes", or "hours".
+
         Returns:
             The original DataFrame, unchanged.
         """
-        print_time_elapsed(lead_in=lead_in, units=units)  # Call the public function
+        print_time_elapsed(
+            start_time, lead_in=lead_in, units=units
+        )  # Call the public function
         return self._obj
 
     def reset_format(self) -> pd.DataFrame:
@@ -776,20 +785,6 @@ class DataFrameVet:
             subset=subset,
             check_name=check_name,
         )
-        return self._obj
-
-    def start_timer(self, verbose: bool = False) -> pd.DataFrame:
-        """Starts a Pandas Vet stopwatch to measure run time between operations, such as steps in a Pandas method chain. Does not modify the DataFrame itself.
-
-        Use .check.print_elapsed_time() to get timings.
-
-        Args:
-            verbose: Whether to print a message that the timer has started.
-
-        Returns:
-            The original DataFrame, unchanged.
-        """
-        start_timer(verbose)  # Call the public function
         return self._obj
 
     def tail(

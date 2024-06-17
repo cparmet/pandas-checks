@@ -117,7 +117,7 @@ def _initialize_format_options(options: Union[List[str], None] = None) -> None:
         None
 
     Note:
-        We separate this function from _initialize_options() so user can reset just formatting without changing mode or resetting timer
+        We separate this function from _initialize_options() so user can reset just formatting without changing mode
 
     """
     option_keys = [option.replace("vet.", "") for option in options] if options else []
@@ -272,9 +272,7 @@ def _initialize_options() -> None:
         None
 
     Note:
-        This will also reset the Pandas Vet timer.
-
-        We separate this function from _initialize_format_options() so user can reset just formatting if desired without changing mode or resetting timer
+        We separate this function from _initialize_format_options() so user can reset just formatting if desired without changing mode
     """
 
     # Register default mode options

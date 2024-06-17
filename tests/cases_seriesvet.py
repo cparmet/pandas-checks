@@ -1,6 +1,8 @@
 """Assets used for test_seriesvet.py"""
 import pandas as pd
 
+import pandas_vet as pdv
+
 
 # --------------------
 # S methods to test
@@ -74,7 +76,7 @@ def method_print():
 
 
 def method_print_time_elapsed():
-    return lambda s, _: s.check.start_timer().check.print_time_elapsed()
+    return lambda s, _: s.check.print_time_elapsed(pdv.start_timer())
 
 
 def method_reset_format():
@@ -91,10 +93,6 @@ def method_set_mode():
 
 def method_shape():
     return lambda s, _: s.check.shape()
-
-
-def method_start_timer():
-    return lambda s, _: s.check.start_timer()
 
 
 def method_tail():

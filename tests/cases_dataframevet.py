@@ -1,4 +1,8 @@
 """Assets used for test_dataframevet.py"""
+
+import pandas_vet as pdv
+
+
 # --------------------
 # DF methods to test
 # --------------------
@@ -81,7 +85,7 @@ def method_print():
 
 
 def method_print_time_elapsed():
-    return lambda df, _: df.check.start_timer().check.print_time_elapsed()
+    return lambda df, _: df.check.print_time_elapsed(pdv.start_timer())
 
 
 def method_reset_format():
@@ -98,10 +102,6 @@ def method_set_mode():
 
 def method_shape():
     return lambda df, _: df.check.shape()
-
-
-def method_start_timer():
-    return lambda df, _: df.check.start_timer()
 
 
 def method_tail():
