@@ -62,6 +62,6 @@ def _check_data(
                     # before checking it.
                     _apply_modifications(data, fn=modify_fn, subset=subset)
                 ),
-                name=check_name if check_name else str(subset),
+                name=check_name if check_name else str(subset) if subset else None,
             )
         )
