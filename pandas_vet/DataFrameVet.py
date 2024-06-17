@@ -43,7 +43,7 @@ from .options import (
 )
 from .run_checks import _apply_modifications, _check_data
 from .timer import print_time_elapsed
-from .utils import _in_terminal, _lambda_to_string
+from .utils import _lambda_to_string
 
 
 @pd.api.extensions.register_dataframe_accessor("check")
@@ -332,10 +332,10 @@ class DataFrameVet:
         Note:
             If more than one column is passed, displays a grid of histograms
 
-            Only renders in IPython/Jupyter, not when run in Terminal
+            Only renders in interactive mode (IPython/Jupyter), not in terminal
         """
         if (
-            get_mode()["enable_checks"] and not _in_terminal()
+            get_mode()["enable_checks"] and not pd.core.config_init.is_terminal()
         ):  # Only display if in IPython/Jupyter, or we'd just print the title
             _display_plot_title(
                 check_name
@@ -636,13 +636,13 @@ class DataFrameVet:
             The original DataFrame, unchanged.
 
         Note:
-            Plots are not displayed when run in Terminal.
+            Plots are only displayed when code is run in IPython/Jupyter, not in terminal.
 
             If you pass a 'title' kwarg, it becomes the plot title, overriding check_name
         """
 
         # Only display plot if in IPython/Jupyter. Or we'd just print its title.
-        if get_mode()["enable_checks"] and not _in_terminal():
+        if get_mode()["enable_checks"] and not pd.core.config_init.is_terminal():
             _display_plot_title(
                 check_name if "title" not in kwargs else kwargs["title"]
             )

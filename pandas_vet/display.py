@@ -13,8 +13,6 @@ import pandas as pd
 from IPython.display import HTML, Markdown, display
 from termcolor import colored
 
-from .utils import _in_terminal
-
 # -----------------------
 # Utilities
 # -----------------------
@@ -69,8 +67,8 @@ def _render_text(
                 - lead_in_text_color: The foreground color of lead-in text.
                 - lead_in_background_color: The background color of lead-in text.
             Color values are phrased such as "blue" or "white". They are passed to either HTML
-                for Jupyter/IPython outputs and to `termcolor` for Terminal display.
-                For color options compatible with Terminal, see
+                for Jupyter/IPython outputs and to `termcolor` when code is run in terminal.
+                For color options when code is run in terminal, see
                     https://github.com/termcolor/termcolor.
 
     Returns:
@@ -84,7 +82,7 @@ def _render_text(
         lead_in_background_color = colors.get("lead_in_background_color", None)
 
         # Remove termcolor background style format ("on_green") if user passed it that way.
-        # This syntax will be added back if we display in Terminal,
+        # This syntax will be added back if we display in terminal,
         # but must be removed if we're displaying HTML in Jupyter or IPython
         text_background_color = (
             text_background_color.replace("on_", "")
@@ -98,7 +96,7 @@ def _render_text(
         )
 
         # If we're not in IPython, display as text
-        if _in_terminal():
+        if pd.core.config_init.is_terminal():
             print()  # White space for terminal display
             lead_in_rendered = (
                 f"{colored(_filter_emojis(lead_in), text_color, _format_background_color(lead_in_background_color))}: "
@@ -220,7 +218,7 @@ def _display_plot() -> None:
     Note:
         It assumes the plot has already been drawn by another function, such as with .plot() or .hist().
     """
-    if not _in_terminal():
+    if not pd.core.config_init.is_terminal():
         indent = pd.get_option("vet.indent_table_plot_ipython")  # In pixels
         # Save the figure to a bytes buffer
         buffer = io.BytesIO()
@@ -367,7 +365,7 @@ def _display_check(data: Any, name: Union[str, None] = None) -> None:
             )  # Print check name and result in one line
         # This is a Pandas dataframe or Series, or other multi-line object
         # Are we in IPython/Jupyter?
-        elif not _in_terminal():
+        elif not pd.core.config_init.is_terminal():
             # Is it a DF?
             if isinstance(data, pd.DataFrame):
                 _display_table_title(name)
@@ -390,7 +388,7 @@ def _display_check(data: Any, name: Union[str, None] = None) -> None:
                     clean_type=True,
                 )
 
-        else:  # We're in a Terminal. Can't display Styled tables or use IPython rendering
+        else:  # We're in terminal, can't display styled tables or use IPython rendering
             print()  # White space for terminal display
             # Print check name and data on separate lines
             if name:

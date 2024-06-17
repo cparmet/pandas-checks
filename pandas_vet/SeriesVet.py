@@ -230,7 +230,7 @@ class SeriesVet:
             The original Series, unchanged.
 
         Note:
-            Only renders in IPython/Jupyter, not when run in Terminal
+            Plots are only displayed when code is run in IPython/Jupyter, not in terminal.
         """
         pd.DataFrame(self._obj).check.hist(
             fn=fn, check_name=check_name, subset=[], **kwargs
@@ -419,7 +419,7 @@ class SeriesVet:
             The original Series, unchanged.
 
         Note:
-            Plots are not displayed when run in Terminal.
+            Plots are only displayed when code is run in IPython/Jupyter, not in terminal.
 
             If you pass a 'title' kwarg, it becomes the plot title, overriding check_name
         """

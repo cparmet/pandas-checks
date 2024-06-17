@@ -7,16 +7,6 @@ from typing import Callable
 import pandas as pd
 
 
-def _in_terminal() -> bool:
-    """Checks if the current environment is a terminal.
-
-    Returns:
-        True if it's a terminal
-        False if otherwise, such as a Jupyter notebook or IPython session
-    """
-    return pd.core.config_init.is_terminal()
-
-
 def _lambda_to_string(lambda_func: Callable) -> str:
     """Create a string representation of a lambda function.
 
