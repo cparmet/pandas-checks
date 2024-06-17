@@ -26,5 +26,5 @@ repos:
   rev: v1.5.0
   hooks:
     - id: mypy
-      exclude: "^tests/*"
+      exclude: "^tests/.*"
       args: [--ignore-missing-imports, --disallow-untyped-defs, --disallow-incomplete-defs, --disallow-untyped-calls]
