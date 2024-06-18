@@ -370,12 +370,46 @@ def test_seriesvet_value_counts(iris, capsys):
     )
 
 
-def test_seriesvet_write_csv(iris, tmp_path, capsys):
-    """Test that kwargs are getting passed to Pandas's to_csv()"""
-    iris["species"].check.write(
-        path=f"{tmp_path}/test.csv",
-        fn=lambda s: s.dropna(),
+@pytest.mark.parametrize(
+    "format_extension",
+    (
+        ("csv", "csv"),
+        ("xlsx", "xlsx"),
+        ("excel", "xlsx"),
+        ("parquet", "parquet"),
+        ("feather", "feather"),
+        ("pkl", "pkl"),
+        ("pickle", "pkl"),
+        ("tsv", "tsv"),
+    ),
+)
+def test_seriesvet_write(iris, format_extension, tmp_path, capsys):
+    extension = format_extension[1]
+    f = lambda s: s[s == "versicolor"].reset_index()  # Reset is for Feather
+    path = f"{tmp_path}/test.{extension}"
+    series = iris["species"]
+    series.check.write(
+        path=path,
+        fn=f,
         verbose=True,
-        index=False,
     )
-    assert capsys.readouterr().out == f"""\n📦 Wrote file {tmp_path}/test.csv\n"""
+    assert capsys.readouterr().out == f"""\n📦 Wrote file {path}\n"""
+
+    if extension == "csv":
+        assert_equal_series(
+            f(series)["species"], pd.read_csv(path, index_col=0)["species"]
+        )
+    elif extension == "xlsx":
+        assert_equal_series(
+            f(series)["species"], pd.read_excel(path, index_col=0)["species"]
+        )
+    elif extension == "feather":
+        assert_equal_series(f(series)["species"], pd.read_feather(path)["species"])
+    elif extension == "parquet":
+        assert_equal_series(f(series)["species"], pd.read_parquet(path)["species"])
+    elif extension == "pkl":
+        assert_equal_series(f(series)["species"], pd.read_pickle(path)["species"])
+    elif extension == "tsv":
+        assert_equal_series(
+            f(series)["species"], pd.read_csv(path, sep="\t", index_col=0)["species"]
+        )

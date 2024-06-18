@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import pytest
 from pandas.core.groupby.groupby import DataError
 from pytest_cases import parametrize_with_cases
@@ -385,12 +386,41 @@ def test_dataframevet_value_counts(iris, capsys):
     )
 
 
-def test_dataframevet_write_csv(iris, tmp_path, capsys):
-    """Test that kwargs are getting passed to Pandas's to_csv()"""
+@pytest.mark.parametrize(
+    "format_extension",
+    (
+        ("csv", "csv"),
+        ("xlsx", "xlsx"),
+        ("excel", "xlsx"),
+        ("parquet", "parquet"),
+        ("feather", "feather"),
+        ("pkl", "pkl"),
+        ("pickle", "pkl"),
+        ("tsv", "tsv"),
+    ),
+)
+def test_dataframevet_write(iris, format_extension, tmp_path, capsys):
+    extension = format_extension[1]
+    f = lambda df: df.query(
+        "species=='versicolor'"
+    ).reset_index()  # Reset is for Feather
+    path = f"{tmp_path}/test.{extension}"
     iris.check.write(
-        path=f"{tmp_path}/test.csv",
-        fn=lambda df: df.dropna(),
+        path=path,
+        fn=f,
         verbose=True,
-        index=False,
     )
-    assert capsys.readouterr().out == f"""\n📦 Wrote file {tmp_path}/test.csv\n"""
+    assert capsys.readouterr().out == f"""\n📦 Wrote file {path}\n"""
+
+    if extension == "csv":
+        assert_equal_df(f(iris), pd.read_csv(path, index_col=0))
+    elif extension == "xlsx":
+        assert_equal_df(f(iris), pd.read_excel(path, index_col=0))
+    elif extension == "feather":
+        assert_equal_df(f(iris), pd.read_feather(path))
+    elif extension == "parquet":
+        assert_equal_df(f(iris), pd.read_parquet(path))
+    elif extension == "pkl":
+        assert_equal_df(f(iris), pd.read_pickle(path))
+    elif extension == "tsv":
+        assert_equal_df(f(iris), pd.read_csv(path, sep="\t", index_col=0))
