@@ -768,8 +768,8 @@ class DataFrameVet:
     def value_counts(
         self,
         column: str,
-        max_rows: int = 10,
         fn: Callable = lambda df: df,
+        max_rows: int = 10,
         check_name: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.DataFrame:

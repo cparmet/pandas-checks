@@ -122,7 +122,7 @@ class SeriesVet:
             The original Series, unchanged.
         """
         pd.DataFrame(_apply_modifications(self._obj, fn)).check.describe(
-            check_name=check_name, subset=None, **kwargs
+            check_name=check_name, **kwargs
         )
         return self._obj
 
@@ -225,7 +225,7 @@ class SeriesVet:
             The original Series, unchanged.
         """
         pd.DataFrame(_apply_modifications(self._obj, fn)).check.head(
-            n=n, check_name=check_name, subset=None
+            n=n, check_name=check_name
         )
         return self._obj
 
@@ -301,7 +301,7 @@ class SeriesVet:
             Include argument `deep=True` to get further memory usage of object dtypes. See Pandas docs for memory_usage() for more info.
         """
         pd.DataFrame(_apply_modifications(self._obj, fn)).check.memory_usage(
-            check_name=check_name, subset=None, **kwargs
+            check_name=check_name, **kwargs
         )
         return self._obj
 
@@ -324,7 +324,7 @@ class SeriesVet:
             The original Series, unchanged.
         """
         pd.DataFrame(_apply_modifications(self._obj, fn)).check.ndups(
-            fn, check_name=check_name, subset=None, **kwargs
+            fn, check_name=check_name, **kwargs
         )
         return self._obj
 
@@ -345,7 +345,7 @@ class SeriesVet:
             The original Series, unchanged.
         """
         pd.DataFrame(_apply_modifications(self._obj, fn)).check.nnulls(
-            by_column=False, check_name=check_name, subset=None
+            by_column=False, check_name=check_name
         )
         return self._obj
 
@@ -364,7 +364,7 @@ class SeriesVet:
             The original Series, unchanged.
         """
         pd.DataFrame(_apply_modifications(self._obj, fn)).check.nrows(
-            check_name=check_name, subset=None
+            check_name=check_name
         )
         return self._obj
 
@@ -420,7 +420,7 @@ class SeriesVet:
             If you pass a 'title' kwarg, it becomes the plot title, overriding check_name
         """
         pd.DataFrame(_apply_modifications(self._obj, fn)).check.plot(
-            fn, check_name=check_name, subset=None, **kwargs
+            fn, check_name=check_name, **kwargs
         )
         return self._obj
 
@@ -443,7 +443,7 @@ class SeriesVet:
             The original Series, unchanged.
         """
         pd.DataFrame(_apply_modifications(self._obj, fn)).check.print(
-            object=object, check_name=check_name, max_rows=max_rows, subset=None
+            object=object, check_name=check_name, max_rows=max_rows
         )
         return self._obj
 
@@ -551,7 +551,7 @@ class SeriesVet:
             The original Series, unchanged.
         """
         pd.DataFrame(_apply_modifications(self._obj, fn)).check.tail(
-            n=n, check_name=check_name, subset=None
+            n=n, check_name=check_name
         )
         return self._obj
 
@@ -583,8 +583,8 @@ class SeriesVet:
 
     def value_counts(
         self,
-        max_rows: int = 10,
         fn: Callable = lambda s: s,
+        max_rows: int = 10,
         check_name: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.Series:
@@ -642,7 +642,7 @@ class SeriesVet:
         """
         (
             pd.DataFrame(_apply_modifications(self._obj, fn)).check.write(
-                path=path, format=format, subset=None, verbose=verbose, **kwargs
+                path=path, format=format, verbose=verbose, **kwargs
             )
         )
         return self._obj
