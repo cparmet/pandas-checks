@@ -31,20 +31,25 @@ def start_timer(verbose: bool = False) -> float:
 
 
 def print_time_elapsed(
-    start_time: float, lead_in: Union[str, None] = "Time elapsed", units: str = "auto"
+    start_time: float,
+    lead_in: Union[str, None] = "⏱️ Time elapsed",
+    units: str = "auto",
 ) -> None:
     """Displays the time elapsed since start_time.
 
     Args:
         start_time: The index time when the stopwatch started, which comes from the Pandas Vet start_timer()
         lead_in: Optional text to print before the elapsed time.
-        units: The units in which to display the elapsed time. Can be "auto", "seconds", "minutes", or "hours". Defaults to "auto".
+        units: The units in which to display the elapsed time. Accepted values:
+            - "auto"
+            - "milliseconds", "seconds", "minutes", "hours"
+            - "ms", "s", "m", "h"
 
     Returns:
         None
 
     Raises:
-        ValueError: If `units` is not one of "auto", "seconds", "minutes", or "hours".
+        ValueError: If `units` is not one of expected time units
 
     Note:
         If you change the default values for this function's argument,
@@ -57,17 +62,21 @@ def print_time_elapsed(
             _display_line("Timer hasn't been started. Call start_timer() first")
         elapsed = time() - start_time
         if units == "auto":
-            if elapsed > 60:
-                units = "minutes"
-            elif elapsed > 60 * 60:
+            if elapsed > 60 * 60:
                 units = "hours"
-            else:
+            elif elapsed > 60:
+                units = "minutes"
+            elif elapsed >= 1:
                 units = "seconds"
-        if units == "minutes":
-            elapsed /= 60
-        elif units == "hours":
+            else:
+                units = "milliseconds"
+        if units in ["hours", "h"]:
             elapsed /= 60 * 60
-        elif units != "seconds":
+        elif units in ["minutes", "m"]:
+            elapsed /= 60
+        elif units in ["milliseconds", "ms"]:
+            elapsed *= 1000
+        elif units not in ["seconds", "s"]:
             raise ValueError(f"Unexpected value for argument `units`: {units}")
         _display_line(
             f"{lead_in + ':' if lead_in else '⏱️ Time elapsed:'} {elapsed} {units}"

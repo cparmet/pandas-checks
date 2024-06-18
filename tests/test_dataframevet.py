@@ -259,10 +259,15 @@ def test_dataframevet_print_df(iris, capsys):
 @pytest.mark.parametrize(
     "units_outputcontains",
     (
-        ("auto", "seconds"),
+        ("auto", "milliseconds"),
+        ("milliseconds", "milliseconds"),
+        ("ms", "ms"),
         ("seconds", "seconds"),
+        ("s", "s"),
         ("minutes", "minutes"),
+        ("m", "m"),
         ("hours", "hours"),
+        ("h", "h"),
     ),
 )
 def test_dataframevet_print_time_elapsed_units(iris, capsys, units_outputcontains):
