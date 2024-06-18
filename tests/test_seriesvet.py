@@ -7,11 +7,30 @@ from pytest_cases import parametrize_with_cases
 from pandas_vet import disable_checks, enable_checks, reset_format, start_timer
 
 
-# Helper function
+# Helper functions
 def assert_equal_series(s1, s2):
     # Since NaN!=NaN, make them strings
     if not (s1.fillna("NULL").eq(s2.fillna("NULL")).all()):
         raise AssertionError
+
+
+def strip_multiline(s):
+    """Strip the whitespace from multiline strings. Used to facilitate assertions of stdout
+
+    For example, with _ indicating white space:
+        '''Hello ___
+           my friend!
+        '''
+        becomes
+        '''Hello
+           my friend!
+        '''
+    """
+    return "\n".join([line.strip() for line in s.splitlines()])
+
+
+def assert_multiline_string_equal(s1, s2):
+    assert strip_multiline(s1) == strip_multiline(s2)
 
 
 @parametrize_with_cases("df", cases=".datasets", prefix="df_")
@@ -66,9 +85,9 @@ def test_seriesvet_describe(iris, capsys):
             include="all",
         )
     )
-    assert (
-        capsys.readouterr().out
-        == """\nTest
+    assert_multiline_string_equal(
+        capsys.readouterr().out,
+        """\nTest
            petal_width
     count   150.000000
     mean      2.398667
@@ -77,7 +96,7 @@ def test_seriesvet_describe(iris, capsys):
     25%       0.600000
     50%       2.600000
     75%       3.600000
-    max       5.000000\n"""
+    max       5.000000\n""",
     )
 
 
@@ -89,11 +108,7 @@ def test_seriesvet_disable_checks(iris, capsys):
 
 def test_seriesvet_dtype(iris, capsys):
     iris["species"].check.dtype()
-    assert (
-        capsys.readouterr().out
-        == """\n🗂️ Data type
-    species    object\n"""
-    )
+    assert capsys.readouterr().out == """\n🗂️ Data type: object\n"""
 
 
 def test_seriesvet_function(iris, capsys):
@@ -111,11 +126,11 @@ def test_seriesvet_get_mode(iris, capsys):
 
 def test_seriesvet_head(iris, capsys):
     iris["sepal_length"].check.head(n=1, fn=lambda s: (s * 2), check_name="Test")
-    assert (
-        capsys.readouterr().out
-        == """\nTest
+    assert_multiline_string_equal(
+        capsys.readouterr().out,
+        """\nTest
        sepal_length
-    0          10.2\n"""
+    0          10.2\n""",
     )
 
 
@@ -130,9 +145,9 @@ def test_seriesvet_info(iris, capsys):
         check_name="Test",
         memory_usage=True,
     )
-    assert (
-        capsys.readouterr().out
-        == """\nTest
+    assert_multiline_string_equal(
+        capsys.readouterr().out,
+        """\nTest
 <class 'pandas.core.series.Series'>
 RangeIndex: 150 entries, 0 to 149
 Series name: petal_width
@@ -141,7 +156,7 @@ Non-Null Count  Dtype
 150 non-null    float64
 dtypes: float64(1)
 memory usage: 1.3 KB
-"""
+""",
     )
 
 
@@ -153,11 +168,11 @@ def test_seriesvet_memory_usage(iris, capsys):
             deep=False,
         )
     )
-    assert (
-        capsys.readouterr().out
-        == """\nTest
+    assert_multiline_string_equal(
+        capsys.readouterr().out,
+        """\nTest
     Index          1200
-    petal_width    1200\n"""
+    petal_width    1200\n""",
     )
 
 
@@ -168,11 +183,11 @@ def test_seriesvet_memory_usage_deep(iris, capsys):
         check_name="Test",
         deep=True,
     )
-    assert (
-        capsys.readouterr().out
-        == """\nTest
+    assert_multiline_string_equal(
+        capsys.readouterr().out,
+        """\nTest
     Index      1200
-    species    9800\n"""
+    species    9800\n""",
     )
 
 
@@ -227,11 +242,11 @@ def test_seriesvet_print_series(iris, capsys):
         check_name="Test",
         max_rows=1,
     )
-    assert (
-        capsys.readouterr().out
-        == """\nTest
+    assert_multiline_string_equal(
+        capsys.readouterr().out,
+        """\nTest
        sepal_length
-    0          10.2\n"""
+    0          10.2\n""",
     )
 
 
@@ -267,11 +282,11 @@ def test_seriesvet_reset_format(iris, capsys):
             max_rows=1,
         )
     )
-    assert (
-        capsys.readouterr().out
-        == """\n🧦 Sock
+    assert_multiline_string_equal(
+        capsys.readouterr().out,
+        """\n🧦 Sock
        sepal_length
-    0          10.2\n"""
+    0          10.2\n""",
     )
 
 
@@ -286,11 +301,11 @@ def test_seriesvet_set_format(iris, capsys):
         )
         .check.reset_format()
     )
-    assert (
-        capsys.readouterr().out
-        == """\nSock
+    assert_multiline_string_equal(
+        capsys.readouterr().out,
+        """\nSock
        sepal_length
-    0          10.2\n"""
+    0          10.2\n""",
     )
 
 
@@ -309,16 +324,16 @@ def test_seriesvet_shape(iris, capsys):
     iris["sepal_width"].check.shape(
         fn=lambda s: pd.concat([s, s], ignore_index=True, axis=0), check_name="Test"
     )
-    assert capsys.readouterr().out == "\nTest: (300, 1)\n"
+    assert capsys.readouterr().out == "\nTest: (300,)\n"
 
 
 def test_seriesvet_tail(iris, capsys):
     (iris["sepal_length"].check.tail(n=1, fn=lambda s: s * 2, check_name="Test"))
-    assert (
-        capsys.readouterr().out
-        == """\nTest
+    assert_multiline_string_equal(
+        capsys.readouterr().out,
+        """\nTest
          sepal_length
-    149          11.8\n"""
+    149          11.8\n""",
     )
 
 
@@ -340,13 +355,13 @@ def test_seriesvet_value_counts(iris, capsys):
         dropna=False,
         normalize=True,
     )
-    assert (
-        capsys.readouterr().out
-        == """\nTest
+    assert_multiline_string_equal(
+        capsys.readouterr().out,
+        """\nTest
     species
     None          0.333333
     versicolor    0.333333
-    virginica     0.333333\n"""
+    virginica     0.333333\n""",
     )
 
 
