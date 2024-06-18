@@ -154,8 +154,11 @@ class SeriesVet:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(_apply_modifications(self._obj, fn)).check.dtypes(
-            check_name=check_name, subset=None
+        _check_data(
+            self._obj,
+            check_fn=lambda s: s.dtype,
+            modify_fn=fn,
+            check_name=check_name,
         )
         return self._obj
 
@@ -527,8 +530,12 @@ class SeriesVet:
         Note:
             See also .check.nrows()
         """
-        pd.DataFrame(_apply_modifications(self._obj, fn)).check.shape(
-            check_name=check_name, subset=None
+
+        _check_data(
+            self._obj,
+            check_fn=lambda s: s.shape,
+            modify_fn=fn,
+            check_name=check_name,
         )
         return self._obj
 
