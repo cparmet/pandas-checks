@@ -340,62 +340,38 @@ def _display_check(data: Any, name: Union[str, None] = None) -> None:
     Returns:
         None
     """
-    try:
-        # Is it a one-liner result?
-        if isinstance(
-            data,
-            # TODO: Simpler, more comprehensive way
-            (
-                int,
-                np.int8,
-                np.int32,
-                np.int64,
-                str,
-                float,
-                np.float16,
-                np.float32,
-                np.float64,
-                list,
-                dict,
-                tuple,
-            ),
-        ):
-            _display_line(
-                f"{name}: {data}" if name else data
-            )  # Print check name and result in one line
-        # This is a Pandas dataframe or Series, or other multi-line object
-        # Are we in IPython/Jupyter?
-        elif not pd.core.config_init.is_terminal():
-            # Is it a DF?
-            if isinstance(data, pd.DataFrame):
+    # Are we in IPython/Jupyter?
+    if not pd.core.config_init.is_terminal():
+        # Is it a DF?
+        if isinstance(data, pd.DataFrame):
+            if name:
                 _display_table_title(name)
-                _display_table(data)
-            # Or a Series we should format as a DF?
-            elif isinstance(data, pd.Series):
+            _display_table(data)
+        # Or a Series we should format as a DF?
+        elif isinstance(data, pd.Series):
+            if name:
                 _display_table_title(name)
-                _display_table(
-                    pd.DataFrame(
-                        # For Series based on some Pandas outputs like memory_usage(),
-                        # don't show a column name of 0
-                        data.rename(
-                            data.name if data.name != 0 and data.name != None else ""
-                        )
+            _display_table(
+                pd.DataFrame(
+                    # For Series based on some Pandas outputs like memory_usage(),
+                    # don't show a column name of 0
+                    data.rename(
+                        data.name if data.name != 0 and data.name != None else ""
                     )
                 )
-            else:
-                _warning(
-                    f"Check '{name}' encountered an unexpected data type: {type(data)}.",
-                    clean_type=True,
-                )
+            )
+        # Display the result on one line
+        else:
+            _display_line(f"{name}: {data}" if name else data)
 
-        else:  # We're in terminal, can't display styled tables or use IPython rendering
-            print()  # White space for terminal display
+    # We're in the terminal/command line
+    else:
+        if isinstance(data, (pd.DataFrame, pd.Series)):
+            # Can't display styled tables or use IPython rendering
             # Print check name and data on separate lines
+            print()  # White space
             if name:
                 print(_filter_emojis(name))
             _print_table_terminal(data)
-    except TypeError:
-        _warning(
-            f"Check '{name}' can't display object of type {type(data)} in this environment.",
-            clean_type=True,
-        )
+        else:
+            _display_line(f"{name}: {data}" if name else data)
