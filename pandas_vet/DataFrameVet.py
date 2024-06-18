@@ -442,7 +442,7 @@ class DataFrameVet:
         fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
         by_column: bool = True,
-        check_name: Union[str, None] = None,
+        check_name: Union[str, None] = "👻 Rows with NaNs",
     ) -> pd.DataFrame:
         """Displays the number of rows with null values in a DataFrame, without modifying the DataFrame itself.
 
@@ -464,28 +464,24 @@ class DataFrameVet:
             data.isna().any(axis=1).sum()
             if isinstance(data, pd.DataFrame) and not by_column
             else data.isna().sum()
+            if not by_column
+            else pd.Series(data.isna().sum())
         )
-        if not check_name:
-            if isinstance(
-                na_counts, (pd.DataFrame, pd.Series)
-            ):  # Report result as a pandas object
-                _check_data(
-                    na_counts,
-                    check_name=f"👻 Rows with NaNs in {subset}"
-                    if subset
-                    else "👻 Rows with NaNs",
-                )
-            else:  # Report on one line
-                _display_line(
-                    (
-                        f"👻 Rows with NaNs in {subset}: "
-                        if subset
-                        else "👻 Rows with NaNs: "
-                    )
-                    + f"{na_counts} out of {data.shape[0]}"
-                )
-        else:
-            _display_line(f"{check_name}: {na_counts}")
+        if isinstance(
+            na_counts, (pd.DataFrame, pd.Series)
+        ):  # Report result as a pandas object
+            _check_data(
+                na_counts,
+                check_name=f"👻 Rows with NaNs in {subset}"
+                if subset and not check_name
+                else check_name,
+            )
+        else:  # Report on one line
+            _display_line(
+                (f"👻 Rows with NaNs in {subset}: {na_counts} out of {data.shape[0]}")
+                if subset and not check_name
+                else f"{check_name}: {na_counts}"
+            )
         return self._obj
 
     def nrows(

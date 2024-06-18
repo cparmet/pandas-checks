@@ -334,7 +334,7 @@ class SeriesVet:
     def nnulls(
         self,
         fn: Callable = lambda s: s,
-        check_name: Union[str, None] = None,
+        check_name: Union[str, None] = "👻 Rows with NaNs",
     ) -> pd.Series:
         """Displays the number of rows with null values in the Series, without modifying the Series itself.
 
