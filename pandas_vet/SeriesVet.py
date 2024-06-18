@@ -39,7 +39,7 @@ class SeriesVet:
 
     def assert_data(
         self,
-        condition: Union[str, Callable],
+        condition: Callable,
         pass_message: str = " ✔️ Assertion passed ",
         fail_message: str = " ㄨ Assertion failed ",
         raise_exception: bool = True,
@@ -49,9 +49,7 @@ class SeriesVet:
         """Tests whether Series meets condition, optionally raise an exception if not. Does not modify the Series itself.
 
         Args:
-            condition: Assertion criteria in the form of either
-                - A lambda function, such as `lambda s: s.shape[0]>10` or
-                - An evaluable string that references `s`, such as "s.shape[0]>10"
+            condition: Assertion criteria in the form of a lambda function, such as `lambda s: s.shape[0]>10`.
             pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
             raise_exception: Whether to raise an exception if the condition fails.
@@ -74,7 +72,7 @@ class SeriesVet:
 
     def describe(
         self,
-        fn: Union[Callable, str] = lambda s: s,
+        fn: Callable = lambda s: s,
         check_name: Union[str, None] = "📏 Distribution",
         **kwargs: Any,
     ) -> pd.Series:
@@ -83,9 +81,7 @@ class SeriesVet:
         See Pandas docs for describe() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
 
         Args:
-            fn: An optional function to apply to the Series before running Pandas describe(). May be in the form of:
-                - A lambda function, such as `lambda s: s.dropna().head()` or
-                - An evaluable string that references `s`, such as "s.dropna().head()"
+            fn: An optional lambda function to apply to the Series before running Pandas describe(). Example: `lambda s: s.dropna()`.
             check_name: An optional name for the check to preface the result with.
             **kwargs: Optional, additional arguments that are accepted by Pandas describe() method.
 
@@ -111,7 +107,7 @@ class SeriesVet:
 
     def dtype(
         self,
-        fn: Union[Callable, str] = lambda s: s,
+        fn: Callable = lambda s: s,
         check_name: Union[str, None] = "🗂️ Data type",
     ) -> pd.Series:
         """Displays the data type of a Series, without modifying the Series itself.
@@ -119,9 +115,7 @@ class SeriesVet:
         See Pandas docs for .dtype for additional usage information.
 
         Args:
-            fn: An optional function to apply to the Series before running Pandas .dtype. May be in the form of:
-                - A lambda function, such as `lambda s: s.dropna().head()` or
-                - An evaluable string that references `s`, such as "s.dropna().head()"
+            fn: An optional lambda function to apply to the Series before running Pandas dtype. Example: `lambda s: s.dropna()`.
             check_name: An optional name for the check to preface the result with.
 
         Returns:
@@ -144,7 +138,7 @@ class SeriesVet:
 
     def function(
         self,
-        fn: Union[Callable, str] = lambda s: s,
+        fn: Callable = lambda s: s,
         check_name: Union[str, None] = None,
     ) -> pd.Series:
         """Applies an arbitrary function on a Series and shows the result, without modifying the Series itself.
@@ -154,9 +148,7 @@ class SeriesVet:
             which will result in 'True' or 'False'
 
         Args:
-            fn: The function to apply to the Series. May be in the form of:
-                - A lambda function, such as `lambda s: s.dropna().head()` or
-                - An evaluable string that references `s`, such as "s.dropna().head()"
+            fn: The lambda function to apply to the Series. Example: `lambda s: s.dropna()`.
             check_name: An optional name for the check to preface the result with.
 
         Returns:
@@ -184,7 +176,7 @@ class SeriesVet:
     def head(
         self,
         n: int = 5,
-        fn: Union[Callable, str] = lambda s: s,
+        fn: Callable = lambda s: s,
         check_name: Union[str, None] = None,
     ) -> pd.Series:
         """Displays the first n rows of a Series, without modifying the Series itself.
@@ -193,9 +185,7 @@ class SeriesVet:
 
         Args:
             n: The number of rows to display.
-            fn: An optional function to apply to the Series before running Pandas head(). May be in the form of:
-                - A lambda function, such as `lambda s: s.dropna()` or
-                - An evaluable string that references `s`, such as "s.dropna()"
+            fn: An optional lambda function to apply to the Series before running Pandas head(). Example: `lambda s: s.dropna()`.
             check_name: An optional name for the check, to be printed as preface to the result.
 
         Returns:
@@ -208,7 +198,7 @@ class SeriesVet:
 
     def hist(
         self,
-        fn: Union[Callable, str] = lambda s: s,
+        fn: Callable = lambda s: s,
         check_name: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.Series:
@@ -217,14 +207,9 @@ class SeriesVet:
         See Pandas docs for hist() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
 
         Args:
-            fn: An optional function to apply to the Series before
-                running Pandas hist(). May be in the form of:
-                - A lambda function, such as `lambda s: s.dropna().head()` or
-                - An evaluable string that references `s`, such as "s.dropna().head()"
-            check_name: An optional name for the check, to be printed
-                as preface to the result.
-            **kwargs: Optional, additional arguments that are accepted
-                by Pandas hist() method.
+            fn: An optional lambda function to apply to the Series before running Pandas head(). Example: `lambda s: s.dropna()`.
+            check_name: An optional name for the check, to be printed as preface to the result.
+            **kwargs: Optional, additional arguments that are accepted by Pandas hist() method.
 
         Returns:
             The original Series, unchanged.
@@ -239,7 +224,7 @@ class SeriesVet:
 
     def info(
         self,
-        fn: Union[Callable, str] = lambda s: s,
+        fn: Callable = lambda s: s,
         check_name: Union[str, None] = "ℹ️ Series info",
         **kwargs: Any,
     ) -> pd.Series:
@@ -248,14 +233,9 @@ class SeriesVet:
         See Pandas docs for info() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
 
         Args:
-            fn: An optional function to apply to the Series before
-                running Pandas info(). May be in the form of:
-                - A lambda function, such as `lambda s: s.dropna().head()` or
-                - An evaluable string that references `s`, such as "s.dropna().head()"
-            check_name: An optional name for the check, to be printed
-                as preface to the result.
-            **kwargs: Optional, additional arguments that are accepted
-                by Pandas info() method.
+            fn: An optional lambda function to apply to the Series before running Pandas info(). Example: `lambda s: s.dropna()`.
+            check_name: An optional name for the check, to be printed as preface to the result.
+            **kwargs: Optional, additional arguments that are accepted by Pandas info() method.
 
         Returns:
             The original Series, unchanged.
@@ -267,7 +247,7 @@ class SeriesVet:
 
     def memory_usage(
         self,
-        fn: Union[Callable, str] = lambda s: s,
+        fn: Callable = lambda s: s,
         check_name: Union[str, None] = "💾 Memory usage",
         **kwargs: Any,
     ) -> pd.Series:
@@ -276,10 +256,7 @@ class SeriesVet:
         See Pandas docs for memory_usage() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
 
         Args:
-            fn: An optional function to apply to the Series before
-                running Pandas memory_usage(). May be in the form of:
-                    - A lambda function, such as `lambda s: s.dropna().head()` or
-                    - An evaluable string that references `s`, such as "s.dropna().head()"
+            fn: An optional lambda function to apply to the Series before running Pandas memory_usage(). Example: `lambda s: s.dropna()`.
             check_name: An optional name for the check, to be printed as preface to the result.
             **kwargs: Optional, additional arguments that are accepted by Pandas memory_usage() method.
 
@@ -296,7 +273,7 @@ class SeriesVet:
 
     def ndups(
         self,
-        fn: Union[Callable, str] = lambda s: s,
+        fn: Callable = lambda s: s,
         check_name: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.Series:
@@ -305,9 +282,7 @@ class SeriesVet:
         See Pandas docs for duplicated() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
 
         Args:
-            fn: An optional function to apply to the Series before counting the number of duplicates. May be in the form of:
-                    - A lambda function, such as `lambda s: s.dropna().head()` or
-                    - An evaluable string that references `s`, such as "s.dropna().head()"
+            fn: An optional lambda function to apply to the Series before counting the number of duplicates. Example: `lambda s: s.dropna()`.
             check_name: An optional name for the check, to be printed as preface to the result.
             **kwargs: Optional, additional arguments that are accepted by Pandas duplicated() method.
 
@@ -321,7 +296,7 @@ class SeriesVet:
 
     def nnulls(
         self,
-        fn: Union[Callable, str] = lambda s: s,
+        fn: Callable = lambda s: s,
         check_name: Union[str, None] = None,
     ) -> pd.Series:
         """Displays the number of rows with null values in the Series, without modifying the Series itself.
@@ -329,12 +304,8 @@ class SeriesVet:
         See Pandas docs for isna() for additional usage information.
 
         Args:
-            fn: An optional function to apply to the Series before
-                counting nulls. May be in the form of:
-                    - A lambda function, such as `lambda s: s.dropna().head()` or
-                    - An evaluable string that references `s`, such as "s.dropna().head()"
-            check_name: An optional name for the check, to be printed
-                as preface to the result.
+            fn: An optional lambda function to apply to the Series before counting rows with nulls. Example: `lambda s: s.dropna()`.
+            check_name: An optional name for the check, to be printed as preface to the result.
 
         Returns:
             The original Series, unchanged.
@@ -346,18 +317,14 @@ class SeriesVet:
 
     def nrows(
         self,
-        fn: Union[Callable, str] = lambda s: s,
+        fn: Callable = lambda s: s,
         check_name: Union[str, None] = "☰ Rows",
     ) -> pd.Series:
         """Displays the number of rows in a Series, without modifying the Series itself.
 
         Args:
-            fn: An optional function to apply to the Series before
-                counting the number of rows. May be in the form of:
-                    - A lambda function, such as `lambda s: s.dropna().head()` or
-                    - An evaluable string that references `s`, such as "s.dropna().head()"
-            check_name: An optional name for the check, to be printed
-                as preface to the result.
+            fn: An optional lambda function to apply to the Series before counting the number of rows. Example: `lambda s: s.dropna()`.
+            check_name: An optional name for the check, to be printed as preface to the result.
 
         Returns:
             The original Series, unchanged.
@@ -367,7 +334,7 @@ class SeriesVet:
 
     def nunique(
         self,
-        fn: Union[Callable, str] = lambda s: s,
+        fn: Callable = lambda s: s,
         check_name: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.Series:
@@ -376,12 +343,8 @@ class SeriesVet:
         See Pandas docs for nunique() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
 
         Args:
-            fn: An optional function to apply to the Series before
-                counting the number of uniques. May be in the form of:
-                    - A lambda function, such as `lambda s: s.dropna().head()` or
-                    - An evaluable string that references `s`, such as "s.dropna().head()"
-            check_name: An optional name for the check, to be printed
-                as preface to the result.
+            fn: An optional lambda function to apply to the Series before running Pandas nunique(). Example: `lambda s: s.dropna()`.
+            check_name: An optional name for the check, to be printed as preface to the result.
             **kwargs: Optional, additional arguments that are accepted by Pandas nunique() method.
 
         Returns:
@@ -399,7 +362,7 @@ class SeriesVet:
 
     def plot(
         self,
-        fn: Union[Callable, str] = lambda s: s,
+        fn: Callable = lambda s: s,
         check_name: Union[str, None] = "",
         **kwargs: Any,
     ) -> pd.Series:
@@ -408,10 +371,7 @@ class SeriesVet:
         See Pandas docs for plot() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
 
         Args:
-            fn: An optional function to apply to the Series before
-                plotting. May be in the form of:
-                    - A lambda function, such as `lambda s: s.dropna().head()` or
-                    - An evaluable string that references `s`, such as "s.dropna().head()"
+            fn: An optional lambda function to apply to the Series before running Pandas plot(). Example: `lambda s: s.dropna()`.
             check_name: An optional title for the plot.
             **kwargs: Optional, additional arguments that are accepted by Pandas plot() method.
 
@@ -431,21 +391,16 @@ class SeriesVet:
     def print(
         self,
         object: Any = None,  # Anything printable: str, int, list, DataFrame, etc
-        fn: Union[Callable, str] = lambda s: s,
+        fn: Callable = lambda s: s,
         check_name: Union[str, None] = None,
         max_rows: int = 10,
     ) -> pd.Series:
         """Displays text, another object, or (by default) the current DataFrame's head. Does not modify the Series itself.
 
         Args:
-            object: Object to print. Can be anything printable: str,
-                int, list, another DataFrame, etc. If None, print the Series's head (with `max_rows` rows).
-            fn: An optional function to apply to the Series before
-                printing. May be in the form of:
-                    - A lambda function, such as `lambda s: s.dropna().head()` or
-                    - An evaluable string that references `s`, such as "s.dropna().head()"
-            check_name: An optional name for the check, to be printed
-                as preface to the result.
+            object: Object to print. Can be anything printable: str, int, list, another DataFrame, etc. If None, print the Series's head (with `max_rows` rows).
+            fn: An optional lambda function to apply to the Series before printing `object`. Example: `lambda s: s.dropna()`.
+            check_name: An optional name for the check, to be printed as preface to the result.
             max_rows: Maximum number of rows to print if object=None.
 
         Returns:
@@ -467,8 +422,7 @@ class SeriesVet:
         Args:
         start_time: The index time when the stopwatch started, which comes from the Pandas Vet start_timer()
         lead_in: Optional text to print before the elapsed time.
-        units: The units in which to display the elapsed time. Can be
-            "auto", "seconds", "minutes", or "hours".
+        units: The units in which to display the elapsed time. Can be "auto", "seconds", "minutes", or "hours".
 
         Raises:
             ValueError: If `units` is not one of "auto", "seconds", "minutes", or "hours".
@@ -520,7 +474,7 @@ class SeriesVet:
 
     def shape(
         self,
-        fn: Union[Callable, str] = lambda s: s,
+        fn: Callable = lambda s: s,
         check_name: Union[str, None] = "📐 Shape",
     ) -> pd.Series:
         """Displays the Series's dimensions, without modifying the Series itself.
@@ -528,12 +482,8 @@ class SeriesVet:
         See Pandas docs for `shape` for additional usage information.
 
         Args:
-            fn: An optional function to apply to the Series before
-                printing its shape. May be in the form of:
-                    - A lambda function, such as `lambda s: s.dropna().head()` or
-                    - An evaluable string that references `s`, such as "s.dropna().head()"
-            check_name: An optional name for the check, to be printed
-                as preface to the result.
+            fn: An optional lambda function to apply to the Series before running Pandas `shape`. Example: `lambda s: s.dropna()`.
+            check_name: An optional name for the check, to be printed as preface to the result.
 
         Returns:
             The original Series, unchanged.
@@ -547,7 +497,7 @@ class SeriesVet:
     def tail(
         self,
         n: int = 5,
-        fn: Union[Callable, str] = lambda s: s,
+        fn: Callable = lambda s: s,
         check_name: Union[str, None] = None,
     ) -> pd.Series:
         """Displays the last n rows of the Series, without modifying the Series itself.
@@ -556,12 +506,8 @@ class SeriesVet:
 
         Args:
             n: Number of rows to show.
-            fn: An optional function to apply to the Series before
-                displaying the tail. May be in the form of:
-                    - A lambda function, such as `lambda s: s.dropna()` or
-                    - An evaluable string that references `s`, such as "s.dropna()"
-            check_name: An optional name for the check, to be printed
-                as preface to the result.
+            fn: An optional lambda function to apply to the Series before running Pandas tail(). Example: `lambda s: s.dropna()`.
+            check_name: An optional name for the check, to be printed as preface to the result.
 
         Returns:
             The original Series, unchanged.
@@ -573,7 +519,7 @@ class SeriesVet:
 
     def unique(
         self,
-        fn: Union[Callable, str] = lambda s: s,
+        fn: Callable = lambda s: s,
         check_name: Union[str, None] = None,
     ) -> pd.Series:
         """Displays the unique values in a Series, without modifying the Series itself.
@@ -581,12 +527,8 @@ class SeriesVet:
         See Pandas docs for unique() for additional usage information.
 
         Args:
-            fn: An optional function to apply to the Series before
-                displaying the unique values. May be in the form of:
-                    - A lambda function, such as `lambda s: s.dropna().head()` or
-                    - An evaluable string that references `s`, such as "s.dropna().head()"
-            check_name: An optional name for the check, to be printed
-                as preface to the result.
+            fn: An optional lambda function to apply to the Series before running Pandas unique(). Example: `lambda s: s.dropna()`.
+            check_name: An optional name for the check, to be printed as preface to the result.
 
         Returns:
             The original Series, unchanged.
@@ -604,7 +546,7 @@ class SeriesVet:
     def value_counts(
         self,
         max_rows: int = 10,
-        fn: Union[Callable, str] = lambda s: s,
+        fn: Callable = lambda s: s,
         check_name: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.Series:
@@ -614,14 +556,9 @@ class SeriesVet:
 
         Args:
             max_rows: Maximum number of rows to show in the value counts.
-            fn: An optional function to apply to the Series before
-                displaying value_counts. May be in the form of:
-                    - A lambda function, such as `lambda s: s.dropna().head()` or
-                    - An evaluable string that references `s`, such as "s.dropna().head()"
-            check_name: An optional name for the check, to be printed
-                as preface to the result.
-            **kwargs: Optional, additional arguments that are accepted
-                by Pandas value_counts() method.
+            fn: An optional lambda function to apply to the Series before running Pandas value_counts(). Example: `lambda s: s.dropna()`.
+            check_name: An optional name for the check, to be printed as preface to the result.
+            **kwargs: Optional, additional arguments that are accepted by Pandas value_counts() method.
 
         Returns:
             The original Series, unchanged.
@@ -642,7 +579,7 @@ class SeriesVet:
         self,
         path: str,
         format: Union[str, None] = None,
-        fn: Union[Callable, str] = lambda s: s,
+        fn: Callable = lambda s: s,
         verbose: bool = False,
         **kwargs: Any,
     ) -> pd.Series:
@@ -655,9 +592,7 @@ class SeriesVet:
         Args:
             path: Path to write the file to.
             format: Optional file format to force for the export. If None, format is inferred from the file's extension in `path`.
-            fn: An optional function to apply to the Series before export. May be in the form of:
-                    - A lambda function, such as `lambda s: s.dropna()` or
-                    - An evaluable string that references `s`, such as "s.dropna()"
+            fn: An optional lambda function to apply to the Series before exporting. Example: `lambda s: s.dropna()`.
             verbose: Whether to print a message when the file is written.
             **kwargs: Optional, additional keyword arguments to pass to the Pandas export function (.to_csv).
 

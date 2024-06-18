@@ -10,32 +10,30 @@ from .options import get_mode
 
 def _apply_modifications(
     data: Any,
-    fn: Union[Callable, Any] = lambda df: df,
+    fn: Callable = lambda df: df,
     subset: Union[str, List, None] = None,
 ) -> Any:
     """Applies user's modifications to a data object.
 
     Args:
         data: May be any Pandas DataFrame, Series, string, or other variable
-        fn: May be a lambda function or a string describing an operation that can be performed with 'eval()'
+        fn: An optional lambda function to modify `data`
         subset: Columns to subset after applying modifications
 
     Returns:
         Modified and optionally subsetted data object.  If all arguments are defaults, data is returned unchanged.
     """
-    if callable(fn):
-        data = fn(data)
-    elif isinstance(fn, str):
-        data = eval(fn, {}, {"df": data})
-    else:
-        raise TypeError(f"Argument `fn` is of unexpected type {type(fn)}")
-    return data[subset] if subset else data
+    if not callable(fn):
+        raise TypeError(
+            f"Expected lambda function for argument `fn` (callable type), but received type {type(fn)}"
+        )
+    return fn(data)[subset] if subset else fn(data)
 
 
 def _check_data(
     data: Any,
     check_fn: Callable = lambda df: df,
-    modify_fn: Union[Callable, str] = lambda df: df,
+    modify_fn: Callable = lambda df: df,
     subset: Union[str, List, None] = None,
     check_name: Union[str, None] = None,
 ) -> None:
@@ -44,7 +42,7 @@ def _check_data(
     Args:
         data: A Pandas DataFrame, Series, string, or other variable
         check_fn: Function to apply to data for checking. For example if we're running .check.value_counts(), this function would appply the Pandas value_counts() method
-        modify_fn: Optional function or string to modify data _before_ checking
+        modify_fn: Optional function to modify data _before_ checking
         subset: Optional list of columns or name of column to subset data before running check_fn
         check_name: Name to use when displaying check result
 

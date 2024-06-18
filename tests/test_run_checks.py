@@ -15,7 +15,7 @@ def test_apply_modifications_lambda():
 
 def test_apply_modifications_str():
     df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6]})
-    fn = "df.assign(C=df.A + df.B)"
+    fn = lambda df: df.assign(C=df.A + df.B)
     result = _apply_modifications(df, fn)
     expected = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [5, 7, 9]})
     pd.testing.assert_frame_equal(result, expected)

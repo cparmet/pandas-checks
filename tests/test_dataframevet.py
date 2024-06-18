@@ -41,7 +41,7 @@ def test_dataframevet_assert_data_pass(iris):
     )
 
 
-def test_dataframevet_assert_data_with_lambda_fn_fail(iris):
+def test_dataframevet_assert_data_fail(iris):
     with pytest.raises(ValueError):
         assert iris.check.assert_data(
             condition=lambda df: df["sepal_length"].sum() < 0,
@@ -50,17 +50,9 @@ def test_dataframevet_assert_data_with_lambda_fn_fail(iris):
         )
 
 
-def test_dataframevet_assert_data_with_str_fn_fail(iris):
-    with pytest.raises(DataError):
-        assert iris.check.assert_data(
-            condition="df['sepal_length'].sum() < 0",
-            raise_exception=True,
-        )
-
-
 def test_dataframevet_columns(iris, capsys):
     iris.check.columns(
-        fn="df.assign(species_upper=df.species.str.upper())",
+        fn=lambda df: df.assign(species_upper=df.species.str.upper()),
         subset=["petal_length", "species", "species_upper"],
     )
     assert (
@@ -115,7 +107,7 @@ def test_dataframevet_function_with_lambda_fn(iris, capsys):
 
 
 def test_dataframevet_function_with_str_fn(iris, capsys):
-    iris.check.function(fn="len(df.columns)", check_name="Test")
+    iris.check.function(fn=lambda df: len(df.columns), check_name="Test")
     assert capsys.readouterr().out == """\nTest: 5\n"""
 
 
@@ -370,7 +362,7 @@ def test_dataframevet_tail(iris, capsys):
 def test_dataframevet_unique(iris, capsys):
     iris.check.unique(
         column="species",
-        fn="df.assign(species_upper=df.species.str.upper())",
+        fn=lambda df: df.assign(species_upper=df.species.str.upper()),
         check_name="🛼 Unique",
     )
     assert (
