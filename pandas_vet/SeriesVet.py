@@ -27,9 +27,18 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from pandas.core.groupby.groupby import DataError
 
-from .options import disable_checks, enable_checks, reset_format, set_format, set_mode
-from .run_checks import _check_data
+from .display import _display_line, _display_table_title
+from .options import (
+    disable_checks,
+    enable_checks,
+    get_mode,
+    reset_format,
+    set_format,
+    set_mode,
+)
+from .run_checks import _apply_modifications, _check_data
 from .timer import print_time_elapsed
+from .utils import _lambda_to_string
 
 
 @pd.api.extensions.register_series_accessor("check")
@@ -59,15 +68,39 @@ class SeriesVet:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(self._obj).check.assert_data(
-            condition=condition,
-            subset=None,
-            pass_message=pass_message,
-            fail_message=fail_message,
-            raise_exception=raise_exception,
-            exception_to_raise=exception_to_raise,
-            verbose=verbose,
-        )
+        if not get_mode()["enable_asserts"]:
+            return self._obj
+        if not callable(condition):
+            raise TypeError(
+                f"Expected condition to be a lambda function (callable type) but received type {type(condition)}"
+            )
+        result = condition(self._obj)
+        condition_str = _lambda_to_string(condition)
+        if not result:
+            if raise_exception:
+                raise exception_to_raise(f"{fail_message}: {condition_str}")
+            else:
+                _display_line(
+                    lead_in=fail_message,
+                    line=condition_str,
+                    colors={
+                        "lead_in_text_color": pd.get_option("vet.fail_text_fg_color"),
+                        "lead_in_background_color": pd.get_option(
+                            "vet.fail_text_bg_color"
+                        ),
+                    },
+                )
+        if verbose:
+            _display_line(
+                lead_in=pass_message,
+                line=condition_str,
+                colors={
+                    "lead_in_text_color": pd.get_option("vet.success_text_fg_color"),
+                    "lead_in_background_color": pd.get_option(
+                        "vet.success_text_bg_color"
+                    ),
+                },
+            )
         return self._obj
 
     def describe(
@@ -88,8 +121,8 @@ class SeriesVet:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(self._obj).check.describe(
-            fn=fn, check_name=check_name, subset=None, **kwargs
+        pd.DataFrame(_apply_modifications(self._obj, fn)).check.describe(
+            check_name=check_name, subset=None, **kwargs
         )
         return self._obj
 
@@ -121,7 +154,9 @@ class SeriesVet:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(self._obj).check.dtypes(fn=fn, check_name=check_name, subset=None)
+        pd.DataFrame(_apply_modifications(self._obj, fn)).check.dtypes(
+            check_name=check_name, subset=None
+        )
         return self._obj
 
     def enable_checks(self, enable_asserts: bool = True) -> pd.Series:
@@ -154,9 +189,7 @@ class SeriesVet:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(self._obj).check.function(
-            fn=fn, check_name=check_name, subset=None
-        )
+        _check_data(self._obj, modify_fn=fn, check_name=check_name)
         return self._obj
 
     def get_mode(
@@ -191,8 +224,8 @@ class SeriesVet:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(self._obj).check.head(
-            n=n, fn=fn, check_name=check_name, subset=None
+        pd.DataFrame(_apply_modifications(self._obj, fn)).check.head(
+            n=n, check_name=check_name, subset=None
         )
         return self._obj
 
@@ -217,8 +250,8 @@ class SeriesVet:
         Note:
             Plots are only displayed when code is run in IPython/Jupyter, not in terminal.
         """
-        pd.DataFrame(self._obj).check.hist(
-            fn=fn, check_name=check_name, subset=[], **kwargs
+        pd.DataFrame(_apply_modifications(self._obj, fn)).check.hist(
+            check_name=check_name, subset=[], **kwargs
         )
         return self._obj
 
@@ -240,9 +273,10 @@ class SeriesVet:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(self._obj).check.info(
-            fn=fn, check_name=check_name, subset=None, **kwargs
-        )
+        if get_mode()["enable_checks"]:
+            if check_name:
+                _display_table_title(check_name)
+            _apply_modifications(self._obj, fn).info(**kwargs)
         return self._obj
 
     def memory_usage(
@@ -266,8 +300,8 @@ class SeriesVet:
         Note:
             Include argument `deep=True` to get further memory usage of object dtypes. See Pandas docs for memory_usage() for more info.
         """
-        pd.DataFrame(self._obj).check.memory_usage(
-            fn=fn, check_name=check_name, subset=None, **kwargs
+        pd.DataFrame(_apply_modifications(self._obj, fn)).check.memory_usage(
+            check_name=check_name, subset=None, **kwargs
         )
         return self._obj
 
@@ -289,7 +323,7 @@ class SeriesVet:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(self._obj).check.ndups(
+        pd.DataFrame(_apply_modifications(self._obj, fn)).check.ndups(
             fn, check_name=check_name, subset=None, **kwargs
         )
         return self._obj
@@ -310,8 +344,8 @@ class SeriesVet:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(self._obj).check.nnulls(
-            fn=fn, by_column=True, check_name=check_name, subset=None
+        pd.DataFrame(_apply_modifications(self._obj, fn)).check.nnulls(
+            by_column=False, check_name=check_name, subset=None
         )
         return self._obj
 
@@ -329,7 +363,9 @@ class SeriesVet:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(self._obj).check.nrows(fn=fn, check_name=check_name, subset=None)
+        pd.DataFrame(_apply_modifications(self._obj, fn)).check.nrows(
+            check_name=check_name, subset=None
+        )
         return self._obj
 
     def nunique(
@@ -383,7 +419,7 @@ class SeriesVet:
 
             If you pass a 'title' kwarg, it becomes the plot title, overriding check_name
         """
-        pd.DataFrame(self._obj).check.plot(
+        pd.DataFrame(_apply_modifications(self._obj, fn)).check.plot(
             fn, check_name=check_name, subset=None, **kwargs
         )
         return self._obj
@@ -406,8 +442,8 @@ class SeriesVet:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(self._obj).check.print(
-            object=object, fn=fn, check_name=check_name, max_rows=max_rows, subset=None
+        pd.DataFrame(_apply_modifications(self._obj, fn)).check.print(
+            object=object, check_name=check_name, max_rows=max_rows, subset=None
         )
         return self._obj
 
@@ -491,7 +527,9 @@ class SeriesVet:
         Note:
             See also .check.nrows()
         """
-        pd.DataFrame(self._obj).check.shape(fn=fn, check_name=check_name, subset=None)
+        pd.DataFrame(_apply_modifications(self._obj, fn)).check.shape(
+            check_name=check_name, subset=None
+        )
         return self._obj
 
     def tail(
@@ -512,8 +550,8 @@ class SeriesVet:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(self._obj).check.tail(
-            n=n, fn=fn, check_name=check_name, subset=None
+        pd.DataFrame(_apply_modifications(self._obj, fn)).check.tail(
+            n=n, check_name=check_name, subset=None
         )
         return self._obj
 
@@ -603,8 +641,8 @@ class SeriesVet:
             Exporting to some formats such as Excel, Feather, and Parquet may require you to install additional packages.
         """
         (
-            pd.DataFrame(self._obj).check.write(
-                path=path, format=format, fn=fn, subset=None, verbose=verbose, **kwargs
+            pd.DataFrame(_apply_modifications(self._obj, fn)).check.write(
+                path=path, format=format, subset=None, verbose=verbose, **kwargs
             )
         )
         return self._obj

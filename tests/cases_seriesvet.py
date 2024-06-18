@@ -53,7 +53,6 @@ def method_info():
         fn=lambda s: s.dropna(),
         check_name="Test",
         verbose=True,
-        max_cols=3,
         show_counts=True,
     )
 

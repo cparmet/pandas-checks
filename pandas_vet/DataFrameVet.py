@@ -77,11 +77,11 @@ class DataFrameVet:
         """
         if not get_mode()["enable_asserts"]:
             return self._obj
-        data = self._obj[subset] if subset else self._obj
         if not callable(condition):
             raise TypeError(
                 f"Expected condition to be a lambda function (callable type) but received type {type(condition)}"
             )
+        data = self._obj[subset] if subset else self._obj
         result = condition(data)
         condition_str = _lambda_to_string(condition)
         if not result:
