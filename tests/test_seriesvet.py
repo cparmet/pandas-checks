@@ -163,15 +163,12 @@ memory usage: 1.3 KB
 def test_seriesvet_memory_usage(iris, capsys):
     (
         iris["petal_width"].check.memory_usage(
-            fn=lambda s: s.dropna(),
-            check_name="Test",
-            deep=False,
+            fn=lambda s: s.dropna(), check_name="Test", deep=False, index=False
         )
     )
     assert_multiline_string_equal(
         capsys.readouterr().out,
         """\nTest
-    Index          1200
     petal_width    1200\n""",
     )
 
@@ -179,14 +176,11 @@ def test_seriesvet_memory_usage(iris, capsys):
 def test_seriesvet_memory_usage_deep(iris, capsys):
     """Test that a kwarg is getting passed to Pandas's memory_usage()"""
     iris["species"].check.memory_usage(
-        fn=lambda s: s.dropna(),
-        check_name="Test",
-        deep=True,
+        fn=lambda s: s.dropna(), check_name="Test", deep=True, index=False
     )
     assert_multiline_string_equal(
         capsys.readouterr().out,
         """\nTest
-    Index      1200
     species    9800\n""",
     )
 

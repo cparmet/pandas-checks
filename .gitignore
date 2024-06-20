@@ -11,3 +11,5 @@ poetry.lock
 archive/*
 dev.ipynb
 dev_script.py
+
+dist/*

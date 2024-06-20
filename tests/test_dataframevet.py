@@ -154,11 +154,11 @@ def test_dataframevet_memory_usage(iris, capsys):
         fn=lambda df: df[["petal_width", "species"]].dropna(),
         check_name="Test",
         deep=False,
+        index=False,  # Avoids inconsistency where index size is different in Python 3.11 only
     )
     assert (
         capsys.readouterr().out
         == """\nTest
-    Index           128
     petal_width    1200
     species        1200\n"""
     )
@@ -170,11 +170,11 @@ def test_dataframevet_memory_usage_deep(iris, capsys):
         fn=lambda df: df[["petal_width", "species"]].dropna(),
         check_name="Test",
         deep=True,
+        index=False,  # Avoids inconsistency where index size is different in Python 3.11 only
     )
     assert (
         capsys.readouterr().out
         == """\nTest
-    Index           128
     petal_width    1200
     species        9800\n"""
     )

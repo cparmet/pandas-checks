@@ -21,6 +21,7 @@ pytest = "^8.2.2"
 pytest-cases = "^3.8.5"
 pyarrow = "^16.1.0"
 openpyxl = "^3.1.4"
+setuptools = ">=65.0.0"
 
 [build-system]
 requires = ["poetry-core"]
