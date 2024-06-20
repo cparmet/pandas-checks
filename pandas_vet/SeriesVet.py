@@ -84,9 +84,11 @@ class SeriesVet:
                     lead_in=fail_message,
                     line=condition_str,
                     colors={
-                        "lead_in_text_color": pd.get_option("vet.fail_text_fg_color"),
+                        "lead_in_text_color": pd.get_option(
+                            "vet.fail_message_fg_color"
+                        ),
                         "lead_in_background_color": pd.get_option(
-                            "vet.fail_text_bg_color"
+                            "vet.fail_message_bg_color"
                         ),
                     },
                 )
@@ -95,9 +97,9 @@ class SeriesVet:
                 lead_in=pass_message,
                 line=condition_str,
                 colors={
-                    "lead_in_text_color": pd.get_option("vet.success_text_fg_color"),
+                    "lead_in_text_color": pd.get_option("vet.pass_message_fg_color"),
                     "lead_in_background_color": pd.get_option(
-                        "vet.success_text_bg_color"
+                        "vet.pass_message_bg_color"
                     ),
                 },
             )
