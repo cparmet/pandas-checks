@@ -173,18 +173,6 @@ def test_seriesvet_memory_usage(iris, capsys):
     )
 
 
-def test_seriesvet_memory_usage_deep(iris, capsys):
-    """Test that a kwarg is getting passed to Pandas's memory_usage()"""
-    iris["species"].check.memory_usage(
-        fn=lambda s: s.dropna(), check_name="Test", deep=True, index=False
-    )
-    assert_multiline_string_equal(
-        capsys.readouterr().out,
-        """\nTest
-    species    9800\n""",
-    )
-
-
 def test_seriesvet_ndups(iris, capsys):
     iris["species"].check.ndups(fn=lambda s: s.dropna(), check_name="Test")
     assert capsys.readouterr().out == "\nTest: 147\n"

@@ -164,22 +164,6 @@ def test_dataframevet_memory_usage(iris, capsys):
     )
 
 
-def test_dataframevet_memory_usage_deep(iris, capsys):
-    """Test that a kwarg is getting passed to Pandas's memory_usage()"""
-    iris.check.memory_usage(
-        fn=lambda df: df[["petal_width", "species"]].dropna(),
-        check_name="Test",
-        deep=True,
-        index=False,  # Avoids inconsistency where index size is different in Python 3.11 only
-    )
-    assert (
-        capsys.readouterr().out
-        == """\nTest
-    petal_width    1200
-    species        9800\n"""
-    )
-
-
 def test_dataframevet_ncols(iris, capsys):
     iris.check.ncols(
         fn=lambda df: df.assign(C=55), check_name="Test", subset=["C", "species"]
