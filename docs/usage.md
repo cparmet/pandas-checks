@@ -33,8 +33,7 @@ The `.check` methods will display the following results:
 <img src="https://raw.githubusercontent.com/cparmet/pandas-vet/main/static/sample_output.jpg" alt="Sample output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;"/>
 
 
-[!NOTE]
-These methods did not modify `iris`. That's the difference between Pandas `.head()` and Pandas Vet's `.check.head()`.
+ⓘ **Note:** These methods did not modify `iris`. That's the difference between Pandas `.head()` and Pandas Vet's `.check.head()`.
 
 
 ## Methods available
@@ -122,8 +121,7 @@ pdv.set_format(precision=3, use_emojis=False)
 pdv.disable_checks()
 ```
 
-[!TIP]
-Run `pdv.describe_options()` to see the arguments you can pass to `.set_format()`.
+💡 **Tip:** Run `pdv.describe_options()` to see the arguments you can pass to `.set_format()`.
 
 You can also adjust settings within a method chain. This will set the global configuration. So if you only want the settings to be changed during the method chain, reset them at the end.
 
