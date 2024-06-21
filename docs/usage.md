@@ -14,8 +14,7 @@ import pandas as pd
 import pandas_vet
 ```
 
-Now you can use `.check` on your Pandas DataFrames and Series. These methods are available in Jupyter, IPython, and terminal environments.
-
+Now you can use `.check` on your Pandas DataFrames and Series. You don't need to access `pandas_vet` directly, just work with Pandas as you normally would. The new Pandas Vet methods are available when you work with Pandas in Jupyter, IPython, and terminal environments.
 
 ```python
 iris = pd.read_csv('iris.csv')
@@ -23,7 +22,7 @@ iris = pd.read_csv('iris.csv')
 iris_new = (
     iris
     .check.assert_data(lambda df: (df['sepal_width']> 0).all(), fail_message="Sepal width can't be negative")  # Validate your data
-    # ... Do your data processing
+    # ... Do your data processing in here ...
     .check.hist(column='petal_length')  # Plot a distribution
     .check.head(3)  # Display the first few rows
 )

@@ -1,4 +1,6 @@
-# About Pandas Vet
+# About
+
+## Introduction
 
 **Pandas Vet** is a Python library for data science and data engineering. It adds non-invasive health checks for Pandas method chains.
 
