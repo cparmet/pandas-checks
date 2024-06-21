@@ -1,4 +1,5 @@
 # 🐼🩺 Pandas Checks
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pandas-checks)
 
 ## Introduction
 **Pandas Checks** is a Python library for data science and data engineering. It adds non-invasive health checks for Pandas method chains.
@@ -15,10 +16,6 @@ As Fleetwood Mac says, [you would never break the chain](https://www.youtube.com
   
   
 ## Installation
-
-Pandas Checks supports Python versions 3.8-3.12.
-  
-To install:
 
 ```bash
 pip install pandas-checks
