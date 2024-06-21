@@ -69,18 +69,17 @@ Here's what's in the doctor's bag.
         - `.check.unique()`
         - `.check.value_counts()`
     - New functions in Pandas Vet:
-        - `.check.function()` # Apply an arbitrary lambda function to your data and see the result
+        - `.check.function()`: Apply an arbitrary lambda function to your data and see the result
         - `.check.ncols()`
         - `.check.ndups()`
         - `.check.nnulls()`
-        - `.check.print()` # Print a string, a variable, or the current dataframe
-    - statistics, data types, memory usage, and more with methods like .check.describe(), .check.dtypes(), and .check.memory_usage().
+        - `.check.print()`: Print a string, a variable, or the current dataframe
 
 * **Export interim files**
-    - `.check.write()` # Export the current data, inferring file format from the name
+    - `.check.write()`: Export the current data, inferring file format from the name
 
 * **Time your code**
-    - `.check.print_time_elapsed(start_time)` # Print the execution time since you called `start_time = pdv.start_timer()`
+    - `.check.print_time_elapsed(start_time)`: Print the execution time since you called `start_time = pdv.start_timer()`
     - Tip: You can also use the stopwatcht outside a method chain:
         ```python
         from pandas_vet import print_elapsed_time, start_timer
@@ -91,14 +90,14 @@ Here's what's in the doctor's bag.
         ```
 
 * **Turn off Pandas Vet**
-    - `.check.disable_checks()` # Don't run checks in this method chain, for production mode etc
+    - `.check.disable_checks()`: Don't run checks in this method chain, for production mode etc
     - `.check.ensable_checks()`
 
 * **Validate** Perform assertions on your data in the middle of a chain using `.check.assert_data()`.
 
 * **Visualize**
-    - `.check.hist()` # A histogram
-    - `.check.plot()` # An arbitrary plot
+    - `.check.hist()`: Histogram
+    - `.check.plot()`: An arbitrary plot
 
 ## Customizing results
 
