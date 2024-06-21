@@ -161,7 +161,7 @@ iris_new = (
 
 If you run into trouble or have questions, I'd love to know. Please open an issue.
 
-Contributions are appreciated! Please open an issue or submit a pull request. Pandas Vet uses the wonderful libraries [poetry](https://python-poetry.org) for package and dependency management, [nox](https://nox.thea.codes/en/stable/) for test automation, and [mkdocs](https://www.mkdocs.org/) for docs.
+Contributions are appreciated! Please see [more details](https://cparmet.github.io/pandas-vet/#giving-feedback-and-contributing).
 
 
 ## License
