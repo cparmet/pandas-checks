@@ -9,6 +9,10 @@ So you don't need to chop up a functional method chain, or create intermediate v
 
 As Fleetwood Mac says, [you would never break the chain](https://www.youtube.com/watch?v=xwTPvcPYaOo).
 
+[!TIP]
+See the [full documentation](https://cparmet.github.io/pandas-vet/) for all the details on the what, why, and how of Pandas Vet.
+
+
 ## Installation
 
 ```bash
@@ -24,9 +28,6 @@ import pandas_vet
 ```
 
 Now you can use `.check` on your Pandas DataFrames and Series. You don't need to access `pandas_vet` directly, just work with Pandas as you normally would. The new Pandas Vet methods are available when you work with Pandas in Jupyter, IPython, and terminal environments.
-
-[!TIP]
-See the [full documentation](https://cparmet.github.io/pandas-vet/) for more details on using Pandas Vet.
 
 Here's a basic example of using Pandas Vet:
 
