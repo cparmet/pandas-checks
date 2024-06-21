@@ -171,6 +171,6 @@ Contributions are appreciated! Please see [more details](https://cparmet.github.
 
 ## License
 
-Pandas Checks is licensed under the [BSD-3 License](LICENSE).
+Pandas Checks is licensed under the [BSD-3 License](https://github.com/cparmet/pandas-checks/blob/main/LICENSE).
 
 🐼🩺
