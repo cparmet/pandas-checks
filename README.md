@@ -49,7 +49,7 @@ The `.check` methods will display the following results:
 
 
 > [!NOTE]  
-> These methods did not modify `iris`. That's the difference between Pandas `.head()` and Pandas Checks's `.check.head()`.
+> These methods did not modify `iris`. That's the difference between Pandas `.head()` and Pandas Checks `.check.head()`.
 
 
 ## Methods available
@@ -106,7 +106,7 @@ You can use Pandas Checks methods like the regular Pandas methods. They accept t
 * `.check.value_counts(column="species", dropna=False, normalize=True)`
 * `.check.plot(kind="scatter", x="sepal_width", y="sepal_length")`.
 
-In addition, most Pandas Checks methods accept 3 additional arguments:
+Also, most Pandas Checks methods accept 3 additional arguments:
 1. `check_name`: text to display before the result of the check
 2. `fn`: a lambda function that modifies the data displayed by the check
 3. `subset`: limit a check to certain columns
