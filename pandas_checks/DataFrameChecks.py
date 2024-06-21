@@ -170,7 +170,7 @@ class DataFrameChecks:
         return self._obj
 
     def disable_checks(self, enable_asserts: bool = True) -> pd.DataFrame:
-        """Turns off Pandas Checks checks globally, such as in production mode. Does not modify the DataFrame itself.
+        """Turns off Pandas Checks globally, such as in production mode. Calls to .check functions will not be run. Does not modify the DataFrame itself.
 
         Args
             enable_assert: Optionally, whether to also enable or disable assert statements
@@ -209,10 +209,10 @@ class DataFrameChecks:
         return self._obj
 
     def enable_checks(self, enable_asserts: bool = True) -> pd.DataFrame:
-        """Globally enables Pandas Checks checks. Does not modify the DataFrame itself.
+        """Globally enables Pandas Checks. Subequent calls to .check methods will be run. Does not modify the DataFrame itself.
 
         Args:
-            enable_asserts: Optionally, whether to globally enable or disable Pandas Checks assertions.
+            enable_asserts: Optionally, whether to globally enable or disable calls to .check.assert_data().
 
         Returns:
             The original DataFrame, unchanged.
@@ -664,7 +664,7 @@ class DataFrameChecks:
         """Configures the operation mode for Pandas Checks globally. Does not modify the DataFrame itself.
 
         Args:
-            enable_checks: Whether to run Pandas Checks checks globally.
+            enable_checks: Whether to run any Pandas Checks methods globally. Does not affect .check.assert_data().
             enable_asserts: Whether to run calls to Pandas Checks .check.assert_data() statements globally.
 
         Returns:

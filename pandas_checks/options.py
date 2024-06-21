@@ -44,7 +44,7 @@ def _register_option(
 
     If the option has already been registered, reset its value.
 
-    This method enables setting global formatting for Pandas Checks checks and storing
+    This method enables setting global formatting for Pandas Checks results and storing
     variables that will persist across Pandas method chains, which return newly
     initialized DataFrames at each method (and so reset the DataFrame's attributes).
 
@@ -273,9 +273,8 @@ def set_mode(enable_checks: bool, enable_asserts: bool) -> None:
     """Configures the operation mode for Pandas Checks globally.
 
     Args:
-        enable_checks: Whether to run Pandas Checks checks globally.
-        enable_asserts: Whether to run calls to Pandas Checks .check.assert_data()
-            statements globally.
+        enable_checks: Whether to run any Pandas Checks methods globally. Does not affect .check.assert_data().
+        enable_asserts: Whether to run calls to .check.assert_data() globally.
 
     Returns:
         None
@@ -297,7 +296,7 @@ def get_mode() -> Dict[str, bool]:
 
 
 def enable_checks(enable_asserts: bool = True) -> None:
-    """Turns on all Pandas Checks checks globally.
+    """Turns on Pandas Checks globally. Subsequent calls to .check methods will be run.
 
     Args:
         enable_asserts: Whether to also enable or disable check.assert_data().
@@ -309,11 +308,13 @@ def enable_checks(enable_asserts: bool = True) -> None:
 
 
 def disable_checks(enable_asserts: bool = True) -> None:
-    """Disables all Pandas Checks checks and optionally enables or disables check.assert_data().
+    """Turns off all calls to Pandas Checks methods and optionally enables or disables check.assert_data(). Does not modify the DataFrame itself.
+
+    If this function is called, subequent calls to .check functions will not be run.
 
     Typically used to
-        1) Globally turn off all Pandas Checks checks, say for production. or
-        2) Temporarily turn off Pandas Checks checks, say for a completed cell of a notebook.
+        1) Globally switch off Pandas Checks, such as during production. or
+        2) Temporarily switch off Pandas Checks, such as for a stable part of a notebook.
 
     Args:
         enable_asserts: Whether to also run calls to Pandas Checks .check.assert_data()

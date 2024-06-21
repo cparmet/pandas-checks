@@ -132,7 +132,7 @@ import pandas_checks as pdc
 # Set output precision and turn off the cute emojis
 pdc.set_format(precision=3, use_emojis=False)
 
-# Don't run any Pandas Checks checks globally, such as when switching your code to production mode
+# Don't run any of the calls to Pandas Checks, globally. Useful when switching your code to production mode
 pdc.disable_checks()
 ```
 
