@@ -33,7 +33,7 @@ The `.check` methods will display the following results:
 <img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/sample_output.jpg" alt="Sample output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;"/>
 
 
-> [!NOTE]  
+> ⓘ Note:  
 > These methods did not modify `iris`. That's the difference between Pandas `.head()` and Pandas Checks `.check.head()`.
 
 
@@ -122,7 +122,7 @@ pdc.disable_checks()
 ```
   
   
-> [!TIP]  
+> 💡 Tip:  
 > Run `pdc.describe_options()` to see the arguments you can pass to `.set_format()`.
   
   
