@@ -120,10 +120,12 @@ pdc.set_format(precision=3, use_emojis=False)
 # Don't run any of the calls to Pandas Checks, globally. Useful when switching your code to production mode
 pdc.disable_checks()
 ```
-
+  
+  
 > [!Tip]
 > Run `pdc.describe_options()` to see the arguments you can pass to `.set_format()`.
-
+  
+  
 You can also adjust settings within a method chain. This will set the global configuration. So if you only want the settings to be changed during the method chain, reset them at the end.
 
 ```python
