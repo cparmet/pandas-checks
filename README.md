@@ -10,13 +10,13 @@ So you don't need to chop up a functional method chain, or create intermediate v
 As Fleetwood Mac says, [you would never break the chain](https://www.youtube.com/watch?v=xwTPvcPYaOo).
 
 > [!TIP]  
-> See the [full documentation](https://cparmet.github.io/pandas-Checks/) for all the details on the what, why, and how of Pandas Checks.
+> See the [full documentation](https://cparmet.github.io/pandas-checks/) for all the details on the what, why, and how of Pandas Checks.
 
 
 ## Installation
 
 ```bash
-pip install pandas-Checks
+pip install pandas-checks
 ```
 
 ## Usage
@@ -163,7 +163,7 @@ iris_new = (
 
 If you run into trouble or have questions, I'd love to know. Please open an issue.
 
-Contributions are appreciated! Please see [more details](https://cparmet.github.io/pandas-Checks/#giving-feedback-and-contributing).
+Contributions are appreciated! Please see [more details](https://cparmet.github.io/pandas-checks/#giving-feedback-and-contributing).
 
 
 ## License
