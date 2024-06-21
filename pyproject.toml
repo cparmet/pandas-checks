@@ -10,17 +10,6 @@ Homepage = "https://github.com/cparmet/pandas-checks"
 Docs = "https://cparmet.github.io/pandas-checks/"
 Issues = "https://github.com/cparmet/pandas-checks/issues"
 
-[project]
-requires-python = ">=3.8,<4.0"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-]
-
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
 emoji = ">=2.12.1"
