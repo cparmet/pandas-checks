@@ -1,9 +1,16 @@
 [tool.poetry]
 name = "pandas-checks"
-version = "0.1.3"
+version = "0.1.4"
 description = "Non-invasive health checks for Pandas method chains"
 authors = ["Chad Parmet <cparmet@gmail.com>"]
 readme = "README.md"
+
+[project.urls]
+Homepage = "https://github.com/cparmet/pandas-checks"
+Docs = "https://cparmet.github.io/pandas-checks/"
+Issues = "https://github.com/cparmet/pandas-checks/issues"
+
+[project]
 requires-python = ">=3.8,<4.0"
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -13,12 +20,6 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
-
-[project.urls]
-Homepage = "https://github.com/cparmet/pandas-checks"
-Docs = "https://cparmet.github.io/pandas-checks/"
-Issues = "https://github.com/cparmet/pandas-checks/issues"
-
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
