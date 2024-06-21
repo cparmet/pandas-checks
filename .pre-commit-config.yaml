@@ -14,7 +14,8 @@ repos:
     - id: detect-private-key
     - id: end-of-file-fixer
     - id: trailing-whitespace # Disabled because some markdown styles require trailing whitespace
-      args: [--markdown-linebreak-ext=md]
+      exclude: md
+      # args: [--markdown-linebreak-ext=md]
 
 -   repo: https://github.com/psf/black
     rev: 22.12.0

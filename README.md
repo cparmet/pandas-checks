@@ -8,11 +8,12 @@ It can inspect and validate your data at various points in your Pandas pipelines
 So you don't need to chop up a functional method chain, or create intermediate variables, every time you need to diagnose, treat, or prevent problems with data processing.
 
 As Fleetwood Mac says, [you would never break the chain](https://www.youtube.com/watch?v=xwTPvcPYaOo).
-
+  
+  
 > [!TIP]  
 > See the [full documentation](https://cparmet.github.io/pandas-checks/) for all the details on the what, why, and how of Pandas Checks.
-
-
+  
+  
 ## Installation
 
 ```bash
@@ -46,12 +47,12 @@ iris_new = (
 The `.check` methods will display the following results:
 
 <img src="static/sample_output.jpg" alt="Sample output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;"/>
-
-
+  
+  
 > [!NOTE]  
 > These methods did not modify `iris`. That's the difference between Pandas `.head()` and Pandas Checks `.check.head()`.
-
-
+  
+  
 ## Methods available
 Here's what's in the doctor's bag.
 
@@ -135,10 +136,12 @@ pdc.set_format(precision=3, use_emojis=False)
 # Don't run any of the calls to Pandas Checks, globally. Useful when switching your code to production mode
 pdc.disable_checks()
 ```
-
+  
+    
 > [!TIP]  
 > Run `pdc.describe_options()` to see the arguments you can pass to `.set_format()`.
-
+  
+  
 You can also adjust settings within a method chain. This will set the global configuration. So if you only want the settings to be changed during the method chain, reset them at the end.
 
 ```python
