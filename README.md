@@ -10,7 +10,7 @@ So you don't need to chop up a functional method chain, or create intermediate v
 As Fleetwood Mac says, [you would never break the chain](https://www.youtube.com/watch?v=xwTPvcPYaOo).
   
   
-> [!TIP]  
+> 💡 Tip:  
 > See the [full documentation](https://cparmet.github.io/pandas-checks/) for all the details on the what, why, and how of Pandas Checks.
   
   
@@ -46,10 +46,10 @@ iris_new = (
 
 The `.check` methods will display the following results:
 
-<img src="static/sample_output.jpg" alt="Sample output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;"/>
+<img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/sample_output.jpg" alt="Sample output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;"/>
   
   
-> [!NOTE]  
+> ⓘ Note:  
 > These methods did not modify `iris`. That's the difference between Pandas `.head()` and Pandas Checks `.check.head()`.
   
   
@@ -121,7 +121,7 @@ iris_new = (
     .check.describe(subset=['sepal_width', 'sepal_length'])  # Only check certain columns
 )
 ```
-<img src="static/power_user_output.jpg" alt="Power user output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;">
+<img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/power_user_output.jpg" alt="Power user output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;">
 
 
 ## Global configuration
@@ -138,7 +138,7 @@ pdc.disable_checks()
 ```
   
     
-> [!TIP]  
+> 💡 Tip:  
 > Run `pdc.describe_options()` to see the arguments you can pass to `.set_format()`.
   
   
@@ -171,6 +171,6 @@ Contributions are appreciated! Please see [more details](https://cparmet.github.
 
 ## License
 
-Pandas Checks is licensed under the [BSD-3 License](LICENSE).
+Pandas Checks is licensed under the [BSD-3 License](https://github.com/cparmet/pandas-checks/blob/main/LICENSE).
 
 🐼🩺
