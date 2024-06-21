@@ -1,4 +1,6 @@
-# 🐼🩺
+# 🐼🩺 Pandas Vet
+
+## Introduction
 **Pandas Vet** is a Python library for data science and data engineering. It adds non-invasive health checks for Pandas method chains.
 
 The veterinarian can inspect and validate your data at various points in your Pandas pipelines, without modifying the underlying data.
