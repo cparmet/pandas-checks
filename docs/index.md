@@ -4,12 +4,18 @@
 
 **Pandas Vet** is a Python library for data science and data engineering. It adds non-invasive health checks for Pandas method chains.
 
-The veterinarian can inspect and validate your data at various points in your Pandas pipelines, without modifying the underlying data.
+## What are method chains?
+Method chains are one of the [coolest features](https://tomaugspurger.net/posts/method-chaining/) of the Pandas library! They allow you to write more functional code with fewer intermediate variables and fewer side effects. If you're familiar with R, method chains are Python's version of [dplyr pipes](https://style.tidyverse.org/pipes.html).
 
-So you don't need to chop up a functional method chain, or create intermediate variables, every time you need to diagnose, treat, or prevent problems with data processing.
+## Why use Pandas Vet?
 
-As Fleetwood Mac says, [you would never break the chain](https://www.youtube.com/watch?v=xwTPvcPYaOo).
+Pandas Vet (The Veterinarian) adds the ability to inspect and validate your Pandas data at any point in the method chain, without modifying the underlying data. Think of Pandas Vet as a drone you can send up to check on your pipeline, whether it's in exploratory data analysis, prototyping, or production.
 
+That way you don't need to chop up a method chain, or create intermediate variables, every time you need to diagnose, treat, or prevent problems with your data processing pipeline.
+
+As Fleetwood Mac says, you would never break the chain.
+
+[![Fleetwood Mac video for The Chain](https://img.youtube.com/vi/xwTPvcPYaOo/0.jpg)](https://www.youtube.com/watch?v=xwTPvcPYaOo)
 
 ## Giving feedback and contributing
 
