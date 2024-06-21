@@ -175,25 +175,82 @@ def _initialize_format_options(options: Union[List[str], None] = None) -> None:
             validator=cf.is_instance_factory(int),
         )
     # Text styling
-    for option, default in {
-        "check_text_tag": "h5",
-        "table_title_tag": "h5",
-        "plot_title_tag": "h5",
-        "fail_text_fg_color": "white",
-        "fail_text_bg_color": "red",
-        "success_text_fg_color": "black",
-        "success_text_bg_color": "green",
-    }.items():
-        if "option" in option_keys or options == None:
-            _register_option(
-                name=option,
-                default_value=default,
-                description=f"""
+    if "check_text_tag" in option_keys or options == None:
+        _register_option(
+            name="check_text_tag",
+            default_value="h5",
+            description="""
     : str
-    {"A single HTML tag (h1, h5, p, etc)" if "tag" in option else "Foreground color" if "fg" in option else "Background color"} for Pandas Vet {option.replace("_tag","").replace("_fg_color","").replace("_fg_color","")}.
+    A single HTML tag (h1, h5, p, etc) that Pandas Vet will use when displaying results that are lines of text.
     """,
-                validator=cf.is_instance_factory(str),
-            )
+            validator=cf.is_instance_factory(str),
+        )
+
+    if "table_title_tag" in option_keys or options == None:
+        _register_option(
+            name="table_title_tag",
+            default_value="h5",
+            description="""
+    : str
+    A single HTML tag (h1, h5, p, etc) that Pandas Vet will use for the titles of tables.
+    """,
+            validator=cf.is_instance_factory(str),
+        )
+
+    if "plot_title_tag" in option_keys or options == None:
+        _register_option(
+            name="plot_title_tag",
+            default_value="h5",
+            description="""
+    : str
+    A single HTML tag (h1, h5, p, etc) that Pandas Vet will use for the titles of plots and histograms.
+    """,
+            validator=cf.is_instance_factory(str),
+        )
+
+    if "fail_message_fg_color" in option_keys or options == None:
+        _register_option(
+            name="fail_message_fg_color",
+            default_value="white",
+            description="""
+    : str
+    The foreground color that Pandas Vet will use for the lead-in text when assert_data() fails.
+    """,
+            validator=cf.is_instance_factory(str),
+        )
+
+    if "fail_message_bg_color" in option_keys or options == None:
+        _register_option(
+            name="fail_message_bg_color",
+            default_value="red",
+            description="""
+    : str
+    The background color that Pandas Vet will use for the lead-in text when assert_data() fails.
+    """,
+            validator=cf.is_instance_factory(str),
+        )
+
+    if "pass_message_fg_color" in option_keys or options == None:
+        _register_option(
+            name="pass_message_fg_color",
+            default_value="black",
+            description="""
+    : str
+    The foreground color that Pandas Vet will use for the lead-in text when assert_data() passes.
+    """,
+            validator=cf.is_instance_factory(str),
+        )
+
+    if "pass_message_bg_color" in option_keys or options == None:
+        _register_option(
+            name="pass_message_bg_color",
+            default_value="green",
+            description="""
+    : str
+    The background color that Pandas Vet will use for the lead-in text when assert_data() passes.
+    """,
+            validator=cf.is_instance_factory(str),
+        )
 
 
 # -----------------------

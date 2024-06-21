@@ -92,9 +92,11 @@ class DataFrameVet:
                     lead_in=fail_message,
                     line=condition_str,
                     colors={
-                        "lead_in_text_color": pd.get_option("vet.fail_text_fg_color"),
+                        "lead_in_text_color": pd.get_option(
+                            "vet.fail_message_fg_color"
+                        ),
                         "lead_in_background_color": pd.get_option(
-                            "vet.fail_text_bg_color"
+                            "vet.fail_message_bg_color"
                         ),
                     },
                 )
@@ -103,9 +105,9 @@ class DataFrameVet:
                 lead_in=pass_message,
                 line=condition_str,
                 colors={
-                    "lead_in_text_color": pd.get_option("vet.success_text_fg_color"),
+                    "lead_in_text_color": pd.get_option("vet.pass_message_fg_color"),
                     "lead_in_background_color": pd.get_option(
-                        "vet.success_text_bg_color"
+                        "vet.pass_message_bg_color"
                     ),
                 },
             )
@@ -315,7 +317,7 @@ class DataFrameVet:
                 if check_name
                 else "📏 Distribution"
                 if subset and len(subset) == 1
-                else "Distributions"
+                else "📏 Distributions"
             )
             _ = _apply_modifications(self._obj, fn, subset).hist(**kwargs)
             _display_plot()
