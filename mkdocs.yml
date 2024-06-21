@@ -1,4 +1,5 @@
 site_name: 🐼🩺 Pandas Vet
+docs_dir: docs
 plugins:
   - search
   - mkdocstrings:
