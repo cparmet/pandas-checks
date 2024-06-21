@@ -5,7 +5,7 @@ from nox_poetry import Session, session
 def tests(session: Session) -> None:
     """Run the test suite."""
 
-    session.install(".")  # Install pandas-vet
+    session.install(".")  # Install pandas-checks
     session.install(
         "pytest", "pytest-cases", "pyarrow", "openpyxl"
     )  # Install test packages

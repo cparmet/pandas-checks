@@ -4,7 +4,7 @@ import pytest
 from pandas.core.groupby.groupby import DataError
 from pytest_cases import parametrize_with_cases
 
-from pandas_vet import disable_checks, enable_checks, reset_format, start_timer
+from pandas_checks import disable_checks, enable_checks, reset_format, start_timer
 
 
 # Helper function
@@ -17,7 +17,7 @@ def assert_equal_df(df1, df2):
 @parametrize_with_cases("df", cases=".datasets", prefix="df_")
 @parametrize_with_cases("test_method", prefix="method_")
 @pytest.mark.parametrize("enable_checks_flag", [True, False])
-def test_dataframevet_methods_dont_change_df(
+def test_DataFrameChecks_methods_dont_change_df(
     df, test_method, tmp_path, enable_checks_flag
 ):
     args = {
@@ -32,7 +32,7 @@ def test_dataframevet_methods_dont_change_df(
     reset_format()
 
 
-def test_dataframevet_assert_data_pass(iris):
+def test_DataFrameChecks_assert_data_pass(iris):
     # Shouldn't raise an exception
     iris.check.assert_data(
         condition=lambda df: df.sum() > 0,  # DF because we apply subset after.
@@ -42,7 +42,7 @@ def test_dataframevet_assert_data_pass(iris):
     )
 
 
-def test_dataframevet_assert_data_fail(iris):
+def test_DataFrameChecks_assert_data_fail(iris):
     with pytest.raises(ValueError):
         assert iris.check.assert_data(
             condition=lambda df: df["sepal_length"].sum() < 0,
@@ -51,7 +51,7 @@ def test_dataframevet_assert_data_fail(iris):
         )
 
 
-def test_dataframevet_columns(iris, capsys):
+def test_DataFrameChecks_columns(iris, capsys):
     iris.check.columns(
         fn=lambda df: df.assign(species_upper=df.species.str.upper()),
         subset=["petal_length", "species", "species_upper"],
@@ -62,7 +62,7 @@ def test_dataframevet_columns(iris, capsys):
     )
 
 
-def test_dataframevet_describe(iris, capsys):
+def test_DataFrameChecks_describe(iris, capsys):
     iris.check.describe(
         fn=lambda df: (df * 2),
         subset=["petal_width", "species"],
@@ -87,13 +87,13 @@ def test_dataframevet_describe(iris, capsys):
     )
 
 
-def test_dataframevet_disable_checks(iris, capsys):
+def test_DataFrameChecks_disable_checks(iris, capsys):
     (iris.check.disable_checks().check.nnulls())
     assert capsys.readouterr().out == ""
     enable_checks()  # reset
 
 
-def test_dataframevet_dtypes(iris, capsys):
+def test_DataFrameChecks_dtypes(iris, capsys):
     iris.check.dtypes(fn=lambda df: df.select_dtypes("object"))
     assert (
         capsys.readouterr().out
@@ -102,17 +102,17 @@ def test_dataframevet_dtypes(iris, capsys):
     )
 
 
-def test_dataframevet_function_with_lambda_fn(iris, capsys):
+def test_DataFrameChecks_function_with_lambda_fn(iris, capsys):
     iris.check.function(fn=lambda df: len(df.columns), check_name="Test")
     assert capsys.readouterr().out == """\nTest: 5\n"""
 
 
-def test_dataframevet_function_with_str_fn(iris, capsys):
+def test_DataFrameChecks_function_with_str_fn(iris, capsys):
     iris.check.function(fn=lambda df: len(df.columns), check_name="Test")
     assert capsys.readouterr().out == """\nTest: 5\n"""
 
 
-def test_dataframevet_get_mode(iris, capsys):
+def test_DataFrameChecks_get_mode(iris, capsys):
     iris.check.get_mode(check_name="Test")
     assert (
         capsys.readouterr().out
@@ -120,7 +120,7 @@ def test_dataframevet_get_mode(iris, capsys):
     )
 
 
-def test_dataframevet_head(iris, capsys):
+def test_DataFrameChecks_head(iris, capsys):
     iris.check.head(n=1, fn=lambda df: (df * 2), check_name="Test")
     assert (
         capsys.readouterr().out
@@ -130,12 +130,12 @@ def test_dataframevet_head(iris, capsys):
     )
 
 
-def test_dataframevet_hist_no_terminal_display(iris, capsys):
+def test_DataFrameChecks_hist_no_terminal_display(iris, capsys):
     iris.check.hist(subset=["sepal_width", "petal_length"])
     assert capsys.readouterr().out == ""
 
 
-def test_dataframevet_info(iris, capsys):
+def test_DataFrameChecks_info(iris, capsys):
     iris.check.info(
         fn=lambda df: (df * 2),
         subset=["petal_width", "species"],
@@ -149,7 +149,7 @@ def test_dataframevet_info(iris, capsys):
     )
 
 
-def test_dataframevet_memory_usage(iris, capsys):
+def test_DataFrameChecks_memory_usage(iris, capsys):
     iris.check.memory_usage(
         fn=lambda df: df[["petal_width", "species"]].dropna(),
         check_name="Test",
@@ -164,21 +164,21 @@ def test_dataframevet_memory_usage(iris, capsys):
     )
 
 
-def test_dataframevet_ncols(iris, capsys):
+def test_DataFrameChecks_ncols(iris, capsys):
     iris.check.ncols(
         fn=lambda df: df.assign(C=55), check_name="Test", subset=["C", "species"]
     )
     assert capsys.readouterr().out == "\nTest: 2\n"
 
 
-def test_dataframevet_ndups(iris, capsys):
+def test_DataFrameChecks_ndups(iris, capsys):
     iris.check.ndups(
         fn=lambda df: df.assign(C=55), check_name="Test", subset=["C", "species"]
     )
     assert capsys.readouterr().out == "\nTest: 147\n"
 
 
-def test_dataframevet_ndups_keep(iris, capsys):
+def test_DataFrameChecks_ndups_keep(iris, capsys):
     """Test that a kwarg is getting passed to Pandas's memory_usage()"""
     iris.check.ndups(
         fn=lambda df: df.assign(C=55),
@@ -189,38 +189,38 @@ def test_dataframevet_ndups_keep(iris, capsys):
     assert capsys.readouterr().out == "\nTest: 150\n"
 
 
-def test_dataframevet_nnulls(iris, capsys):
+def test_DataFrameChecks_nnulls(iris, capsys):
     iris.check.nnulls(
         fn=lambda df: df.assign(C=np.nan), check_name="Test", by_column=False
     )
     assert capsys.readouterr().out == "\nTest: 150\n"
 
 
-def test_dataframevet_nrows(iris, capsys):
+def test_DataFrameChecks_nrows(iris, capsys):
     iris.check.nrows(
         fn=lambda df: df.assign(C=55), check_name="Test", subset=["C", "species"]
     )
     assert capsys.readouterr().out == "\nTest: 150\n"
 
 
-def test_dataframevet_nunique(iris, capsys):
+def test_DataFrameChecks_nunique(iris, capsys):
     iris.check.nunique(
         fn=lambda df: df.assign(C=55), check_name="Test", column="species", dropna=False
     )
     assert capsys.readouterr().out == "\nTest: 3\n"
 
 
-def test_dataframevet_plot_no_terminal_display(iris, capsys):
+def test_DataFrameChecks_plot_no_terminal_display(iris, capsys):
     iris.check.plot(subset=["sepal_width", "petal_length"])
     assert capsys.readouterr().out == ""
 
 
-def test_dataframevet_print_str(iris, capsys):
+def test_DataFrameChecks_print_str(iris, capsys):
     iris.check.print("Howdy!")
     assert capsys.readouterr().out == "\nHowdy!\n"
 
 
-def test_dataframevet_print_df(iris, capsys):
+def test_DataFrameChecks_print_df(iris, capsys):
     iris.check.print(
         fn=lambda df: (df * 2).assign(species2=2),
         subset=[
@@ -255,7 +255,7 @@ def test_dataframevet_print_df(iris, capsys):
         ("h", "h"),
     ),
 )
-def test_dataframevet_print_time_elapsed_units(iris, capsys, units_outputcontains):
+def test_DataFrameChecks_print_time_elapsed_units(iris, capsys, units_outputcontains):
     """We can't test the actual timings, since runtimes vary. So we'll test units"""
     units = units_outputcontains[0]
     output_contains = units_outputcontains[1]
@@ -263,7 +263,7 @@ def test_dataframevet_print_time_elapsed_units(iris, capsys, units_outputcontain
     assert output_contains in capsys.readouterr().out
 
 
-def test_dataframevet_reset_format(iris, capsys):
+def test_DataFrameChecks_reset_format(iris, capsys):
     (
         iris.check.set_format(precision=4, use_emojis=False)
         .check.reset_format()
@@ -288,7 +288,7 @@ def test_dataframevet_reset_format(iris, capsys):
     )
 
 
-def test_dataframevet_set_format(iris, capsys):
+def test_DataFrameChecks_set_format(iris, capsys):
     (
         iris.check.set_format(precision=10, use_emojis=False)
         .check.print(
@@ -313,7 +313,7 @@ def test_dataframevet_set_format(iris, capsys):
     )
 
 
-def test_dataframevet_set_mode(iris, capsys):
+def test_DataFrameChecks_set_mode(iris, capsys):
     (
         iris.check.set_mode(enable_checks=False, enable_asserts=False)
         .check.print("Howdy!")
@@ -323,14 +323,14 @@ def test_dataframevet_set_mode(iris, capsys):
     assert capsys.readouterr().out == ""
 
 
-def test_dataframevet_shape(iris, capsys):
+def test_DataFrameChecks_shape(iris, capsys):
     iris.check.shape(
         fn=lambda df: df.assign(C=55), check_name="Test", subset=["C", "species"]
     )
     assert capsys.readouterr().out == "\nTest: (150, 2)\n"
 
 
-def test_dataframevet_tail(iris, capsys):
+def test_DataFrameChecks_tail(iris, capsys):
     iris.check.tail(n=1, fn=lambda df: (df * 2), check_name="Test")
     assert (
         capsys.readouterr().out
@@ -340,7 +340,7 @@ def test_dataframevet_tail(iris, capsys):
     )
 
 
-def test_dataframevet_unique(iris, capsys):
+def test_DataFrameChecks_unique(iris, capsys):
     iris.check.unique(
         column="species",
         fn=lambda df: df.assign(species_upper=df.species.str.upper()),
@@ -351,7 +351,7 @@ def test_dataframevet_unique(iris, capsys):
     )
 
 
-def test_dataframevet_value_counts(iris, capsys):
+def test_DataFrameChecks_value_counts(iris, capsys):
     """Test that kwargs are getting passed to Pandas's value_counts()"""
     iris.check.value_counts(
         column="species",
@@ -383,7 +383,7 @@ def test_dataframevet_value_counts(iris, capsys):
         ("tsv", "tsv"),
     ),
 )
-def test_dataframevet_write(iris, format_extension, tmp_path, capsys):
+def test_DataFrameChecks_write(iris, format_extension, tmp_path, capsys):
     extension = format_extension[1]
     f = lambda df: df.query(
         "species=='versicolor'"

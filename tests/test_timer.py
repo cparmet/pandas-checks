@@ -1,6 +1,6 @@
 import pytest
 
-from pandas_vet.timer import print_time_elapsed, start_timer
+from pandas_checks.timer import print_time_elapsed, start_timer
 
 
 def test_start_timer_returns_time():

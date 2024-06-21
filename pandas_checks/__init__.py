@@ -1,9 +1,9 @@
 """
-This module imports and initializes Pandas Vet.
+This module imports and initializes Pandas Checks.
 """
 
-# Select what functions are included in `from pandas_vet import *`
-# i.e. don't expose DataFrameVet and SeriesVet, which aren't needed
+# Select what functions are included in `from pandas_checks import *`
+# i.e. don't expose DataFrameChecks and SeriesChecks, which aren't needed
 __all__ = [
     "_initialize_options",
     "describe_options",
@@ -18,8 +18,8 @@ __all__ = [
 ]
 
 # Register our changes to the Pandas classes
-# and select functions to expose in `from pandas_vet import ...`
-from .DataFrameVet import DataFrameVet
+# and select functions to expose in `from pandas_checks import ...`
+from .DataFrameChecks import DataFrameChecks
 from .options import (
     _initialize_options,
     describe_options,
@@ -30,7 +30,7 @@ from .options import (
     set_format,
     set_mode,
 )
-from .SeriesVet import SeriesVet
+from .SeriesChecks import SeriesChecks
 from .timer import print_time_elapsed, start_timer
 
 _initialize_options()

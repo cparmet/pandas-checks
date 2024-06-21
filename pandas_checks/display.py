@@ -1,4 +1,4 @@
-"""Utilities for displaying text, tables, and plots in Pandas Vet in both terminal and IPython/Jupyter environments.
+"""Utilities for displaying text, tables, and plots in Pandas Checks in both terminal and IPython/Jupyter environments.
 """
 
 import base64
@@ -27,7 +27,7 @@ def _filter_emojis(text: str) -> str:
     Returns:
         The text with emojis removed if the user's global settings do not allow emojis. Else, the original text.
     """
-    if pd.get_option("vet.use_emojis"):
+    if pd.get_option("pdchecks.use_emojis"):
         return text
     return emoji.replace_emoji(text, replace="").strip()
 
@@ -41,7 +41,7 @@ def _render_html_with_indent(object_as_html: str) -> None:
     Returns:
         None
     """
-    indent = pd.get_option("vet.indent_table_plot_ipython")  # In pixels
+    indent = pd.get_option("pdchecks.indent_table_plot_ipython")  # In pixels
     display(
         HTML(
             f'<div style="margin-left: {indent}px;">{object_as_html}</div>'
@@ -119,7 +119,7 @@ def _render_text(
 
 
 def _warning(
-    message: str, lead_in: str = "🐼🩺 Pandas Vet warning", clean_type: bool = False
+    message: str, lead_in: str = "🐼🩺 Pandas Checks warning", clean_type: bool = False
 ) -> None:
     """Displays a warning message.
 
@@ -158,7 +158,7 @@ def _print_table_terminal(table: Union[pd.DataFrame, pd.Series]) -> None:
     Returns:
         None
     """
-    indent_prefix = pd.get_option("vet.indent_table_terminal")  # In spaces
+    indent_prefix = pd.get_option("pdchecks.indent_table_terminal")  # In spaces
     print(
         textwrap.indent(
             text=table.to_string(), prefix=" " * indent_prefix if indent_prefix else ""
@@ -177,11 +177,11 @@ def _display_table(table: Union[pd.DataFrame, pd.Series]) -> None:
     """
     _render_html_with_indent(
         table.style.set_table_styles(
-            [pd.get_option("vet.table_row_hover_style")]
-            if pd.get_option("vet.table_row_hover_style")
+            [pd.get_option("pdchecks.table_row_hover_style")]
+            if pd.get_option("pdchecks.table_row_hover_style")
             else []
         )
-        .format(precision=pd.get_option("vet.precision"))
+        .format(precision=pd.get_option("pdchecks.precision"))
         .to_html()
     )
 
@@ -210,7 +210,7 @@ def _display_table_title(
 
 
 def _display_plot() -> None:
-    """Renders the active Pandas Vet matplotlib plot object in an IPython/Jupyter environment with an optional indent.
+    """Renders the active Pandas Checks matplotlib plot object in an IPython/Jupyter environment with an optional indent.
 
     Returns:
         None
@@ -219,7 +219,7 @@ def _display_plot() -> None:
         It assumes the plot has already been drawn by another function, such as with .plot() or .hist().
     """
     if not pd.core.config_init.is_terminal():
-        indent = pd.get_option("vet.indent_table_plot_ipython")  # In pixels
+        indent = pd.get_option("pdchecks.indent_table_plot_ipython")  # In pixels
         # Save the figure to a bytes buffer
         buffer = io.BytesIO()
         fig = (
@@ -321,7 +321,10 @@ def _display_line(
         None
     """
     _render_text(
-        line, tag=pd.get_option("vet.check_text_tag"), lead_in=lead_in, colors=colors
+        line,
+        tag=pd.get_option("pdchecks.check_text_tag"),
+        lead_in=lead_in,
+        colors=colors,
     )
 
 
@@ -331,7 +334,7 @@ def _display_line(
 
 
 def _display_check(data: Any, name: Union[str, None] = None) -> None:
-    """Renders the result of a Pandas Vet check.
+    """Renders the result of a Pandas Checks method.
 
     Args:
         data: The data to display.

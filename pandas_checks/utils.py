@@ -1,5 +1,5 @@
 """
-Utility functions for the pandas_vet package.
+Utility functions for the pandas_checks package.
 """
 from inspect import getsourcelines
 from typing import Callable

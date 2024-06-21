@@ -1,6 +1,6 @@
 # DataFrame methods
 
-::: pandas_vet.DataFrameVet.DataFrameVet
+::: pandas_checks.DataFrameChecks.DataFrameChecks
     options:
       members: True
       show_root_heading: False

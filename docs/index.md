@@ -2,14 +2,14 @@
 
 ## Introduction
 
-**Pandas Vet** is a Python library for data science and data engineering. It adds non-invasive health checks for Pandas method chains.
+**Pandas Checks** is a Python library for data science and data engineering. It adds non-invasive health checks for Pandas method chains.
 
 ## What are method chains?
 Method chains are one of the [coolest features](https://tomaugspurger.net/posts/method-chaining/) of the Pandas library! They allow you to write more functional code with fewer intermediate variables and fewer side effects. If you're familiar with R, method chains are Python's version of [dplyr pipes](https://style.tidyverse.org/pipes.html).
 
-## Why use Pandas Vet?
+## Why use Pandas Checks?
 
-Pandas Vet (The Veterinarian) adds the ability to inspect and validate your Pandas data at any point in the method chain, without modifying the underlying data. Think of Pandas Vet as a drone you can send up to check on your pipeline, whether it's in exploratory data analysis, prototyping, or production.
+Pandas Checks adds the ability to inspect and validate your Pandas data at any point in the method chain, without modifying the underlying data. Think of Pandas Checks as a drone you can send up to check on your pipeline, whether it's in exploratory data analysis, prototyping, or production.
 
 That way you don't need to chop up a method chain, or create intermediate variables, every time you need to diagnose, treat, or prevent problems with your data processing pipeline.
 
@@ -19,13 +19,13 @@ As Fleetwood Mac says, you would never break the chain.
 
 ## Giving feedback and contributing
 
-If you run into trouble or have questions, I'd love to know. Please [open an issue](https://github.com/cparmet/pandas-vet/issues).
+If you run into trouble or have questions, I'd love to know. Please [open an issue](https://github.com/cparmet/pandas-checks/issues).
 
-Contributions are appreciated! Please open an [issue](https://github.com/cparmet/pandas-vet/issues) or submit a [pull request](https://github.com/cparmet/pandas-vet/pulls). Pandas Vet uses the wonderful libraries [poetry](https://python-poetry.org) for package and dependency management, [nox](https://nox.thea.codes/en/stable/) for test automation, and [mkdocs](https://www.mkdocs.org/) for docs.
+Contributions are appreciated! Please open an [issue](https://github.com/cparmet/pandas-checks/issues) or submit a [pull request](https://github.com/cparmet/pandas-checks/pulls). Pandas Checks uses the wonderful libraries [poetry](https://python-poetry.org) for package and dependency management, [nox](https://nox.thea.codes/en/stable/) for test automation, and [mkdocs](https://www.mkdocs.org/) for docs.
 
 
 ## License
 
-Pandas Vet is licensed under the [BSD-3 License](https://github.com/cparmet/pandas-vet/blob/main/LICENSE).
+Pandas Checks is licensed under the [BSD-3 License](https://github.com/cparmet/pandas-checks/blob/main/LICENSE).
 
 🐼🩺

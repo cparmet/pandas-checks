@@ -1,6 +1,6 @@
 # Options
 
-::: pandas_vet.options
+::: pandas_checks.options
     handler: python
     options:
       show_root_heading: False
