@@ -1,0 +1,11 @@
+site_name: 🐼🩺 Pandas Vet
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: false
+theme:
+  name: material
+repo_url: https://github.com/cparmet/pandas-vet/
