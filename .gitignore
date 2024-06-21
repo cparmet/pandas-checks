@@ -1,8 +1,6 @@
 __pycache__
 .DS_Store
 
-poetry.lock
-
 *.tsv
 *.xlsx
 *.parquet
