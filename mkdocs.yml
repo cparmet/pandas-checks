@@ -1,5 +1,4 @@
 site_name: 🐼🩺 Pandas Checks
-docs_dir: docs
 plugins:
   - search
   - mkdocstrings:
