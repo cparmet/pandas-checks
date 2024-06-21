@@ -9,8 +9,8 @@ So you don't need to chop up a functional method chain, or create intermediate v
 
 As Fleetwood Mac says, [you would never break the chain](https://www.youtube.com/watch?v=xwTPvcPYaOo).
 
-[!TIP]  
-See the [full documentation](https://cparmet.github.io/pandas-vet/) for all the details on the what, why, and how of Pandas Vet.
+> [!TIP]  
+> See the [full documentation](https://cparmet.github.io/pandas-vet/) for all the details on the what, why, and how of Pandas Vet.
 
 
 ## Installation
@@ -48,8 +48,8 @@ The `.check` methods will display the following results:
 <img src="static/sample_output.jpg" alt="Sample output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;"/>
 
 
-[!NOTE]  
-These methods did not modify `iris`. That's the difference between Pandas `.head()` and Pandas Vet's `.check.head()`.
+> [!NOTE]  
+> These methods did not modify `iris`. That's the difference between Pandas `.head()` and Pandas Vet's `.check.head()`.
 
 
 ## Methods available
@@ -137,8 +137,8 @@ pdv.set_format(precision=3, use_emojis=False)
 pdv.disable_checks()
 ```
 
-[!TIP]  
-Run `pdv.describe_options()` to see the arguments you can pass to `.set_format()`.
+> [!TIP]  
+> Run `pdv.describe_options()` to see the arguments you can pass to `.set_format()`.
 
 You can also adjust settings within a method chain. This will set the global configuration. So if you only want the settings to be changed during the method chain, reset them at the end.
 
