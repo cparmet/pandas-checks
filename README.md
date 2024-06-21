@@ -49,7 +49,7 @@ The `.check` methods will display the following results:
 
 
 > [!NOTE]  
-> These methods did not modify `iris`. That's the difference between Pandas `.head()` and Pandas Checks's `.check.head()`.
+> These methods did not modify `iris`. That's the difference between Pandas `.head()` and Pandas Checks `.check.head()`.
 
 
 ## Methods available
