@@ -1,7 +1,7 @@
 import pytest
 
-import pandas_vet as pdv
-from pandas_vet.display import (
+import pandas_checks as pdc
+from pandas_checks.display import (
     _display_line,
     _filter_emojis,
     _format_background_color,
@@ -13,11 +13,11 @@ from pandas_vet.display import (
 def test_filter_emojis():
     original = "Hello 🐼"
     no_emojis = "Hello"
-    pdv.set_format(use_emojis=True)
+    pdc.set_format(use_emojis=True)
     assert _filter_emojis(original) == original
-    pdv.set_format(use_emojis=False)
+    pdc.set_format(use_emojis=False)
     assert _filter_emojis(original) == no_emojis
-    pdv.set_format(use_emojis=True)  # Reset for later tests
+    pdc.set_format(use_emojis=True)  # Reset for later tests
 
 
 @pytest.mark.parametrize(
@@ -54,5 +54,5 @@ def test_display_line(capsys):
 
 
 def test_warning(capsys):
-    _warning("Test warning", "🐼🩺 Pandas Vet warning", True)
-    assert capsys.readouterr().out == f"\n🐼🩺 Pandas Vet warning: Test warning\n"
+    _warning("Test warning", "🐼🩺 Pandas Checks warning", True)
+    assert capsys.readouterr().out == f"\n🐼🩺 Pandas Checks warning: Test warning\n"

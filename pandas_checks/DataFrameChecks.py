@@ -1,13 +1,13 @@
 """
-This module installs Pandas Vet methods in the Pandas DataFrame class.
+This module installs Pandas Checks methods in the Pandas DataFrame class.
 
-To use Pandas Vet, don't access anything in this module directly. Instead just run `import pandas_vet` in your code. That changes what happens when you use regular Pandas dataframes:
+To use Pandas Checks, don't access anything in this module directly. Instead just run `import pandas_checks` in your code. That changes what happens when you use regular Pandas dataframes:
     ```
     import pandas as pd
-    import pandas_vet
+    import pandas_checks
     ```
 
-Now vet methods are accessible to Pandas dataframes as ".check":
+Now new methods are accessible to Pandas dataframes as ".check":
 
     ```
     (
@@ -47,7 +47,7 @@ from .utils import _lambda_to_string
 
 
 @pd.api.extensions.register_dataframe_accessor("check")
-class DataFrameVet:
+class DataFrameChecks:
     def __init__(self, pandas_obj: Union[pd.DataFrame, pd.Series]) -> None:
         self._obj = pandas_obj
 
@@ -93,10 +93,10 @@ class DataFrameVet:
                     line=condition_str,
                     colors={
                         "lead_in_text_color": pd.get_option(
-                            "vet.fail_message_fg_color"
+                            "pdchecks.fail_message_fg_color"
                         ),
                         "lead_in_background_color": pd.get_option(
-                            "vet.fail_message_bg_color"
+                            "pdchecks.fail_message_bg_color"
                         ),
                     },
                 )
@@ -105,9 +105,11 @@ class DataFrameVet:
                 lead_in=pass_message,
                 line=condition_str,
                 colors={
-                    "lead_in_text_color": pd.get_option("vet.pass_message_fg_color"),
+                    "lead_in_text_color": pd.get_option(
+                        "pdchecks.pass_message_fg_color"
+                    ),
                     "lead_in_background_color": pd.get_option(
-                        "vet.pass_message_bg_color"
+                        "pdchecks.pass_message_bg_color"
                     ),
                 },
             )
@@ -147,7 +149,7 @@ class DataFrameVet:
     ) -> pd.DataFrame:
         """Displays descriptive statistics about a DataFrame without modifying the DataFrame itself.
 
-        See Pandas docs for describe() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        See Pandas docs for describe() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas describe(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
@@ -168,7 +170,7 @@ class DataFrameVet:
         return self._obj
 
     def disable_checks(self, enable_asserts: bool = True) -> pd.DataFrame:
-        """Turns off Pandas Vet checks globally, such as in production mode. Does not modify the DataFrame itself.
+        """Turns off Pandas Checks checks globally, such as in production mode. Does not modify the DataFrame itself.
 
         Args
             enable_assert: Optionally, whether to also enable or disable assert statements
@@ -207,10 +209,10 @@ class DataFrameVet:
         return self._obj
 
     def enable_checks(self, enable_asserts: bool = True) -> pd.DataFrame:
-        """Globally enables Pandas Vet checks. Does not modify the DataFrame itself.
+        """Globally enables Pandas Checks checks. Does not modify the DataFrame itself.
 
         Args:
-            enable_asserts: Optionally, whether to globally enable or disable Pandas Vet assertions.
+            enable_asserts: Optionally, whether to globally enable or disable Pandas Checks assertions.
 
         Returns:
             The original DataFrame, unchanged.
@@ -242,9 +244,9 @@ class DataFrameVet:
         return self._obj
 
     def get_mode(
-        self, check_name: Union[str, None] = "🐼🩺 Pandas Vet mode"
+        self, check_name: Union[str, None] = "🐼🩺 Pandas Checks mode"
     ) -> pd.DataFrame:
-        """Displays the current values of Pandas Vet global options enable_checks and enable_asserts. Does not modify the DataFrame itself.
+        """Displays the current values of Pandas Checks global options enable_checks and enable_asserts. Does not modify the DataFrame itself.
 
         Args:
             check_name: An optional name for the check. Will be used as a preface the printed result.
@@ -293,7 +295,7 @@ class DataFrameVet:
     ) -> pd.DataFrame:
         """Displays a histogram for the DataFrame, without modifying the DataFrame itself.
 
-        See Pandas docs for hist() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        See Pandas docs for hist() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas hist(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
@@ -332,7 +334,7 @@ class DataFrameVet:
     ) -> pd.DataFrame:
         """Displays summary information about a DataFrame, without modifying the DataFrame itself.
 
-        See Pandas docs for info() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        See Pandas docs for info() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas info(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
@@ -358,7 +360,7 @@ class DataFrameVet:
     ) -> pd.DataFrame:
         """Displays the memory footprint of a DataFrame, without modifying the DataFrame itself.
 
-        See Pandas docs for memory_usage() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        See Pandas docs for memory_usage() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas memory_usage(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
@@ -415,7 +417,7 @@ class DataFrameVet:
     ) -> pd.DataFrame:
         """Displays the number of duplicated rows in a DataFrame, without modifying the DataFrame itself.
 
-        See Pandas docs for duplicated() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        See Pandas docs for duplicated() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before counting the number of duplicates. Example: `lambda df: df.shape[0]>10`. Applied before subset.
@@ -520,7 +522,7 @@ class DataFrameVet:
     ) -> pd.DataFrame:
         """Displays the number of unique rows in a single column, without modifying the DataFrame itself.
 
-        See Pandas docs for nunique() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        See Pandas docs for nunique() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             column: The name of a column to count uniques in. Applied after fn.
@@ -536,7 +538,7 @@ class DataFrameVet:
             (
                 _apply_modifications(
                     self._obj, fn=fn, subset=column
-                ).check.nunique(  # Apply fn, then filter to `column`, pass to SeriesVet.check.nunique()
+                ).check.nunique(  # Apply fn, then filter to `column`, pass to SeriesChecks.check.nunique()
                     fn=lambda df: df,  # Identity function
                     check_name=check_name,
                     **kwargs,
@@ -553,7 +555,7 @@ class DataFrameVet:
     ) -> pd.DataFrame:
         """Displays a plot of the DataFrame, without modifying the DataFrame itself.
 
-        See Pandas docs for plot() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        See Pandas docs for plot() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas plot(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
@@ -617,7 +619,7 @@ class DataFrameVet:
         """Displays the time elapsed since start_time.
 
         Args:
-            start_time: The index time when the stopwatch started, which comes from the Pandas Vet start_timer()
+            start_time: The index time when the stopwatch started, which comes from the Pandas Checks start_timer()
             lead_in: Optional text to print before the elapsed time.
             units: The units in which to display the elapsed time. Can be "auto", "seconds", "minutes", or "hours".
 
@@ -633,7 +635,7 @@ class DataFrameVet:
         return self._obj
 
     def reset_format(self) -> pd.DataFrame:
-        """Globally restores all Pandas Vet formatting options to their default "factory" settings. Does not modify the DataFrame itself.
+        """Globally restores all Pandas Checks formatting options to their default "factory" settings. Does not modify the DataFrame itself.
 
         Returns:
             The original DataFrame, unchanged.
@@ -642,12 +644,12 @@ class DataFrameVet:
         return self._obj
 
     def set_format(self, **kwargs: Any) -> pd.DataFrame:
-        """Configures selected formatting options for Pandas Vet. Does not modify the DataFrame itself.
+        """Configures selected formatting options for Pandas Checks. Does not modify the DataFrame itself.
 
-        Run pandas_vet.describe_options() to see a list of available options.
+        Run pandas_checks.describe_options() to see a list of available options.
 
         For example, .check.set_format(check_text_tag= "h1", use_emojis=False`)
-        will globally change Pandas Vet to display text results as H1 headings and remove all emojis.
+        will globally change Pandas Checks to display text results as H1 headings and remove all emojis.
 
         Args:
             **kwargs: Pairs of setting name and its new value.
@@ -659,11 +661,11 @@ class DataFrameVet:
         return self._obj
 
     def set_mode(self, enable_checks: bool, enable_asserts: bool) -> pd.DataFrame:
-        """Configures the operation mode for Pandas Vet globally. Does not modify the DataFrame itself.
+        """Configures the operation mode for Pandas Checks globally. Does not modify the DataFrame itself.
 
         Args:
-            enable_checks: Whether to run Pandas Vet checks globally.
-            enable_asserts: Whether to run calls to Pandas Vet .check.assert_data() statements globally.
+            enable_checks: Whether to run Pandas Checks checks globally.
+            enable_asserts: Whether to run calls to Pandas Checks .check.assert_data() statements globally.
 
         Returns:
             The original DataFrame, unchanged.
@@ -710,7 +712,7 @@ class DataFrameVet:
     ) -> pd.DataFrame:
         """Displays the last n rows of the DataFrame, without modifying the DataFrame itself.
 
-        See Pandas docs for tail() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        See Pandas docs for tail() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             n: Number of rows to show.
@@ -738,7 +740,7 @@ class DataFrameVet:
     ) -> pd.DataFrame:
         """Displays the unique values in a column, without modifying the DataFrame itself.
 
-        See Pandas docs for unique() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        See Pandas docs for unique() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             column: Column to check for unique values.
@@ -756,7 +758,7 @@ class DataFrameVet:
             (
                 _apply_modifications(
                     self._obj, fn=fn, subset=column
-                ).check.unique(  # Apply fn, then filter to `column`  # Use SeriesVet method
+                ).check.unique(  # Apply fn, then filter to `column`  # Use SeriesChecks method
                     fn=lambda df: df,  # Identify function
                     check_name=check_name,
                 )
@@ -773,7 +775,7 @@ class DataFrameVet:
     ) -> pd.DataFrame:
         """Displays the value counts for a column, without modifying the DataFrame itself.
 
-        See Pandas docs for value_counts() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        See Pandas docs for value_counts() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             column: Column to check for value counts.
@@ -792,7 +794,7 @@ class DataFrameVet:
             (
                 _apply_modifications(
                     self._obj, fn=fn, subset=column
-                ).check.value_counts(  # Apply fn, then filter to `column``  # Use SeriesVet method
+                ).check.value_counts(  # Apply fn, then filter to `column``  # Use SeriesChecks method
                     max_rows=max_rows,
                     fn=lambda df: df,  # Identity function
                     check_name=check_name,
@@ -814,7 +816,7 @@ class DataFrameVet:
 
         Format is inferred from path extension like .csv.
 
-        This functions uses the corresponding Pandas export function such as to_csv(). See Pandas docs for those functions for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        This functions uses the corresponding Pandas export function such as to_csv(). See Pandas docs for those functions for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             path: Path to write the file to.

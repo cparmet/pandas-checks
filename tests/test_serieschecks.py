@@ -4,7 +4,7 @@ import pytest
 from pandas.core.groupby.groupby import DataError
 from pytest_cases import parametrize_with_cases
 
-from pandas_vet import disable_checks, enable_checks, reset_format, start_timer
+from pandas_checks import disable_checks, enable_checks, reset_format, start_timer
 
 
 # Helper functions
@@ -36,7 +36,7 @@ def assert_multiline_string_equal(s1, s2):
 @parametrize_with_cases("df", cases=".datasets", prefix="df_")
 @parametrize_with_cases("test_method", prefix="method_")
 @pytest.mark.parametrize("enable_checks_flag", [True, False])
-def test_seriesvet_methods_dont_change_series(
+def test_SeriesChecks_methods_dont_change_series(
     df, test_method, tmp_path, enable_checks_flag
 ):
     if not enable_checks_flag:
@@ -49,7 +49,7 @@ def test_seriesvet_methods_dont_change_series(
     reset_format()
 
 
-def test_seriesvet_assert_data_pass(iris):
+def test_SeriesChecks_assert_data_pass(iris):
     # Shouldn't raise an exception
     (
         iris["sepal_length"].check.assert_data(
@@ -60,7 +60,7 @@ def test_seriesvet_assert_data_pass(iris):
     )
 
 
-def test_seriesvet_assert_data_fail(iris):
+def test_SeriesChecks_assert_data_fail(iris):
     with pytest.raises(DataError):
         assert iris["sepal_length"].check.assert_data(
             condition=lambda s: s.sum() < 0,
@@ -68,7 +68,7 @@ def test_seriesvet_assert_data_fail(iris):
         )
 
 
-def test_seriesvet_assert_data_custom_exception_fail(iris):
+def test_SeriesChecks_assert_data_custom_exception_fail(iris):
     with pytest.raises(ValueError):
         assert iris["sepal_length"].check.assert_data(
             condition=lambda s: s.sum() < 0,
@@ -77,7 +77,7 @@ def test_seriesvet_assert_data_custom_exception_fail(iris):
         )
 
 
-def test_seriesvet_describe(iris, capsys):
+def test_SeriesChecks_describe(iris, capsys):
     (
         iris["petal_width"].check.describe(
             fn=lambda s: (s * 2),
@@ -100,23 +100,23 @@ def test_seriesvet_describe(iris, capsys):
     )
 
 
-def test_seriesvet_disable_checks(iris, capsys):
+def test_SeriesChecks_disable_checks(iris, capsys):
     (iris.check.disable_checks().check.nnulls())
     assert capsys.readouterr().out == ""
     enable_checks()  # reset
 
 
-def test_seriesvet_dtype(iris, capsys):
+def test_SeriesChecks_dtype(iris, capsys):
     iris["species"].check.dtype()
     assert capsys.readouterr().out == """\n🗂️ Data type: object\n"""
 
 
-def test_seriesvet_function(iris, capsys):
+def test_SeriesChecks_function(iris, capsys):
     iris["species"].check.function(fn=lambda s: s.shape[0], check_name="Test")
     assert capsys.readouterr().out == """\nTest: 150\n"""
 
 
-def test_seriesvet_get_mode(iris, capsys):
+def test_SeriesChecks_get_mode(iris, capsys):
     iris.check.get_mode(check_name="Test")
     assert (
         capsys.readouterr().out
@@ -124,7 +124,7 @@ def test_seriesvet_get_mode(iris, capsys):
     )
 
 
-def test_seriesvet_head(iris, capsys):
+def test_SeriesChecks_head(iris, capsys):
     iris["sepal_length"].check.head(n=1, fn=lambda s: (s * 2), check_name="Test")
     assert_multiline_string_equal(
         capsys.readouterr().out,
@@ -134,12 +134,12 @@ def test_seriesvet_head(iris, capsys):
     )
 
 
-def test_seriesvet_hist_no_terminal_display(iris, capsys):
+def test_SeriesChecks_hist_no_terminal_display(iris, capsys):
     iris["sepal_width"].check.hist()
     assert capsys.readouterr().out == ""
 
 
-def test_seriesvet_info(iris, capsys):
+def test_SeriesChecks_info(iris, capsys):
     iris["petal_width"].check.info(
         fn=lambda s: (s * 2),
         check_name="Test",
@@ -160,7 +160,7 @@ memory usage: 1.3 KB
     )
 
 
-def test_seriesvet_memory_usage(iris, capsys):
+def test_SeriesChecks_memory_usage(iris, capsys):
     (
         iris["petal_width"].check.memory_usage(
             fn=lambda s: s.dropna(), check_name="Test", deep=False, index=False
@@ -173,12 +173,12 @@ def test_seriesvet_memory_usage(iris, capsys):
     )
 
 
-def test_seriesvet_ndups(iris, capsys):
+def test_SeriesChecks_ndups(iris, capsys):
     iris["species"].check.ndups(fn=lambda s: s.dropna(), check_name="Test")
     assert capsys.readouterr().out == "\nTest: 147\n"
 
 
-def test_seriesvet_ndups_keep(iris, capsys):
+def test_SeriesChecks_ndups_keep(iris, capsys):
     """Test that a kwarg is getting passed to Pandas's memory_usage()"""
     iris["species"].check.ndups(
         fn=lambda s: s.dropna(),
@@ -188,7 +188,7 @@ def test_seriesvet_ndups_keep(iris, capsys):
     assert capsys.readouterr().out == "\nTest: 150\n"
 
 
-def test_seriesvet_nnulls(iris, capsys):
+def test_SeriesChecks_nnulls(iris, capsys):
     iris["species"].check.nnulls(
         fn=lambda s: s.replace("versicolor", np.nan),
         check_name="Test",
@@ -196,29 +196,29 @@ def test_seriesvet_nnulls(iris, capsys):
     assert capsys.readouterr().out == "\nTest: 50\n"
 
 
-def test_seriesvet_nrows(iris, capsys):
+def test_SeriesChecks_nrows(iris, capsys):
     iris["species"].check.nrows(fn=lambda s: s[s == "versicolor"], check_name="Test")
     assert capsys.readouterr().out == "\nTest: 50\n"
 
 
-def test_seriesvet_nunique(iris, capsys):
+def test_SeriesChecks_nunique(iris, capsys):
     iris["species"].check.nunique(
         fn=lambda s: s[s != "versicolor"], check_name="Test", dropna=False
     )
     assert capsys.readouterr().out == "\nTest: 2\n"
 
 
-def test_seriesvet_plot_no_terminal_display(iris, capsys):
+def test_SeriesChecks_plot_no_terminal_display(iris, capsys):
     iris["sepal_width"].check.plot()
     assert capsys.readouterr().out == ""
 
 
-def test_seriesvet_print_str(iris, capsys):
+def test_SeriesChecks_print_str(iris, capsys):
     iris.check.print("Howdy!")
     assert capsys.readouterr().out == "\nHowdy!\n"
 
 
-def test_seriesvet_print_series(iris, capsys):
+def test_SeriesChecks_print_series(iris, capsys):
     iris["sepal_length"].check.print(
         fn=lambda s: s * 2,
         check_name="Test",
@@ -246,7 +246,7 @@ def test_seriesvet_print_series(iris, capsys):
         ("h", "h"),
     ),
 )
-def test_seriesvet_print_time_elapsed_units(iris, capsys, units_outputcontains):
+def test_SeriesChecks_print_time_elapsed_units(iris, capsys, units_outputcontains):
     """We can't test the actual timings, since runtimes vary. So we'll test units"""
     units = units_outputcontains[0]
     output_contains = units_outputcontains[1]
@@ -258,7 +258,7 @@ def test_seriesvet_print_time_elapsed_units(iris, capsys, units_outputcontains):
     assert output_contains in capsys.readouterr().out
 
 
-def test_seriesvet_reset_format(iris, capsys):
+def test_SeriesChecks_reset_format(iris, capsys):
     (
         iris["sepal_length"]
         .check.set_format(precision=4, use_emojis=False)
@@ -277,7 +277,7 @@ def test_seriesvet_reset_format(iris, capsys):
     )
 
 
-def test_seriesvet_set_format(iris, capsys):
+def test_SeriesChecks_set_format(iris, capsys):
     (
         iris["sepal_length"]
         .check.set_format(precision=10, use_emojis=False)
@@ -296,7 +296,7 @@ def test_seriesvet_set_format(iris, capsys):
     )
 
 
-def test_seriesvet_set_mode(iris, capsys):
+def test_SeriesChecks_set_mode(iris, capsys):
     (
         iris["sepal_length"]
         .check.set_mode(enable_checks=False, enable_asserts=False)
@@ -307,14 +307,14 @@ def test_seriesvet_set_mode(iris, capsys):
     assert capsys.readouterr().out == ""
 
 
-def test_seriesvet_shape(iris, capsys):
+def test_SeriesChecks_shape(iris, capsys):
     iris["sepal_width"].check.shape(
         fn=lambda s: pd.concat([s, s], ignore_index=True, axis=0), check_name="Test"
     )
     assert capsys.readouterr().out == "\nTest: (300,)\n"
 
 
-def test_seriesvet_tail(iris, capsys):
+def test_SeriesChecks_tail(iris, capsys):
     (iris["sepal_length"].check.tail(n=1, fn=lambda s: s * 2, check_name="Test"))
     assert_multiline_string_equal(
         capsys.readouterr().out,
@@ -324,7 +324,7 @@ def test_seriesvet_tail(iris, capsys):
     )
 
 
-def test_seriesvet_unique(iris, capsys):
+def test_SeriesChecks_unique(iris, capsys):
     iris["species"].check.unique(
         fn=lambda s: s.str.upper(),
         check_name="🛼 Unique",
@@ -334,7 +334,7 @@ def test_seriesvet_unique(iris, capsys):
     )
 
 
-def test_seriesvet_value_counts(iris, capsys):
+def test_SeriesChecks_value_counts(iris, capsys):
     """Test that kwargs are getting passed to Pandas's value_counts()"""
     iris["species"].check.value_counts(
         fn=lambda s: s.replace("setosa", None),
@@ -365,7 +365,7 @@ def test_seriesvet_value_counts(iris, capsys):
         ("tsv", "tsv"),
     ),
 )
-def test_seriesvet_write(iris, format_extension, tmp_path, capsys):
+def test_SeriesChecks_write(iris, format_extension, tmp_path, capsys):
     extension = format_extension[1]
     f = lambda s: s[s == "versicolor"].reset_index()  # Reset is for Feather
     path = f"{tmp_path}/test.{extension}"

@@ -1,4 +1,4 @@
-::: pandas_vet.run_checks
+::: pandas_checks.run_checks
     handler: python
     options:
       show_root_heading: False

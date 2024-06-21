@@ -3,18 +3,18 @@
 ## Installation
 
 ```bash
-pip install pandas-vet
+pip install pandas-checks
 ```
 
 ## Basic usage
-After installing Pandas Vet, import it:
+After installing Pandas Checks, import it:
 
 ```python
 import pandas as pd
-import pandas_vet
+import pandas_checks
 ```
 
-Now you can use `.check` on your Pandas DataFrames and Series. You don't need to access `pandas_vet` directly, just work with Pandas as you normally would. The new Pandas Vet methods are available when you work with Pandas in Jupyter, IPython, and terminal environments.
+Now you can use `.check` on your Pandas DataFrames and Series. You don't need to access `pandas_checks` directly, just work with Pandas as you normally would. The new Pandas Checks methods are available when you work with Pandas in Jupyter, IPython, and terminal environments.
 
 ```python
 iris = pd.read_csv('iris.csv')
@@ -30,11 +30,11 @@ iris_new = (
 
 The `.check` methods will display the following results:
 
-<img src="https://raw.githubusercontent.com/cparmet/pandas-vet/main/static/sample_output.jpg" alt="Sample output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;"/>
+<img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/sample_output.jpg" alt="Sample output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;"/>
 
 
 > [!NOTE]
-> These methods did not modify `iris`. That's the difference between Pandas `.head()` and Pandas Vet's `.check.head()`.
+> These methods did not modify `iris`. That's the difference between Pandas `.head()` and Pandas Checks `.check.head()`.
 
 
 ## Methods available
@@ -53,7 +53,7 @@ Here's what's in the doctor's bag.
         - `.check.tail()`
         - `.check.unique()`
         - `.check.value_counts()`
-    - New functions in Pandas Vet:
+    - New functions in Pandas Checks:
         - `.check.function()`: Apply an arbitrary lambda function to your data and see the result
         - `.check.ncols()`
         - `.check.ndups()`
@@ -64,17 +64,17 @@ Here's what's in the doctor's bag.
     - `.check.write()`: Export the current data, inferring file format from the name
 
 * **Time your code**
-    - `.check.print_time_elapsed(start_time)`: Print the execution time since you called `start_time = pdv.start_timer()`
+    - `.check.print_time_elapsed(start_time)`: Print the execution time since you called `start_time = pdc.start_timer()`
     - Tip: You can also use the stopwatch outside a method chain:
         ```python
-        from pandas_vet import print_elapsed_time, start_timer
+        from pandas_checks import print_elapsed_time, start_timer
 
         start_time = start_timer()
         ...
         print_elapsed_time(start_time, units="seconds")
         ```
 
-* **Turn off Pandas Vet**
+* **Turn off Pandas Checks**
     - `.check.disable_checks()`: Don't run checks in this method chain, for production mode etc
     - `.check.ensable_checks()`
 
@@ -86,12 +86,12 @@ Here's what's in the doctor's bag.
 
 ## Customizing results
 
-You can use Pandas Vet methods like the regular Pandas methods. They accept the same arguments. For example, you can pass:
+You can use Pandas Checks methods like the regular Pandas methods. They accept the same arguments. For example, you can pass:
 * `.check.head(7)`
 * `.check.value_counts(column="species", dropna=False, normalize=True)`
 * `.check.plot(kind="scatter", x="sepal_width", y="sepal_length")`.
 
-In addition, most Pandas Vet methods accept 3 additional arguments:
+In addition, most Pandas Checks methods accept 3 additional arguments:
 1. `check_name`: text to display before the result of the check
 2. `fn`: a lambda function that modifies the data displayed by the check
 3. `subset`: limit a check to certain columns
@@ -105,24 +105,24 @@ iris_new = (
     .check.describe(subset=['sepal_width', 'sepal_length'])  # Only check certain columns
 )
 ```
-<img src="https://raw.githubusercontent.com/cparmet/pandas-vet/main/static/power_user_output.jpg" alt="Power user output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;">
+<img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/power_user_output.jpg" alt="Power user output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;">
 
 
 ## Global configuration
-You can customize Pandas Vet:
+You can customize Pandas Checks:
 
 ```python
-import pandas_vet as pdv
+import pandas_checks as pdc
 
 # Set output precision and turn off the cute emojis
-pdv.set_format(precision=3, use_emojis=False)
+pdc.set_format(precision=3, use_emojis=False)
 
-# Don't run any Pandas Vet checks globally, such as when switching your code to production mode
-pdv.disable_checks()
+# Don't run any Pandas Checks checks globally, such as when switching your code to production mode
+pdc.disable_checks()
 ```
 
 > [!Tip]
-> Run `pdv.describe_options()` to see the arguments you can pass to `.set_format()`.
+> Run `pdc.describe_options()` to see the arguments you can pass to `.set_format()`.
 
 You can also adjust settings within a method chain. This will set the global configuration. So if you only want the settings to be changed during the method chain, reset them at the end.
 
@@ -135,7 +135,7 @@ iris_new = (
     .check.reset_format() # Restore default format
 )
 
-# Turn off Pandas Vet
+# Turn off Pandas Checks
 iris_new = (
     iris
     .check.disable_checks()

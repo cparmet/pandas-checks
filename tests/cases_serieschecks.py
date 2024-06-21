@@ -1,6 +1,6 @@
 """Series methods to test in batch"""
 
-import pandas_vet as pdv
+import pandas_checks as pdc
 
 
 def method_assert_data():
@@ -97,7 +97,7 @@ def method_print():
 
 def method_print_time_elapsed():
     return lambda s, _: s.check.print_time_elapsed(
-        pdv.start_timer(), lead_in="Test", units="minutes"
+        pdc.start_timer(), lead_in="Test", units="minutes"
     )
 
 

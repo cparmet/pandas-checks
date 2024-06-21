@@ -1,13 +1,13 @@
 """
-This module installs Pandas Vet methods in the Pandas Series class.
+This module installs Pandas Checks methods in the Pandas Series class.
 
-To use Pandas Vet, don't access anything in this module directly. Instead just run `import pandas_vet` in your code. That changes what happens when you use regular Pandas Series:
+To use Pandas Checks, don't access anything in this module directly. Instead just run `import pandas_checks` in your code. That changes what happens when you use regular Pandas Series:
     ```
     import pandas as pd
-    import pandas_vet
+    import pandas_checks
     ```
 
-Now vet methods are accessible to Pandas Series as ".check":
+Now new methods are accessible to Pandas Series as ".check":
 
     ```
     (
@@ -42,7 +42,7 @@ from .utils import _lambda_to_string
 
 
 @pd.api.extensions.register_series_accessor("check")
-class SeriesVet:
+class SeriesChecks:
     def __init__(self, pandas_obj: pd.Series) -> None:
         self._obj = pandas_obj
 
@@ -85,10 +85,10 @@ class SeriesVet:
                     line=condition_str,
                     colors={
                         "lead_in_text_color": pd.get_option(
-                            "vet.fail_message_fg_color"
+                            "pdchecks.fail_message_fg_color"
                         ),
                         "lead_in_background_color": pd.get_option(
-                            "vet.fail_message_bg_color"
+                            "pdchecks.fail_message_bg_color"
                         ),
                     },
                 )
@@ -97,9 +97,11 @@ class SeriesVet:
                 lead_in=pass_message,
                 line=condition_str,
                 colors={
-                    "lead_in_text_color": pd.get_option("vet.pass_message_fg_color"),
+                    "lead_in_text_color": pd.get_option(
+                        "pdchecks.pass_message_fg_color"
+                    ),
                     "lead_in_background_color": pd.get_option(
-                        "vet.pass_message_bg_color"
+                        "pdchecks.pass_message_bg_color"
                     ),
                 },
             )
@@ -113,7 +115,7 @@ class SeriesVet:
     ) -> pd.Series:
         """Displays descriptive statistics about a Series, without modifying the Series itself.
 
-        See Pandas docs for describe() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        See Pandas docs for describe() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas describe(). Example: `lambda s: s.dropna()`.
@@ -129,7 +131,7 @@ class SeriesVet:
         return self._obj
 
     def disable_checks(self, enable_asserts: bool = True) -> pd.Series:
-        """Turns off Pandas Vet checks globally, such as in production mode. Does not modify the Series itself.
+        """Turns off Pandas Checks checks globally, such as in production mode. Does not modify the Series itself.
 
         Args
             enable_assert: Optionally, whether to also enable or disable assert statements
@@ -165,10 +167,10 @@ class SeriesVet:
         return self._obj
 
     def enable_checks(self, enable_asserts: bool = True) -> pd.Series:
-        """Globally enables Pandas Vet checks. Does not modify the Series itself.
+        """Globally enables Pandas Checks checks. Does not modify the Series itself.
 
         Args:
-            enable_asserts: Optionally, whether to globally enable or disable Pandas Vet assertions.
+            enable_asserts: Optionally, whether to globally enable or disable Pandas Checks assertions.
 
         Returns:
             The original Series, unchanged.
@@ -198,9 +200,9 @@ class SeriesVet:
         return self._obj
 
     def get_mode(
-        self, check_name: Union[str, None] = "⚙️ Pandas Vet mode"
+        self, check_name: Union[str, None] = "⚙️ Pandas Checks mode"
     ) -> pd.Series:
-        """Displays the current values of Pandas Vet global options enable_checks and enable_asserts. Does not modify the Series itself.
+        """Displays the current values of Pandas Checks global options enable_checks and enable_asserts. Does not modify the Series itself.
 
         Args:
             check_name: An optional name for the check. Will be used as a preface the printed result.
@@ -242,7 +244,7 @@ class SeriesVet:
     ) -> pd.Series:
         """Displays a histogram for the Series's distribution, without modifying the Series itself.
 
-        See Pandas docs for hist() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        See Pandas docs for hist() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas head(). Example: `lambda s: s.dropna()`.
@@ -268,7 +270,7 @@ class SeriesVet:
     ) -> pd.Series:
         """Displays summary information about a Series, without modifying the Series itself.
 
-        See Pandas docs for info() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        See Pandas docs for info() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas info(). Example: `lambda s: s.dropna()`.
@@ -292,7 +294,7 @@ class SeriesVet:
     ) -> pd.Series:
         """Displays the memory footprint of a Series, without modifying the Series itself.
 
-        See Pandas docs for memory_usage() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        See Pandas docs for memory_usage() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas memory_usage(). Example: `lambda s: s.dropna()`.
@@ -318,7 +320,7 @@ class SeriesVet:
     ) -> pd.Series:
         """Displays the number of duplicated rows in the Series, without modifying the Series itself.
 
-        See Pandas docs for duplicated() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        See Pandas docs for duplicated() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             fn: An optional lambda function to apply to the Series before counting the number of duplicates. Example: `lambda s: s.dropna()`.
@@ -381,7 +383,7 @@ class SeriesVet:
     ) -> pd.Series:
         """Displays the number of unique rows in a Series, without modifying the Series itself.
 
-        See Pandas docs for nunique() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        See Pandas docs for nunique() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas nunique(). Example: `lambda s: s.dropna()`.
@@ -409,7 +411,7 @@ class SeriesVet:
     ) -> pd.Series:
         """Displays a plot of the Series, without modifying the Series itself.
 
-        See Pandas docs for plot() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        See Pandas docs for plot() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas plot(). Example: `lambda s: s.dropna()`.
@@ -461,7 +463,7 @@ class SeriesVet:
         """Displays the time elapsed since start_time.
 
         Args:
-        start_time: The index time when the stopwatch started, which comes from the Pandas Vet start_timer()
+        start_time: The index time when the stopwatch started, which comes from the Pandas Checks start_timer()
         lead_in: Optional text to print before the elapsed time.
         units: The units in which to display the elapsed time. Can be "auto", "seconds", "minutes", or "hours".
 
@@ -477,7 +479,7 @@ class SeriesVet:
         return self._obj
 
     def reset_format(self) -> pd.Series:
-        """Globally restores all Pandas Vet formatting options to their default "factory" settings. Does not modify the Series itself.
+        """Globally restores all Pandas Checks formatting options to their default "factory" settings. Does not modify the Series itself.
 
         Returns:
             The original Series, unchanged.
@@ -486,10 +488,10 @@ class SeriesVet:
         return self._obj
 
     def set_format(self, **kwargs: Any) -> pd.Series:
-        """Configures selected formatting options for Pandas Vet. Run pandas_vet.describe_options() to see a list of available options. Does not modify the Series itself
+        """Configures selected formatting options for Pandas Checks. Run pandas_checks.describe_options() to see a list of available options. Does not modify the Series itself
 
         For example, .check.set_format(check_text_tag= "h1", use_emojis=False`)
-        will globally change Pandas Vet to display text results as H1 headings and remove all emojis.
+        will globally change Pandas Checks to display text results as H1 headings and remove all emojis.
 
         Args:
             **kwargs: Pairs of setting name and its new value.
@@ -501,11 +503,11 @@ class SeriesVet:
         return self._obj
 
     def set_mode(self, enable_checks: bool, enable_asserts: bool) -> pd.Series:
-        """Configures the operation mode for Pandas Vet globally. Does not modify the Series itself.
+        """Configures the operation mode for Pandas Checks globally. Does not modify the Series itself.
 
         Args:
-            enable_checks: Whether to run Pandas Vet checks globally.
-            enable_asserts: Whether to run calls to Pandas Vet .check.assert_data() globally.
+            enable_checks: Whether to run Pandas Checks checks globally.
+            enable_asserts: Whether to run calls to Pandas Checks .check.assert_data() globally.
 
         Returns:
             The original Series, unchanged.
@@ -599,7 +601,7 @@ class SeriesVet:
     ) -> pd.Series:
         """Displays the value counts for a Series, without modifying the Series itself.
 
-        See Pandas docs for value_counts() for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        See Pandas docs for value_counts() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             max_rows: Maximum number of rows to show in the value counts.
@@ -634,7 +636,7 @@ class SeriesVet:
 
         Format is inferred from path extension like .csv.
 
-        This functions uses the corresponding Pandas export function such as to_csv(). See Pandas docs for those functions for additional usage information, including more configuration options you can pass to this Pandas Vet method.
+        This functions uses the corresponding Pandas export function such as to_csv(). See Pandas docs for those functions for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Args:
             path: Path to write the file to.

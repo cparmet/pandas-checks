@@ -1,4 +1,4 @@
-site_name: 🐼🩺 Pandas Vet
+site_name: 🐼🩺 Pandas Checks
 docs_dir: docs
 plugins:
   - search
@@ -9,4 +9,4 @@ plugins:
             show_source: false
 theme:
   name: material
-repo_url: https://github.com/cparmet/pandas-vet/
+repo_url: https://github.com/cparmet/pandas-checks/

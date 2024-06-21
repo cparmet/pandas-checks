@@ -1,7 +1,7 @@
 """
 Provides a timer utility for tracking the elapsed time of steps within a Pandas method chain.
 
-Note that these functions rely on the `vet.enable_checks` option being enabled in the Pandas configuration, as it is by default.
+Note that these functions rely on the `pdchecks.enable_checks` option being enabled in the Pandas configuration, as it is by default.
 """
 from time import time
 from typing import Union
@@ -14,7 +14,7 @@ from .options import get_mode
 
 # Public functions
 def start_timer(verbose: bool = False) -> float:
-    """Starts a Pandas Vet stopwatch to measure run time between operations, such as steps in a Pandas method chain. Use print_elapsed_time() to get timings.
+    """Starts a Pandas Checks stopwatch to measure run time between operations, such as steps in a Pandas method chain. Use print_elapsed_time() to get timings.
 
     Args:
         verbose: Whether to print a message that the timer has started.
@@ -38,7 +38,7 @@ def print_time_elapsed(
     """Displays the time elapsed since start_time.
 
     Args:
-        start_time: The index time when the stopwatch started, which comes from the Pandas Vet start_timer()
+        start_time: The index time when the stopwatch started, which comes from the Pandas Checks start_timer()
         lead_in: Optional text to print before the elapsed time.
         units: The units in which to display the elapsed time. Accepted values:
             - "auto"
@@ -53,7 +53,7 @@ def print_time_elapsed(
 
     Note:
         If you change the default values for this function's argument,
-        change them in `.check.print_time_elapsed` too in DataFrameVet and SeriesVet
+        change them in `.check.print_time_elapsed` too in DataFrameChecks and SeriesChecks
         so they're exposed to the user.
     """
 

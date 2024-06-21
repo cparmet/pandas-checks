@@ -1,35 +1,35 @@
-# 🐼🩺 Pandas Vet
+# 🐼🩺 Pandas Checks
 
 ## Introduction
-**Pandas Vet** is a Python library for data science and data engineering. It adds non-invasive health checks for Pandas method chains.
+**Pandas Checks** is a Python library for data science and data engineering. It adds non-invasive health checks for Pandas method chains.
 
-The veterinarian can inspect and validate your data at various points in your Pandas pipelines, without modifying the underlying data.
+It can inspect and validate your data at various points in your Pandas pipelines, without modifying the underlying data.
 
 So you don't need to chop up a functional method chain, or create intermediate variables, every time you need to diagnose, treat, or prevent problems with data processing.
 
 As Fleetwood Mac says, [you would never break the chain](https://www.youtube.com/watch?v=xwTPvcPYaOo).
 
 > [!TIP]  
-> See the [full documentation](https://cparmet.github.io/pandas-vet/) for all the details on the what, why, and how of Pandas Vet.
+> See the [full documentation](https://cparmet.github.io/pandas-Checks/) for all the details on the what, why, and how of Pandas Checks.
 
 
 ## Installation
 
 ```bash
-pip install pandas-vet
+pip install pandas-Checks
 ```
 
 ## Usage
-After installing Pandas Vet, import it:
+After installing Pandas Checks, import it:
 
 ```python
 import pandas as pd
-import pandas_vet
+import pandas_checks
 ```
 
-Now you can use `.check` on your Pandas DataFrames and Series. You don't need to access `pandas_vet` directly, just work with Pandas as you normally would. The new Pandas Vet methods are available when you work with Pandas in Jupyter, IPython, and terminal environments.
+Now you can use `.check` on your Pandas DataFrames and Series. You don't need to access `pandas_checks` directly, just work with Pandas as you normally would. The new Pandas Checks methods are available when you work with Pandas in Jupyter, IPython, and terminal environments.
 
-Here's a basic example of using Pandas Vet:
+Here's a basic example of using Pandas Checks:
 
 ```python
 iris = pd.read_csv('iris.csv')
@@ -49,7 +49,7 @@ The `.check` methods will display the following results:
 
 
 > [!NOTE]  
-> These methods did not modify `iris`. That's the difference between Pandas `.head()` and Pandas Vet's `.check.head()`.
+> These methods did not modify `iris`. That's the difference between Pandas `.head()` and Pandas Checks's `.check.head()`.
 
 
 ## Methods available
@@ -68,7 +68,7 @@ Here's what's in the doctor's bag.
         - `.check.tail()`
         - `.check.unique()`
         - `.check.value_counts()`
-    - New functions in Pandas Vet:
+    - New functions in Pandas Checks:
         - `.check.function()`: Apply an arbitrary lambda function to your data and see the result
         - `.check.ncols()`
         - `.check.ndups()`
@@ -79,17 +79,17 @@ Here's what's in the doctor's bag.
     - `.check.write()`: Export the current data, inferring file format from the name
 
 * **Time your code**
-    - `.check.print_time_elapsed(start_time)`: Print the execution time since you called `start_time = pdv.start_timer()`
+    - `.check.print_time_elapsed(start_time)`: Print the execution time since you called `start_time = pdc.start_timer()`
     - Tip: You can also use the stopwatcht outside a method chain:
         ```python
-        from pandas_vet import print_elapsed_time, start_timer
+        from pandas_checks import print_elapsed_time, start_timer
 
         start_time = start_timer()
         ...
         print_elapsed_time(start_time, units="seconds")
         ```
 
-* **Turn off Pandas Vet**
+* **Turn off Pandas Checks**
     - `.check.disable_checks()`: Don't run checks in this method chain, for production mode etc
     - `.check.ensable_checks()`
 
@@ -101,12 +101,12 @@ Here's what's in the doctor's bag.
 
 ## Customizing results
 
-You can use Pandas Vet methods like the regular Pandas methods. They accept the same arguments. For example, you can pass:
+You can use Pandas Checks methods like the regular Pandas methods. They accept the same arguments. For example, you can pass:
 * `.check.head(7)`
 * `.check.value_counts(column="species", dropna=False, normalize=True)`
 * `.check.plot(kind="scatter", x="sepal_width", y="sepal_length")`.
 
-In addition, most Pandas Vet methods accept 3 additional arguments:
+In addition, most Pandas Checks methods accept 3 additional arguments:
 1. `check_name`: text to display before the result of the check
 2. `fn`: a lambda function that modifies the data displayed by the check
 3. `subset`: limit a check to certain columns
@@ -124,20 +124,20 @@ iris_new = (
 
 
 ## Global configuration
-You can customize Pandas Vet:
+You can customize Pandas Checks:
 
 ```python
-import pandas_vet as pdv
+import pandas_checks as pdc
 
 # Set output precision and turn off the cute emojis
-pdv.set_format(precision=3, use_emojis=False)
+pdc.set_format(precision=3, use_emojis=False)
 
-# Don't run any Pandas Vet checks globally, such as when switching your code to production mode
-pdv.disable_checks()
+# Don't run any Pandas Checks checks globally, such as when switching your code to production mode
+pdc.disable_checks()
 ```
 
 > [!TIP]  
-> Run `pdv.describe_options()` to see the arguments you can pass to `.set_format()`.
+> Run `pdc.describe_options()` to see the arguments you can pass to `.set_format()`.
 
 You can also adjust settings within a method chain. This will set the global configuration. So if you only want the settings to be changed during the method chain, reset them at the end.
 
@@ -150,7 +150,7 @@ iris_new = (
     .check.reset_format() # Restore default format
 )
 
-# Turn off Pandas Vet
+# Turn off Pandas Checks
 iris_new = (
     iris
     .check.disable_checks()
@@ -163,11 +163,11 @@ iris_new = (
 
 If you run into trouble or have questions, I'd love to know. Please open an issue.
 
-Contributions are appreciated! Please see [more details](https://cparmet.github.io/pandas-vet/#giving-feedback-and-contributing).
+Contributions are appreciated! Please see [more details](https://cparmet.github.io/pandas-Checks/#giving-feedback-and-contributing).
 
 
 ## License
 
-Pandas Vet is licensed under the [BSD-3 License](LICENSE).
+Pandas Checks is licensed under the [BSD-3 License](LICENSE).
 
 🐼🩺

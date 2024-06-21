@@ -1,8 +1,8 @@
 import pandas as pd
 import pytest
 
-import pandas_vet as pdv
-from pandas_vet.run_checks import _apply_modifications, _check_data
+import pandas_checks as pdc
+from pandas_checks.run_checks import _apply_modifications, _check_data
 
 
 def test_apply_modifications_lambda():
@@ -43,7 +43,7 @@ def test_check_data_enable_checks(capsys):
     modify_fn = lambda x: x
     subset = None
     check_name = "Test Check"
-    pdv.enable_checks()
+    pdc.enable_checks()
     _check_data(df, check_fn, modify_fn, subset, check_name)
     assert "Test Check" in capsys.readouterr().out  # Partial check
 
@@ -54,7 +54,7 @@ def test_check_data_disable_checks(capsys):
     modify_fn = lambda x: x
     subset = None
     check_name = "Test Check"
-    pdv.disable_checks()
+    pdc.disable_checks()
     _check_data(df, check_fn, modify_fn, subset, check_name)
     assert capsys.readouterr().out == ""
-    pdv.enable_checks()  # Reset
+    pdc.enable_checks()  # Reset
