@@ -37,7 +37,7 @@ def _check_data(
     subset: Union[str, List, None] = None,
     check_name: Union[str, None] = None,
 ) -> None:
-    """Runs a selected Pandas Checks check on a data object
+    """Runs a selected check on a data object
 
     Args:
         data: A Pandas DataFrame, Series, string, or other variable

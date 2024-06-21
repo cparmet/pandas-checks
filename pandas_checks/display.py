@@ -334,7 +334,7 @@ def _display_line(
 
 
 def _display_check(data: Any, name: Union[str, None] = None) -> None:
-    """Renders the result of a Pandas Checks check.
+    """Renders the result of a Pandas Checks method.
 
     Args:
         data: The data to display.

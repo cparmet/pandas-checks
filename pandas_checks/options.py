@@ -152,7 +152,7 @@ def _initialize_format_options(options: Union[List[str], None] = None) -> None:
             default_value=True,
             description="""
     : bool
-    Whether Pandas Checks check_names should keep emojis. This includes default check_names from the factory and user-supplied check_names`.
+    Whether Pandas Checks `check_names` text should keep emojis. This includes default check_names from the factory and user-supplied check_names`.
     """,
             validator=cf.is_instance_factory(bool),
         )
