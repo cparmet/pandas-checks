@@ -31,17 +31,40 @@ import pandas_checks
 
 Now you can use `.check` on your Pandas DataFrames and Series. You don't need to access `pandas_checks` directly, just work with Pandas as you normally would. The new Pandas Checks methods are available when you work with Pandas in Jupyter, IPython, and terminal environments.
 
-Here's a basic example of using Pandas Checks:
+Say you have a nice function that cleans up a dataset about pretty flowers.
 
 ```python
-iris = pd.read_csv('iris.csv')
+def clean_iris_data(iris: pd.DataFrame) -> pd.DataFrame:
+    return (
+        iris
+        .dropna() # Drop rows with any null values
+        .rename(columns={"FLOWER_SPECIES": "species"}) # Rename a column
+        .query("species=='setosa'") # Filter to rows with a certain value
+    )
+```
 
-iris_new = (
-    iris
-    .check.assert_data(lambda df: (df['sepal_width']> 0).all(), fail_message="Sepal width can't be negative")  # Validate your data
-    # ... Do your data processing in here ...
-    .check.hist(column='petal_length')  # Plot a distribution
-    .check.head(3)  # Display the first few rows
+But what if you want to see what's happening to the data along the way? Or understand why a new `iris` data file makes the cleaned data look weird? Or make the pipeline more robust? 
+  
+You can add some `.check` steps.
+
+```python
+
+(
+    pd.read_csv('iris.csv')
+    
+    # Validate that the data doesn't violate any assumptions
+    .check.assert_data(lambda df: (df['sepal_width']> 0).all(), fail_message="Sepal width can't be negative")  
+
+    .dropna()
+
+    # Plot the distribution of a column after cleaning
+    .check.hist(column='petal_length') 
+
+    .rename(columns={"FLOWER_SPECIES": "species"})
+    .query("species=='setosa'")
+    
+    # Display the first few rows after cleaning
+    .check.head(3)  
 )
 ```
 
@@ -50,8 +73,7 @@ The `.check` methods will display the following results:
 <img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/sample_output.jpg" alt="Sample output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;"/>
   
   
-> ⓘ Note:  
-> These methods did not modify `iris`. That's the difference between Pandas `.head()` and Pandas Checks `.check.head()`.
+The `.check` methods didn't modify how the `iris` data is processed by your code. They just let you check the data as it flows down the pipeline. That's the difference between Pandas `.head()` and Pandas Checks `.check.head()`.
   
   
 ## Methods available
@@ -114,12 +136,12 @@ Also, most Pandas Checks methods accept 3 additional arguments:
 3. `subset`: limit a check to certain columns
 
 ```python
-iris_new = (
+(
     iris
     .check.value_counts(column='species', check_name="Varieties after data cleaning")
-    .assign(species=lambda df: df["species"].str.upper()) # Do your regular Pandas data processing, like upper-casing the species column
+    .assign(species=lambda df: df["species"].str.upper()) # Do your regular Pandas data processing, like upper-casing the values in one column
     .check.head(n=2, fn=lambda df: df["petal_width"]*2) # Modify the data that gets displayed in the check only
-    .check.describe(subset=['sepal_width', 'sepal_length'])  # Only check certain columns
+    .check.describe(subset=['sepal_width', 'sepal_length'])  # Only apply the check to certain columns
 )
 ```
 <img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/power_user_output.jpg" alt="Power user output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;">
@@ -147,7 +169,7 @@ You can also adjust settings within a method chain. This will set the global con
 
 ```python
 # Customize format
-iris_new = (
+(
     iris
     .check.set_format(precision=7, use_emojis=False)
     ... # Any .check methods in here will use the new format
@@ -155,7 +177,7 @@ iris_new = (
 )
 
 # Turn off Pandas Checks
-iris_new = (
+(
     iris
     .check.disable_checks()
     ... # Any .check methods in here will not be run
@@ -168,7 +190,6 @@ iris_new = (
 If you run into trouble or have questions, I'd love to know. Please open an issue.
 
 Contributions are appreciated! Please see [more details](https://cparmet.github.io/pandas-checks/#giving-feedback-and-contributing).
-
 
 ## License
 
