@@ -39,14 +39,14 @@ def clean_iris_data(iris: pd.DataFrame) -> pd.DataFrame:
     )
 ```
 
-But what if you want to see what's happening to the data along the way? Or understand why a new `iris` data file makes the cleaned data look weird? Or make the pipeline more robust? 
-  
+But what if you want to make the pipeline more robust? Or see what's happening to the data as it flows down? Or understand why your new `iris` CSV suddenly makes the cleaned data look weird? 
+    
 You can add some `.check` steps.
 
 ```python
 
 (
-    pd.read_csv('iris.csv')
+    iris
     
     # Validate that the data doesn't violate any assumptions
     .check.assert_data(lambda df: (df['sepal_width']> 0).all(), fail_message="Sepal width can't be negative")  
