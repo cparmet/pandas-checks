@@ -1,5 +1,7 @@
 # About
-
+  
+<img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/pandas-check-gh-social.jpg" alt="Banner image for Pandas Checks">  
+  
 ## Introduction
 
 **Pandas Checks** is a Python library for data science and data engineering. It adds non-invasive health checks for Pandas method chains.
@@ -15,7 +17,8 @@ That way you don't need to chop up a method chain, or create intermediate variab
 
 As Fleetwood Mac says, you would never break the chain.
 
-[![Fleetwood Mac video for The Chain](https://img.youtube.com/vi/xwTPvcPYaOo/0.jpg)](https://www.youtube.com/watch?v=xwTPvcPYaOo)
+<a href="https://www.youtube.com/watch?v=xwTPvcPYaOo"><img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/fleetwood-mac-the-chain.jpg" alt="Fleetwood Mac YouTube video for The Chain" target="_blank"></a>
+  
 
 ## Giving feedback and contributing
 
