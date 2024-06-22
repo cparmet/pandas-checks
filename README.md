@@ -82,7 +82,7 @@ Here's what's in the doctor's bag.
 
 * **Time your code**
     - `.check.print_time_elapsed(start_time)`: Print the execution time since you called `start_time = pdc.start_timer()`
-    - Tip: You can also use the stopwatcht outside a method chain:
+    - Tip: You can also use the stopwatch outside a method chain:
         ```python
         from pandas_checks import print_elapsed_time, start_timer
 
