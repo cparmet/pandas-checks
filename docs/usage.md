@@ -17,11 +17,20 @@ import pandas_checks
 Now you can use `.check` on your Pandas DataFrames and Series. You don't need to access `pandas_checks` directly, just work with Pandas as you normally would. The new Pandas Checks methods are available when you work with Pandas in Jupyter, IPython, and terminal environments.
 
 
-Say you have a nice function that cleans up a dataset about pretty flowers.
+Say you have a nice function.
 
 ```python
 
 def clean_iris_data(iris: pd.DataFrame) -> pd.DataFrame:
+    """Preprocess data about pretty flowers.
+
+    Args:
+        iris: The raw iris dataset.
+
+    Returns:
+        The cleaned iris dataset.
+    """
+    
     return (
         iris
         .dropna() # Drop rows with any null values
