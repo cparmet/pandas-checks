@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pandas-checks"
-version = "0.1.6"
+version = "0.1.7"
 description = "Non-invasive health checks for Pandas method chains"
 authors = ["Chad Parmet <cparmet@gmail.com>"]
 readme = "README.md"
