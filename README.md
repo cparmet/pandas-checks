@@ -105,9 +105,9 @@ Here's what's in the doctor's bag.
         - `.check.value_counts()`
     - New functions in Pandas Checks:
         - `.check.function()`: Apply an arbitrary lambda function to your data and see the result
-        - `.check.ncols()`
-        - `.check.ndups()`
-        - `.check.nnulls()`
+        - `.check.ncols()`: Count columns
+        - `.check.ndups()`: Count rows with duplicate values
+        - `.check.nnulls()`: Count rows with null values
         - `.check.print()`: Print a string, a variable, or the current dataframe
 
 * **Export interim files**
@@ -128,7 +128,8 @@ Here's what's in the doctor's bag.
     - `.check.disable_checks()`: Don't run checks in this method chain, for production mode etc
     - `.check.ensable_checks()`
 
-* **Validate** Perform assertions on your data in the middle of a chain using `.check.assert_data()`.
+* **Validate** 
+    - `.check.assert_data()`: Confirm that data meets assumptions.
 
 * **Visualize**
     - `.check.hist()`: Histogram
@@ -139,7 +140,7 @@ Here's what's in the doctor's bag.
 You can use Pandas Checks methods like the regular Pandas methods. They accept the same arguments. For example, you can pass:
 * `.check.head(7)`
 * `.check.value_counts(column="species", dropna=False, normalize=True)`
-* `.check.plot(kind="scatter", x="sepal_width", y="sepal_length")`.
+* `.check.plot(kind="scatter", x="sepal_width", y="sepal_length")`
 
 Also, most Pandas Checks methods accept 3 additional arguments:
 1. `check_name`: text to display before the result of the check
@@ -159,7 +160,7 @@ Also, most Pandas Checks methods accept 3 additional arguments:
 
 
 ## Global configuration
-You can customize Pandas Checks:
+You can customize Pandas Checks. For example:
 
 ```python
 import pandas_checks as pdc
