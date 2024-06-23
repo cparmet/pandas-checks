@@ -113,7 +113,7 @@ def _render_text(
             )
             display(
                 Markdown(
-                    f"<{tag} style='text-align: left'>{lead_in_rendered + ' ' if lead_in_rendered else ''}<span 'color:{text_color};' 'background-color:{text_background_color}'>{_filter_emojis(text)}</span></{tag}>"
+                    f"<{tag} style='text-align: left'>{lead_in_rendered + ' ' if lead_in_rendered else ''}<span style='color:{text_color}; background-color:{text_background_color}'>{_filter_emojis(text)}</span></{tag}>"
                 )
             )
 
