@@ -84,6 +84,8 @@ class DataFrameChecks:
         data = self._obj[subset] if subset else self._obj
         result = condition(data)
         condition_str = _lambda_to_string(condition)
+
+        # Fail
         if not result:
             if raise_exception:
                 raise exception_to_raise(f"{fail_message}: {condition_str}")
@@ -100,7 +102,9 @@ class DataFrameChecks:
                         ),
                     },
                 )
-        if verbose:
+
+        # Pass
+        if result and verbose:
             _display_line(
                 lead_in=pass_message,
                 line=condition_str,
