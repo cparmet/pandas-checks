@@ -41,7 +41,7 @@ from .options import (
     set_format,
     set_mode,
 )
-from .run_checks import _apply_modifications, _check_data
+from .run_checks import _apply_modifications, _check_data, _has_nulls
 from .timer import print_time_elapsed
 from .utils import _lambda_to_string
 
@@ -50,41 +50,6 @@ from .utils import _lambda_to_string
 class DataFrameChecks:
     def __init__(self, pandas_obj: Union[pd.DataFrame, pd.Series]) -> None:
         self._obj = pandas_obj
-
-    def assert_all_nulls(
-        self,
-        subset: Union[str, List, None] = None,
-        pass_message: str = " ✔️ Assert all nulls passed",
-        fail_message: str = " ㄨ Assert all nulls failed",
-        raise_exception: bool = True,
-        exception_to_raise: Type[BaseException] = DataError,
-        verbose: bool = False,
-    ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns has all nulls, optionally raise an exception if not. Does not modify the DataFrame itself.
-
-        Args:
-            subset: Optional, which column or columns to check the condition against. Applied after fn. Subsetting can also be done within the `condition`, such as `lambda df: df['column_name'].sum()>10`
-            pass_message: Message to display if the condition passes.
-            fail_message: Message to display if the condition fails.
-            raise_exception: Whether to raise an exception if the condition fails.
-            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
-            verbose: Whether to display the pass message if the condition passes.
-
-        Returns:
-            The original DataFrame, unchanged.
-        """
-
-        self._obj.check.assert_data(
-            condition=lambda df: df.isna().all().all() == True,
-            subset=subset,
-            pass_message=pass_message,
-            fail_message=fail_message,
-            raise_exception=raise_exception,
-            exception_to_raise=exception_to_raise,
-            message_shows_condition=False,
-            verbose=verbose,
-        )
-        return self._obj
 
     def assert_data(
         self,
@@ -183,11 +148,58 @@ class DataFrameChecks:
 
         return self._obj
 
+    def assert_negative(
+        self,
+        subset: Union[str, List, None] = None,
+        assert_no_nulls: bool = True,
+        pass_message: str = " ✔️ Assert negative passed ",
+        fail_message: str = " ㄨ Assert negative failed ",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether Dataframe or subset of columns has all negative values, optionally raise an exception if not. Does not modify the DataFrame itself.
+
+        Args:
+            subset: Optional, which column or columns to check the condition against.`
+            assert_no_nulls: Whether to also enforce that data has no nulls.
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+
+        if assert_no_nulls:
+            if _has_nulls(
+                data=self._obj[subset] if subset else self._obj,
+                fail_message=fail_message,
+                raise_exception=raise_exception,
+                exception_to_raise=exception_to_raise,
+            ):
+                # _has_nulls() will raise exception or print failure
+                return self._obj
+
+        self._obj.dropna().check.assert_data(
+            condition=lambda df: (df < 0).all().all(),
+            subset=subset,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
     def assert_no_nulls(
         self,
         subset: Union[str, List, None] = None,
-        pass_message: str = " ✔️ Assert no nulls passed",
-        fail_message: str = " ㄨ Assert no nulls failed",
+        pass_message: str = " ✔️ Assert no nulls passed ",
+        fail_message: str = " ㄨ Assert no nulls failed ",
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
@@ -195,7 +207,7 @@ class DataFrameChecks:
         """Tests whether Dataframe or subset of columns has no nulls, optionally raise an exception if not. Does not modify the DataFrame itself.
 
         Args:
-            subset: Optional, which column or columns to check the condition against. Applied after fn. Subsetting can also be done within the `condition`, such as `lambda df: df['column_name'].sum()>10`
+            subset: Optional, which column or columns to check the condition against. `
             pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
             raise_exception: Whether to raise an exception if the condition fails.
@@ -208,6 +220,87 @@ class DataFrameChecks:
 
         self._obj.check.assert_data(
             condition=lambda df: df.isna().any().any() == False,
+            subset=subset,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_null(
+        self,
+        subset: Union[str, List, None] = None,
+        pass_message: str = " ✔️ Assert all nulls passed ",
+        fail_message: str = " ㄨ Assert all nulls failed ",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether Dataframe or subset of columns has all nulls, optionally raise an exception if not. Does not modify the DataFrame itself.
+
+        Args:
+            subset: Optional, which column or columns to check the condition against. `
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+
+        self._obj.check.assert_data(
+            condition=lambda df: df.isna().all().all(),
+            subset=subset,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_positive(
+        self,
+        subset: Union[str, List, None] = None,
+        assert_no_nulls: bool = True,
+        pass_message: str = " ✔️ Assert positive passed ",
+        fail_message: str = " ㄨ Assert positive failed ",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether Dataframe or subset of columns has all positive values, optionally raise an exception if not. Does not modify the DataFrame itself.
+
+        Args:
+            subset: Optional, which column or columns to check the condition against. `
+            assert_no_nulls: Whether to also enforce that data has no nulls.
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+        if assert_no_nulls:
+            if _has_nulls(
+                data=self._obj[subset] if subset else self._obj,
+                fail_message=fail_message,
+                raise_exception=raise_exception,
+                exception_to_raise=exception_to_raise,
+            ):
+                # _has_nulls() will raise exception or print failure
+                return self._obj
+
+        self._obj.dropna().check.assert_data(
+            condition=lambda df: (df > 0).all().all(),
             subset=subset,
             pass_message=pass_message,
             fail_message=fail_message,

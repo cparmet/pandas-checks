@@ -47,16 +47,15 @@ You can add some `.check` steps.
 
 (
     iris
-    
-    # Validate that the data doesn't violate any assumptions
-    .check.assert_data(lambda df: (df['sepal_width']> 0).all(), fail_message="Sepal width can't be negative")  
-
     .dropna()
+    .rename(columns={"FLOWER_SPECIES": "species"})
+
+    # Validate assumptions
+    .check.assert_positive(subset=["petal_length", "sepal_length"])
 
     # Plot the distribution of a column after cleaning
     .check.hist(column='petal_length') 
 
-    .rename(columns={"FLOWER_SPECIES": "species"})
     .query("species=='setosa'")
     
     # Display the first few rows after cleaning
