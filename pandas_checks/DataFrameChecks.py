@@ -251,10 +251,10 @@ class DataFrameChecks:
         )
         return self._obj
 
-    def assert_max(
+    def assert_less_than(
         self,
         max: Any,
-        less_than_equal_to: bool = True,
+        or_equal_to: bool = True,
         subset: Union[str, List, None] = None,
         pass_message: str = " ✔️ Assert maximum passed ",
         fail_message: str = " ㄨ Assert maximum failed ",
@@ -266,7 +266,7 @@ class DataFrameChecks:
 
         Args:
             max: the max value to compare DataFrame to. Accepts any type that can be used in <, such as int, float, str, datetime
-            less_than_equal_to: whether to test for <= min (True) or < max (False)
+            or_equal_to: whether to test for <= min (True) or < max (False)
             subset: Optional, which column or columns to check the condition against. `
             pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
@@ -277,7 +277,7 @@ class DataFrameChecks:
         Returns:
             The original DataFrame, unchanged.
         """
-        if less_than_equal_to:
+        if or_equal_to:
             max_fn = lambda df: (df <= max).all().all()
         else:
             max_fn = lambda df: (df < max).all().all()
@@ -294,10 +294,10 @@ class DataFrameChecks:
         )
         return self._obj
 
-    def assert_min(
+    def assert_greater_than(
         self,
         min: Any,
-        greater_than_equal_to: bool = True,
+        or_equal_to: bool = True,
         subset: Union[str, List, None] = None,
         pass_message: str = " ✔️ Assert minimum passed ",
         fail_message: str = " ㄨ Assert minimum failed ",
@@ -309,7 +309,7 @@ class DataFrameChecks:
 
         Args:
             min: the minimum value to compare DataFrame to. Accepts any type that can be used in >, such as int, float, str, datetime
-            greater_than_equal_to: whether to test for >= min (True) or > min (False)
+            or_equal_to: whether to test for >= min (True) or > min (False)
             subset: Optional, which column or columns to check the condition against. `
             pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
@@ -320,7 +320,7 @@ class DataFrameChecks:
         Returns:
             The original DataFrame, unchanged.
         """
-        if greater_than_equal_to:
+        if or_equal_to:
             min_fn = lambda df: (df >= min).all().all()
         else:
             min_fn = lambda df: (df > min).all().all()
