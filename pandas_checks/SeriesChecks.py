@@ -55,7 +55,7 @@ class SeriesChecks:
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
     ) -> pd.Series:
-        """Tests whether Series meets condition, optionally raise an exception if not. Does not modify the Series itself.
+        """Tests whether Series meets condition. Optionally raises an exception. Does not modify the Series itself.
 
         Args:
             condition: Assertion criteria in the form of a lambda function, such as `lambda s: s.shape[0]>10`.

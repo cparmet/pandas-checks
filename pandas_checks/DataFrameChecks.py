@@ -63,7 +63,7 @@ class DataFrameChecks:
         message_shows_condition: bool = True,
         verbose: bool = False,
     ) -> pd.DataFrame:
-        """Tests whether Dataframe meets condition, optionally raise an exception if not. Does not modify the DataFrame itself.
+        """Tests whether Dataframe meets condition. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
             condition: Assertion criteria in the form of a lambda function, such as `lambda df: df.shape[0]>10` or
@@ -158,7 +158,7 @@ class DataFrameChecks:
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
     ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns is datetime or timestamp, optionally raise an exception if not. Does not modify the DataFrame itself.
+        """Tests whether Dataframe or subset of columns is datetime or timestampOptionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
             subset: Optional, which column or columns to check the condition against. `
@@ -192,7 +192,7 @@ class DataFrameChecks:
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
     ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns is floats, optionally raise an exception if not. Does not modify the DataFrame itself.
+        """Tests whether Dataframe or subset of columns is floatsOptionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
             subset: Optional, which column or columns to check the condition against. `
@@ -226,7 +226,7 @@ class DataFrameChecks:
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
     ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns is integers, optionally raise an exception if not. Does not modify the DataFrame itself.
+        """Tests whether Dataframe or subset of columns is integersOptionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
             subset: Optional, which column or columns to check the condition against. `
@@ -262,7 +262,7 @@ class DataFrameChecks:
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
     ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns is < or <= a value, optionally raise an exception if not. Does not modify the DataFrame itself.
+        """Tests whether Dataframe or subset of columns is < or <= a value. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
             max: the max value to compare DataFrame to. Accepts any type that can be used in <, such as int, float, str, datetime
@@ -305,7 +305,7 @@ class DataFrameChecks:
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
     ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns is > or >= a value, optionally raise an exception if not. Does not modify the DataFrame itself.
+        """Tests whether Dataframe or subset of columns is > or >= a value. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
             min: the minimum value to compare DataFrame to. Accepts any type that can be used in >, such as int, float, str, datetime
@@ -347,7 +347,7 @@ class DataFrameChecks:
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
     ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns has all negative values, optionally raise an exception if not. Does not modify the DataFrame itself.
+        """Tests whether Dataframe or subset of columns has all negative values. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
             subset: Optional, which column or columns to check the condition against.`
@@ -393,7 +393,7 @@ class DataFrameChecks:
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
     ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns has no nulls, optionally raise an exception if not. Does not modify the DataFrame itself.
+        """Tests whether Dataframe or subset of columns has no nulls. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
             subset: Optional, which column or columns to check the condition against. `
@@ -428,7 +428,7 @@ class DataFrameChecks:
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
     ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns has all nulls, optionally raise an exception if not. Does not modify the DataFrame itself.
+        """Tests whether Dataframe or subset of columns has all nulls. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
             subset: Optional, which column or columns to check the condition against. `
@@ -464,7 +464,7 @@ class DataFrameChecks:
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
     ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns has all positive values, optionally raise an exception if not. Does not modify the DataFrame itself.
+        """Tests whether Dataframe or subset of columns has all positive values. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
             subset: Optional, which column or columns to check the condition against. `
@@ -509,7 +509,7 @@ class DataFrameChecks:
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
     ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns is strings, optionally raise an exception if not. Does not modify the DataFrame itself.
+        """Tests whether Dataframe or subset of columns is strings. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
             subset: Optional, which column or columns to check the condition against. `
@@ -543,7 +543,7 @@ class DataFrameChecks:
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
     ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns is of type timedelta, optionally raise an exception if not. Does not modify the DataFrame itself.
+        """Tests whether Dataframe or subset of columns is of type timedelta. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
             subset: Optional, which column or columns to check the condition against. `
@@ -578,7 +578,7 @@ class DataFrameChecks:
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
     ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns meets type assumption, optionally raise an exception if not. Does not modify the DataFrame itself.
+        """Tests whether Dataframe or subset of columns meets type assumption. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
             type: The required variable type
@@ -626,7 +626,7 @@ class DataFrameChecks:
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
     ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns has no duplicate rows, optionally raise an exception if not. Does not modify the DataFrame itself.
+        """Tests whether Dataframe or subset of columns has no duplicate rows. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
             subset: Optional, which column or columns to check the condition against. `
