@@ -59,6 +59,7 @@ class DataFrameChecks:
         fail_message: str = " ㄨ Assertion failed ",
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
+        message_shows_condition: bool = True,
         verbose: bool = False,
     ) -> pd.DataFrame:
         """Tests whether Dataframe meets condition, optionally raise an exception if not. Does not modify the DataFrame itself.
@@ -88,35 +89,84 @@ class DataFrameChecks:
         # Fail
         if not result:
             if raise_exception:
-                raise exception_to_raise(f"{fail_message}: {condition_str}")
+                raise exception_to_raise(
+                    f"{fail_message}{' :' + condition_str if condition_str and message_shows_condition else ''}"
+                )
             else:
+                if message_shows_condition:
+                    _display_line(
+                        lead_in=fail_message,
+                        line=condition_str,
+                        colors={
+                            "lead_in_text_color": pd.get_option(
+                                "pdchecks.fail_message_fg_color"
+                            ),
+                            "lead_in_background_color": pd.get_option(
+                                "pdchecks.fail_message_bg_color"
+                            ),
+                        },
+                    )
+                else:
+                    _display_line(
+                        line=fail_message,
+                        colors={
+                            "text_color": pd.get_option(
+                                "pdchecks.fail_message_fg_color"
+                            ),
+                            "text_background_color": pd.get_option(
+                                "pdchecks.fail_message_bg_color"
+                            ),
+                        },
+                    )
+
+        # Pass
+        if result and verbose:
+            if message_shows_condition:
                 _display_line(
-                    lead_in=fail_message,
+                    lead_in=pass_message,
                     line=condition_str,
                     colors={
                         "lead_in_text_color": pd.get_option(
-                            "pdchecks.fail_message_fg_color"
+                            "pdchecks.pass_message_fg_color"
                         ),
                         "lead_in_background_color": pd.get_option(
-                            "pdchecks.fail_message_bg_color"
+                            "pdchecks.pass_message_bg_color"
+                        ),
+                    },
+                )
+            else:
+                _display_line(
+                    line=pass_message,
+                    colors={
+                        "text_color": pd.get_option("pdchecks.pass_message_fg_color"),
+                        "text_background_color": pd.get_option(
+                            "pdchecks.pass_message_bg_color"
                         ),
                     },
                 )
 
-        # Pass
-        if result and verbose:
-            _display_line(
-                lead_in=pass_message,
-                line=condition_str,
-                colors={
-                    "lead_in_text_color": pd.get_option(
-                        "pdchecks.pass_message_fg_color"
-                    ),
-                    "lead_in_background_color": pd.get_option(
-                        "pdchecks.pass_message_bg_color"
-                    ),
-                },
-            )
+        return self._obj
+
+    def assert_no_nulls(
+        self,
+        subset: Union[str, List, None] = None,
+        pass_message: str = " ✔️ Assert no nulls passed",
+        fail_message: str = " ㄨ Assert no nulls failed",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+
+        self._obj.check.assert_data(
+            condition=lambda df: df.isna().any().any() == False,
+            subset=subset,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
         return self._obj
 
     def columns(
