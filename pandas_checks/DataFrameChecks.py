@@ -251,6 +251,92 @@ class DataFrameChecks:
         )
         return self._obj
 
+    def assert_max(
+        self,
+        max: Any,
+        less_than_equal_to: bool = True,
+        subset: Union[str, List, None] = None,
+        pass_message: str = " ✔️ Assert maximum passed ",
+        fail_message: str = " ㄨ Assert maximum failed ",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether Dataframe or subset of columns is < or <= a value, optionally raise an exception if not. Does not modify the DataFrame itself.
+
+        Args:
+            max: the max value to compare DataFrame to. Accepts any type that can be used in <, such as int, float, str, datetime
+            less_than_equal_to: whether to test for <= min (True) or < max (False)
+            subset: Optional, which column or columns to check the condition against. `
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+        if less_than_equal_to:
+            max_fn = lambda df: (df <= max).all().all()
+        else:
+            max_fn = lambda df: (df < max).all().all()
+
+        self._obj.check.assert_data(
+            condition=max_fn,
+            subset=subset,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_min(
+        self,
+        min: Any,
+        greater_than_equal_to: bool = True,
+        subset: Union[str, List, None] = None,
+        pass_message: str = " ✔️ Assert minimum passed ",
+        fail_message: str = " ㄨ Assert minimum failed ",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether Dataframe or subset of columns is > or >= a value, optionally raise an exception if not. Does not modify the DataFrame itself.
+
+        Args:
+            min: the minimum value to compare DataFrame to. Accepts any type that can be used in >, such as int, float, str, datetime
+            greater_than_equal_to: whether to test for >= min (True) or > min (False)
+            subset: Optional, which column or columns to check the condition against. `
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+        if greater_than_equal_to:
+            min_fn = lambda df: (df >= min).all().all()
+        else:
+            min_fn = lambda df: (df > min).all().all()
+
+        self._obj.check.assert_data(
+            condition=min_fn,
+            subset=subset,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
     def assert_negative(
         self,
         subset: Union[str, List, None] = None,
@@ -521,6 +607,41 @@ class DataFrameChecks:
             )
         self._obj.check.assert_data(
             condition=lambda df: _is_type(df, dtype),
+            subset=subset,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_unique(
+        self,
+        subset: Union[str, List, None] = None,
+        pass_message: str = " ✔️ Assert unique passed ",
+        fail_message: str = " ㄨ Assert unique failed ",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether Dataframe or subset of columns has no duplicate rows, optionally raise an exception if not. Does not modify the DataFrame itself.
+
+        Args:
+            subset: Optional, which column or columns to check the condition against. `
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+
+        self._obj.check.assert_data(
+            condition=lambda df: df.duplicated().sum() == 0,
             subset=subset,
             pass_message=pass_message,
             fail_message=fail_message,
