@@ -21,6 +21,7 @@ Now new methods are accessible to Pandas dataframes as ".check":
 All public .check methods display the result but then return the unchanged DataFrame, so a method chain continues unbroken.
 """
 
+from datetime import datetime, timedelta
 from typing import Any, Callable, List, Type, Union
 
 import matplotlib.pyplot as plt
@@ -41,9 +42,9 @@ from .options import (
     set_format,
     set_mode,
 )
-from .run_checks import _apply_modifications, _check_data, _has_nulls
+from .run_checks import _apply_modifications, _check_data
 from .timer import print_time_elapsed
-from .utils import _lambda_to_string
+from .utils import _has_nulls, _is_type, _lambda_to_string
 
 
 @pd.api.extensions.register_dataframe_accessor("check")
@@ -146,6 +147,108 @@ class DataFrameChecks:
                     },
                 )
 
+        return self._obj
+
+    def assert_datetime(
+        self,
+        subset: Union[str, List, None] = None,
+        pass_message: str = " ✔️ Assert datetime passed ",
+        fail_message: Union[str, None] = None,
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = TypeError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether Dataframe or subset of columns is datetime or timestamp, optionally raise an exception if not. Does not modify the DataFrame itself.
+
+        Args:
+            subset: Optional, which column or columns to check the condition against. `
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+
+        self._obj.check.assert_type(
+            dtype=datetime,
+            subset=subset,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_float(
+        self,
+        subset: Union[str, List, None] = None,
+        pass_message: str = " ✔️ Assert float passed ",
+        fail_message: Union[str, None] = None,
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = TypeError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether Dataframe or subset of columns is floats, optionally raise an exception if not. Does not modify the DataFrame itself.
+
+        Args:
+            subset: Optional, which column or columns to check the condition against. `
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+
+        self._obj.check.assert_type(
+            dtype=float,
+            subset=subset,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_int(
+        self,
+        subset: Union[str, List, None] = None,
+        pass_message: str = " ✔️ Assert integeer passed ",
+        fail_message: Union[str, None] = None,
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = TypeError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether Dataframe or subset of columns is integers, optionally raise an exception if not. Does not modify the DataFrame itself.
+
+        Args:
+            subset: Optional, which column or columns to check the condition against. `
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+
+        self._obj.check.assert_type(
+            dtype=int,
+            subset=subset,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            verbose=verbose,
+        )
         return self._obj
 
     def assert_negative(
@@ -301,6 +404,123 @@ class DataFrameChecks:
 
         self._obj.dropna().check.assert_data(
             condition=lambda df: (df > 0).all().all(),
+            subset=subset,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_str(
+        self,
+        subset: Union[str, List, None] = None,
+        pass_message: str = " ✔️ Assert string passed ",
+        fail_message: Union[str, None] = None,
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = TypeError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether Dataframe or subset of columns is strings, optionally raise an exception if not. Does not modify the DataFrame itself.
+
+        Args:
+            subset: Optional, which column or columns to check the condition against. `
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+
+        self._obj.check.assert_type(
+            dtype=str,
+            subset=subset,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_timedelta(
+        self,
+        subset: Union[str, List, None] = None,
+        pass_message: str = " ✔️ Assert timedelta passed ",
+        fail_message: Union[str, None] = None,
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = TypeError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether Dataframe or subset of columns is of type timedelta, optionally raise an exception if not. Does not modify the DataFrame itself.
+
+        Args:
+            subset: Optional, which column or columns to check the condition against. `
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+
+        self._obj.check.assert_type(
+            dtype=timedelta,
+            subset=subset,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_type(
+        self,
+        dtype: Type[Any],
+        subset: Union[str, List, None] = None,
+        pass_message: str = " ✔️ Assert type passed ",
+        fail_message: Union[str, None] = None,
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = TypeError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether Dataframe or subset of columns meets type assumption, optionally raise an exception if not. Does not modify the DataFrame itself.
+
+        Args:
+            type: The required variable type
+            subset: Optional, which column or columns to check the condition against. `
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+
+        if not subset:
+            subset = self._obj.columns.tolist()
+        elif isinstance(subset, str):
+            subset = [subset]
+        found_dtypes = ", ".join([t.name for t in self._obj[subset].dtypes.values])
+        if not fail_message:
+            dtype_clean = (
+                str(dtype).replace("<class", "").replace(">", "").replace("'", "")
+            )  # <class > types will get blanked out in our HTML display
+            fail_message = (
+                f" ㄨ Assert type failed: expected {dtype_clean}, got {found_dtypes}"
+            )
+        self._obj.check.assert_data(
+            condition=lambda df: _is_type(df, dtype),
             subset=subset,
             pass_message=pass_message,
             fail_message=fail_message,

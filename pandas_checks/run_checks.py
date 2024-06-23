@@ -1,11 +1,8 @@
 """Utilities for running Pandas Checks data checks."""
 
-from typing import Any, Callable, List, Type, Union
+from typing import Any, Callable, List, Union
 
-import pandas as pd
-from pandas.core.groupby.groupby import DataError
-
-from .display import _display_check, _display_line
+from .display import _display_check
 from .options import get_mode
 
 
@@ -64,38 +61,3 @@ def _check_data(
                 name=check_name if check_name else str(subset) if subset else None,
             )
         )
-
-
-def _has_nulls(
-    data: Union[pd.DataFrame, pd.Series],
-    fail_message: str,
-    raise_exception: bool = True,
-    exception_to_raise: Type[BaseException] = DataError,
-) -> bool:
-    """Utility function to check for nulls as part of a larger check"""
-    if isinstance(data, pd.DataFrame):
-        has_nulls = data.isna().any().any()
-    elif isinstance(data, pd.Series):
-        has_nulls = data.isna().any()
-    else:
-        raise AttributeError(f"Unexpected data type in _has_nulls(): {type(data)}")
-
-    if has_nulls:
-        if raise_exception:
-            raise exception_to_raise(
-                f"{fail_message}: Nulls present (to disable, pass `assert_no_nulls=False`)"
-            )
-        else:
-            _display_line(
-                lead_in=fail_message,
-                line="Nulls present (to disable, pass `assert_no_nulls=False`)",
-                colors={
-                    "lead_in_text_color": pd.get_option(
-                        "pdchecks.fail_message_fg_color"
-                    ),
-                    "lead_in_background_color": pd.get_option(
-                        "pdchecks.fail_message_bg_color"
-                    ),
-                },
-            )
-    return has_nulls
