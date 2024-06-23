@@ -71,6 +71,7 @@ class DataFrameChecks:
             fail_message: Message to display if the condition fails.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            message_shows_condition: Whether the fail/pass message should also print the assertion criteria
             verbose: Whether to display the pass message if the condition passes.
 
         Returns:
@@ -156,6 +157,19 @@ class DataFrameChecks:
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
     ) -> pd.DataFrame:
+        """Tests whether Dataframe or subset of columns has no nulls, optionally raise an exception if not. Does not modify the DataFrame itself.
+
+        Args:
+            subset: Optional, which column or columns to check the condition against. Applied after fn. Subsetting can also be done within the `condition`, such as `lambda df: df['column_name'].sum()>10`
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
 
         self._obj.check.assert_data(
             condition=lambda df: df.isna().any().any() == False,
