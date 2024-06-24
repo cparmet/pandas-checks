@@ -21,6 +21,7 @@ Now new methods are accessible to Pandas Series as ".check":
 All public .check methods display the result but then return the unchanged Series, so a method chain continues unbroken.
 """
 
+from datetime import datetime, timedelta
 from typing import Any, Callable, Type, Union
 
 import matplotlib.pyplot as plt
@@ -38,7 +39,7 @@ from .options import (
 )
 from .run_checks import _apply_modifications, _check_data
 from .timer import print_time_elapsed
-from .utils import _lambda_to_string
+from .utils import _has_nulls, _is_type, _lambda_to_string
 
 
 @pd.api.extensions.register_series_accessor("check")
@@ -53,6 +54,7 @@ class SeriesChecks:
         fail_message: str = " ㄨ Assertion failed ",
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
+        message_shows_condition: bool = True,
         verbose: bool = False,
     ) -> pd.Series:
         """Tests whether Series meets condition. Optionally raises an exception. Does not modify the Series itself.
@@ -63,6 +65,7 @@ class SeriesChecks:
             fail_message: Message to display if the condition fails.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            message_shows_condition: Whether the fail/pass message should also print the assertion criteria
             verbose: Whether to display the pass message if the condition passes.
 
         Returns:
@@ -76,35 +79,534 @@ class SeriesChecks:
             )
         result = condition(self._obj)
         condition_str = _lambda_to_string(condition)
+
+        # Fail
         if not result:
             if raise_exception:
-                raise exception_to_raise(f"{fail_message}: {condition_str}")
+                raise exception_to_raise(
+                    f"{fail_message}{' :' + condition_str if condition_str and message_shows_condition else ''}"
+                )
             else:
+                if message_shows_condition:
+                    _display_line(
+                        lead_in=fail_message,
+                        line=condition_str,
+                        colors={
+                            "lead_in_text_color": pd.get_option(
+                                "pdchecks.fail_message_fg_color"
+                            ),
+                            "lead_in_background_color": pd.get_option(
+                                "pdchecks.fail_message_bg_color"
+                            ),
+                        },
+                    )
+                else:
+                    _display_line(
+                        line=fail_message,
+                        colors={
+                            "text_color": pd.get_option(
+                                "pdchecks.fail_message_fg_color"
+                            ),
+                            "text_background_color": pd.get_option(
+                                "pdchecks.fail_message_bg_color"
+                            ),
+                        },
+                    )
+        # Pass
+        if result and verbose:
+            if message_shows_condition:
                 _display_line(
-                    lead_in=fail_message,
+                    lead_in=pass_message,
                     line=condition_str,
                     colors={
                         "lead_in_text_color": pd.get_option(
-                            "pdchecks.fail_message_fg_color"
+                            "pdchecks.pass_message_fg_color"
                         ),
                         "lead_in_background_color": pd.get_option(
-                            "pdchecks.fail_message_bg_color"
+                            "pdchecks.pass_message_bg_color"
                         ),
                     },
                 )
-        if verbose:
-            _display_line(
-                lead_in=pass_message,
-                line=condition_str,
-                colors={
-                    "lead_in_text_color": pd.get_option(
-                        "pdchecks.pass_message_fg_color"
-                    ),
-                    "lead_in_background_color": pd.get_option(
-                        "pdchecks.pass_message_bg_color"
-                    ),
-                },
+            else:
+                _display_line(
+                    line=pass_message,
+                    colors={
+                        "text_color": pd.get_option("pdchecks.pass_message_fg_color"),
+                        "text_background_color": pd.get_option(
+                            "pdchecks.pass_message_bg_color"
+                        ),
+                    },
+                )
+        return self._obj
+
+    def assert_datetime(
+        self,
+        pass_message: str = " ✔️ Assert datetime passed ",
+        fail_message: Union[str, None] = None,
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = TypeError,
+        verbose: bool = False,
+    ) -> pd.Series:
+        """Tests whether Series is datetime or timestampOptionally raises an exception. Does not modify the Series itself.
+
+        Args:
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original Series, unchanged.
+        """
+
+        self._obj.check.assert_type(
+            dtype=datetime,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_float(
+        self,
+        pass_message: str = " ✔️ Assert float passed ",
+        fail_message: Union[str, None] = None,
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = TypeError,
+        verbose: bool = False,
+    ) -> pd.Series:
+        """Tests whether Series is floatsOptionally raises an exception. Does not modify the Series itself.
+
+        Args:
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original Series, unchanged.
+        """
+
+        self._obj.check.assert_type(
+            dtype=float,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_int(
+        self,
+        pass_message: str = " ✔️ Assert integeer passed ",
+        fail_message: Union[str, None] = None,
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = TypeError,
+        verbose: bool = False,
+    ) -> pd.Series:
+        """Tests whether Series is integersOptionally raises an exception. Does not modify the Series itself.
+
+        Args:
+
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original Series, unchanged.
+        """
+
+        self._obj.check.assert_type(
+            dtype=int,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_less_than(
+        self,
+        max: Any,
+        or_equal_to: bool = True,
+        pass_message: str = " ✔️ Assert maximum passed ",
+        fail_message: str = " ㄨ Assert maximum failed ",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.Series:
+        """Tests whether Series is < or <= a value. Optionally raises an exception. Does not modify the Series itself.
+
+        Args:
+            max: the max value to compare Series to. Accepts any type that can be used in <, such as int, float, str, datetime
+            or_equal_to: whether to test for <= min (True) or < max (False)
+
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original Series, unchanged.
+        """
+        if or_equal_to:
+            max_fn = lambda s: (s <= max).all().all()
+        else:
+            max_fn = lambda s: (s < max).all().all()
+
+        self._obj.check.assert_data(
+            condition=max_fn,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_greater_than(
+        self,
+        min: Any,
+        or_equal_to: bool = True,
+        pass_message: str = " ✔️ Assert minimum passed ",
+        fail_message: str = " ㄨ Assert minimum failed ",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.Series:
+        """Tests whether Series is > or >= a value. Optionally raises an exception. Does not modify the Series itself.
+
+        Args:
+            min: the minimum value to compare Series to. Accepts any type that can be used in >, such as int, float, str, datetime
+            or_equal_to: whether to test for >= min (True) or > min (False)
+
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original Series, unchanged.
+        """
+        if or_equal_to:
+            min_fn = lambda s: (s >= min).all().all()
+        else:
+            min_fn = lambda s: (s > min).all().all()
+
+        self._obj.check.assert_data(
+            condition=min_fn,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_negative(
+        self,
+        assert_no_nulls: bool = True,
+        pass_message: str = " ✔️ Assert negative passed ",
+        fail_message: str = " ㄨ Assert negative failed ",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.Series:
+        """Tests whether Series has all negative values. Optionally raises an exception. Does not modify the Series itself.
+
+        Args:
+            assert_no_nulls: Whether to also enforce that data has no nulls.
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original Series, unchanged.
+        """
+
+        if assert_no_nulls:
+            if _has_nulls(
+                data=self._obj,
+                fail_message=fail_message,
+                raise_exception=raise_exception,
+                exception_to_raise=exception_to_raise,
+            ):
+                # _has_nulls() will raise exception or print failure
+                return self._obj
+
+        self._obj.dropna().check.assert_data(
+            condition=lambda s: (s < 0).all().all(),
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_no_nulls(
+        self,
+        pass_message: str = " ✔️ Assert no nulls passed ",
+        fail_message: str = " ㄨ Assert no nulls failed ",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.Series:
+        """Tests whether Series has no nulls. Optionally raises an exception. Does not modify the Series itself.
+
+        Args:
+
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original Series, unchanged.
+        """
+
+        self._obj.check.assert_data(
+            condition=lambda s: s.isna().any().any() == False,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_null(
+        self,
+        pass_message: str = " ✔️ Assert all nulls passed ",
+        fail_message: str = " ㄨ Assert all nulls failed ",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.Series:
+        """Tests whether Series has all nulls. Optionally raises an exception. Does not modify the Series itself.
+
+        Args:
+
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original Series, unchanged.
+        """
+
+        self._obj.check.assert_data(
+            condition=lambda s: s.isna().all().all(),
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_positive(
+        self,
+        assert_no_nulls: bool = True,
+        pass_message: str = " ✔️ Assert positive passed ",
+        fail_message: str = " ㄨ Assert positive failed ",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.Series:
+        """Tests whether Series has all positive values. Optionally raises an exception. Does not modify the Series itself.
+
+        Args:
+
+            assert_no_nulls: Whether to also enforce that data has no nulls.
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original Series, unchanged.
+        """
+        if assert_no_nulls:
+            if _has_nulls(
+                data=self._obj,
+                fail_message=fail_message,
+                raise_exception=raise_exception,
+                exception_to_raise=exception_to_raise,
+            ):
+                # _has_nulls() will raise exception or print failure
+                return self._obj
+
+        self._obj.dropna().check.assert_data(
+            condition=lambda s: (s > 0).all().all(),
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_str(
+        self,
+        pass_message: str = " ✔️ Assert string passed ",
+        fail_message: Union[str, None] = None,
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = TypeError,
+        verbose: bool = False,
+    ) -> pd.Series:
+        """Tests whether Series is strings. Optionally raises an exception. Does not modify the Series itself.
+
+        Args:
+
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original Series, unchanged.
+        """
+
+        self._obj.check.assert_type(
+            dtype=str,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_timedelta(
+        self,
+        pass_message: str = " ✔️ Assert timedelta passed ",
+        fail_message: Union[str, None] = None,
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = TypeError,
+        verbose: bool = False,
+    ) -> pd.Series:
+        """Tests whether Series is of type timedelta. Optionally raises an exception. Does not modify the Series itself.
+
+        Args:
+
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original Series, unchanged.
+        """
+
+        self._obj.check.assert_type(
+            dtype=timedelta,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_type(
+        self,
+        dtype: Type[Any],
+        pass_message: str = " ✔️ Assert type passed ",
+        fail_message: Union[str, None] = None,
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = TypeError,
+        verbose: bool = False,
+    ) -> pd.Series:
+        """Tests whether Series meets type assumption. Optionally raises an exception. Does not modify the Series itself.
+
+        Args:
+            type: The required variable type
+
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original Series, unchanged.
+        """
+
+        found_dtype = self._obj.dtypes
+        if not fail_message:
+            dtype_clean = (
+                str(dtype).replace("<class", "").replace(">", "").replace("'", "")
+            )  # <class > types will get blanked out in our HTML display
+            fail_message = (
+                f" ㄨ Assert type failed: expected {dtype_clean}, got {found_dtype}"
             )
+        self._obj.check.assert_data(
+            condition=lambda s: _is_type(s, dtype),
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_unique(
+        self,
+        pass_message: str = " ✔️ Assert unique passed ",
+        fail_message: str = " ㄨ Assert unique failed ",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.Series:
+        """Tests whether Series has no duplicate rows. Optionally raises an exception. Does not modify the Series itself.
+
+        Args:
+
+            pass_message: Message to display if the condition passes.
+            fail_message: Message to display if the condition fails.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original Series, unchanged.
+        """
+
+        self._obj.check.assert_data(
+            condition=lambda s: s.duplicated().sum() == 0,
+            pass_message=pass_message,
+            fail_message=fail_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
         return self._obj
 
     def describe(
