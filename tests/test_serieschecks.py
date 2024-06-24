@@ -33,18 +33,31 @@ def assert_multiline_string_equal(s1, s2):
     assert strip_multiline(s1) == strip_multiline(s2)
 
 
+# Run the SeriesCheck methods against every appropriate column in each test dataset
 @parametrize_with_cases("df", cases=".datasets", prefix="df_")
-@parametrize_with_cases("test_method", prefix="method_")
+# For each test method in cases_seriescheck.py, get
+#   (1) the method as a lambda function
+#   (2) whether the method only runs on numeric columns
+@parametrize_with_cases("test_method_numeric_only", prefix="method_")
 @pytest.mark.parametrize("enable_checks_flag", [True, False])
 def test_SeriesChecks_methods_dont_change_series(
-    df, test_method, tmp_path, enable_checks_flag
+    df, test_method_numeric_only, tmp_path, enable_checks_flag
 ):
     if not enable_checks_flag:
         disable_checks()
-    for col in df.columns:
-        assert_equal_series(
-            s1=test_method(df[col], {"tmp_path": tmp_path}), s2=df[col]  # Args
-        )
+
+    # For certain series .check methods, we must limit to numeric columns
+    test_method, numeric_only = test_method_numeric_only
+    if numeric_only:
+        columns_to_test = df.select_dtypes(include=np.number).columns
+    else:
+        columns_to_test = df.columns
+
+    # Test all appropriate columns
+    for col in columns_to_test:
+        assert_equal_series(s1=test_method(df[col], {"tmp_path": tmp_path}), s2=df[col])
+
+    # Reset mode
     enable_checks()
     reset_format()
 
