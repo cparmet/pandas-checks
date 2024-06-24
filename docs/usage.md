@@ -1,21 +1,25 @@
 # Usage
 
 ## Installation
-
+First make Pandas Check available in your environment.
+  
 ```bash
 pip install pandas-checks
 ```
 
-## Basic usage
-After installing Pandas Checks, import it:
+Then import it in your code. It works in Jupyter, IPython, and Python scripts run from the command line.
 
 ```python
-import pandas as pd
 import pandas_checks
-```
+```  
 
-Now you can use `.check` on your Pandas DataFrames and Series. You don't need to access `pandas_checks` directly, just work with Pandas as you normally would. The new Pandas Checks methods are available when you work with Pandas in Jupyter, IPython, and terminal environments.
+After importing, you don't need to access the `pandas_checks` module directly.
 
+> 💡 Tip:  
+> You can import Pandas Checks either before or after your code imports Pandas. Just somewhere. 😁
+
+## Basic usage
+Pandas Checks adds `.check` methods to Pandas DataFrames and Series. 
 
 Say you have a nice function.
 
@@ -39,7 +43,7 @@ def clean_iris_data(iris: pd.DataFrame) -> pd.DataFrame:
     )
 ```
 
-But what if you want to make the pipeline more robust? Or see what's happening to the data as it flows down? Or understand why your new `iris` CSV suddenly makes the cleaned data look weird? 
+But what if you want to make the chain more robust? Or see what's happening to the data as it flows down the pipeline? Or understand why your new `iris` CSV suddenly makes the cleaned data look weird? 
     
 You can add some `.check` steps.
 
@@ -71,7 +75,8 @@ The `.check` methods will display the following results:
 The `.check` methods didn't modify how the `iris` data is processed by your code. They just let you check the data as it flows down the pipeline. That's the difference between Pandas `.head()` and Pandas Checks `.check.head()`.
 
 
-## Methods available
+## Features
+### Check methods
 Here's what's in the doctor's bag.
 
 * **Describe**
@@ -119,7 +124,7 @@ Here's what's in the doctor's bag.
     - `.check.hist()`: A histogram
     - `.check.plot()`: An arbitrary plot
 
-## Customizing results
+### Customizing a check
 
 You can use Pandas Checks methods like the regular Pandas methods. They accept the same arguments. For example, you can pass:
 * `.check.head(7)`
@@ -143,8 +148,8 @@ Also, most Pandas Checks methods accept 3 additional arguments:
 <img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/power_user_output.jpg" alt="Power user output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;">
 
 
-## Global configuration
-You can customize Pandas Checks. For example:
+### Configuring Pandas Check globally
+You can change how Pandas Checks works everywhere. For example:
 
 ```python
 import pandas_checks as pdc
@@ -152,14 +157,13 @@ import pandas_checks as pdc
 # Set output precision and turn off the cute emojis
 pdc.set_format(precision=3, use_emojis=False)
 
-# Don't run any of the calls to Pandas Checks, globally. Useful when switching your code to production mode
+# Don't run any of the calls to Pandas Checks, globally. 
 pdc.disable_checks()
 ```
+
+Run `pdc.describe_options()` to see the arguments you can pass to `.set_format()`.
   
-  
-> 💡 Tip:  
-> Run `pdc.describe_options()` to see the arguments you can pass to `.set_format()`.
-  
+Has this ever happened to you? You've done Exploratory Data Analysis, then moved to production data processing, but the scope changed. Maybe you added a new year of data with different features or noise. You wished you could EDA again, but your EDA code is stale -- the data processing is different from prod. 
   
 You can also adjust settings within a method chain. This will set the global configuration. So if you only want the settings to be changed during the method chain, reset them at the end.
 
@@ -180,3 +184,13 @@ You can also adjust settings within a method chain. This will set the global con
     .check.enable_checks() # Turn it back on for the next code
 )
 ```
+  
+### Hybrid EDA-Production data processing
+
+Exploratory Data Analysis is often taught as a one-time step we do to plan our production data processing. But sometimes EDA is a cyclical process we go back to for deeper inspection during debugging, code edits, or changes in the input data. If explorations were useful in EDA, they may be useful again.
+  
+Unfortunately, it's hard to go back to EDA. It's too out of sync. The prod data processing pipeline has usually evolved too much, making the EDA code a historical artifact full of cobwebs that we can't easily fire up again. 
+  
+But if you use Pandas Checks during EDA, you could roll your `.check` methods into your first production code. Then in prod mode, disable Pandas Checks when you don't need it, to save compute and streamline output. When you ever need to pull out those EDA tools, enable Pandas Checks globally or locally.  
+  
+This can make your prod pipline more transparent and easier to inspect.  

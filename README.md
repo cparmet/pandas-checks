@@ -22,17 +22,16 @@ As Fleetwood Mac says, [you would never break the chain](https://www.youtube.com
 ```bash
 pip install pandas-checks
 ```
-
-## Usage
-After installing Pandas Checks, import it:
-
+  
 ```python
-import pandas as pd
 import pandas_checks
 ```
-
-Now you can use `.check` on your Pandas DataFrames and Series. You don't need to access `pandas_checks` directly, just work with Pandas as you normally would. The new Pandas Checks methods are available when you work with Pandas in Jupyter, IPython, and terminal environments.
-
+    
+It works in Jupyter, IPython, and Python scripts run from the command line.  
+  
+## Usage
+Pandas Checks adds `.check` methods to Pandas DataFrames and Series.  
+  
 Say you have a nice function.
 
 ```python
@@ -54,7 +53,7 @@ def clean_iris_data(iris: pd.DataFrame) -> pd.DataFrame:
     )
 ```
 
-But what if you want to make the pipeline more robust? Or see what's happening to the data as it flows down? Or understand why your new `iris` CSV suddenly makes the cleaned data look weird? 
+But what if you want to make the chain more robust? Or see what's happening to the data as it flows down the pipeline? Or understand why your new `iris` CSV suddenly makes the cleaned data look weird? 
   
 You can add some `.check` steps.
 
@@ -86,7 +85,8 @@ The `.check` methods will display the following results:
 The `.check` methods didn't modify how the `iris` data is processed by your code. They just let you check the data as it flows down the pipeline. That's the difference between Pandas `.head()` and Pandas Checks `.check.head()`.
   
   
-## Methods available
+## Features
+### Check methods
 Here's what's in the doctor's bag.
 
 * **Describe**
@@ -134,7 +134,7 @@ Here's what's in the doctor's bag.
     - `.check.hist()`: Histogram
     - `.check.plot()`: An arbitrary plot
 
-## Customizing results
+### Customizing a check
 
 You can use Pandas Checks methods like the regular Pandas methods. They accept the same arguments. For example, you can pass:
 * `.check.head(7)`
@@ -158,8 +158,8 @@ Also, most Pandas Checks methods accept 3 additional arguments:
 <img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/power_user_output.jpg" alt="Power user output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;">
 
 
-## Global configuration
-You can customize Pandas Checks. For example:
+### Configuring Pandas Check globally
+You can change how Pandas Checks works everywhere. For example:
 
 ```python
 import pandas_checks as pdc
@@ -195,6 +195,13 @@ You can also adjust settings within a method chain. This will set the global con
     .check.enable_checks() # Turn it back on for the next code
 )
 ```
+
+> 💡 Tip:  **Hybrid EDA-Prod data processing**
+>    
+> Exploratory data analysis (EDA) is traditionally thought of as the first step of data projects. But often when we're in production, we wish we could reuse parts of the EDA. Maybe we're debugging, editing prod code, or need to change the input data. Unfortunately, the EDA code is often too stale to fire up again. The prod pipeline has changed too much.  
+>  
+> If you used Pandas Checks during EDA, you can keep your `.check` methods in your first prod code. In production, you can disable Pandas Checks, but enable it when you need it. This can make your prod pipline more transparent and easier to inspect.  
+
 
 ## Giving feedback and contributing
 
