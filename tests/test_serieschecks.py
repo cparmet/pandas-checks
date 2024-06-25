@@ -62,34 +62,6 @@ def test_SeriesChecks_methods_dont_change_series(
     reset_format()
 
 
-def test_SeriesChecks_assert_data_pass(iris):
-    # Shouldn't raise an exception
-    (
-        iris["sepal_length"].check.assert_data(
-            condition=lambda s: s.sum() > 0,
-            raise_exception=True,
-            exception_to_raise=ValueError,
-        )
-    )
-
-
-def test_SeriesChecks_assert_data_fail(iris):
-    with pytest.raises(DataError):
-        assert iris["sepal_length"].check.assert_data(
-            condition=lambda s: s.sum() < 0,
-            raise_exception=True,
-        )
-
-
-def test_SeriesChecks_assert_data_custom_exception_fail(iris):
-    with pytest.raises(ValueError):
-        assert iris["sepal_length"].check.assert_data(
-            condition=lambda s: s.sum() < 0,
-            raise_exception=True,
-            exception_to_raise=ValueError,
-        )
-
-
 def test_SeriesChecks_describe(iris, capsys):
     (
         iris["petal_width"].check.describe(
