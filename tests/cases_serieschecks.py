@@ -76,9 +76,9 @@ def method_assert_negative():
     )
 
 
-def method_assert_no_nulls():
+def method_assert_not_null():
     return (
-        lambda s, _: s.check.assert_no_nulls(
+        lambda s, _: s.check.assert_not_null(
             raise_exception=False,
         ),
         False,

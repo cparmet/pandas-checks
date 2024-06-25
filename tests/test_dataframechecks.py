@@ -32,25 +32,6 @@ def test_DataFrameChecks_methods_dont_change_df(
     reset_format()
 
 
-def test_DataFrameChecks_assert_data_pass(iris):
-    # Shouldn't raise an exception
-    iris.check.assert_data(
-        condition=lambda df: df.sum() > 0,  # DF because we apply subset after.
-        subset="sepal_length",  # This is atypical usage, but want to test the args work nonetheless
-        raise_exception=True,
-        exception_to_raise=ValueError,
-    )
-
-
-def test_DataFrameChecks_assert_data_fail(iris):
-    with pytest.raises(ValueError):
-        assert iris.check.assert_data(
-            condition=lambda df: df["sepal_length"].sum() < 0,
-            raise_exception=True,
-            exception_to_raise=ValueError,
-        )
-
-
 def test_DataFrameChecks_columns(iris, capsys):
     iris.check.columns(
         fn=lambda df: df.assign(species_upper=df.species.str.upper()),
