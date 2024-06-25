@@ -147,7 +147,7 @@ class SeriesChecks:
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
     ) -> pd.Series:
-        """Tests whether Series is datetime or timestampOptionally raises an exception. Does not modify the Series itself.
+        """Tests whether Series is datetime or timestamp. Optionally raises an exception. Does not modify the Series itself.
 
         Args:
             pass_message: Message to display if the condition passes.
@@ -178,7 +178,7 @@ class SeriesChecks:
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
     ) -> pd.Series:
-        """Tests whether Series is floatsOptionally raises an exception. Does not modify the Series itself.
+        """Tests whether Series is floats. Optionally raises an exception. Does not modify the Series itself.
 
         Args:
             pass_message: Message to display if the condition passes.
@@ -209,7 +209,7 @@ class SeriesChecks:
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
     ) -> pd.Series:
-        """Tests whether Series is integersOptionally raises an exception. Does not modify the Series itself.
+        """Tests whether Series is integers. Optionally raises an exception. Does not modify the Series itself.
 
         Args:
 

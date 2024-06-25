@@ -158,7 +158,7 @@ class DataFrameChecks:
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
     ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns is datetime or timestampOptionally raises an exception. Does not modify the DataFrame itself.
+        """Tests whether Dataframe or subset of columns is datetime or timestamp. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
             subset: Optional, which column or columns to check the condition against. `
@@ -192,7 +192,7 @@ class DataFrameChecks:
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
     ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns is floatsOptionally raises an exception. Does not modify the DataFrame itself.
+        """Tests whether Dataframe or subset of columns is floats. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
             subset: Optional, which column or columns to check the condition against. `
@@ -226,7 +226,7 @@ class DataFrameChecks:
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
     ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns is integersOptionally raises an exception. Does not modify the DataFrame itself.
+        """Tests whether Dataframe or subset of columns is integers. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
             subset: Optional, which column or columns to check the condition against. `
