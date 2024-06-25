@@ -118,7 +118,23 @@ Here's what's in the doctor's bag.
     - `.check.ensable_checks()`
 
 * **Validate** 
-    - `.check.assert_data()`: Confirm that data meets assumptions.
+    - *General*
+        - `.check.assert_data()`: Check that data passes an arbitrary condition
+    - *Types*
+        - `.check.assert_datetime()`
+        - `.check.assert_float()`
+        - `.check.assert_int()`
+        - `.check.assert_str()`
+        - `.check.assert_timedelta()`
+        - `.check.assert_type()`
+    - *Values*
+        - `.check.assert_less_than()`
+        - `.check.assert_greater_than()`
+        - `.check.assert_negative()`
+        - `.check.assert_not_null()`
+        - `.check.assert_null()`
+        - `.check.assert_positive()`
+        - `.check.assert_unique()`
 
 * **Visualize**
     - `.check.hist()`: A histogram
