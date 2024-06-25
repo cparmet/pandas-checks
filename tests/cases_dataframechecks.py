@@ -1,4 +1,6 @@
-"""Dataframe methods to test in batch"""
+"""DataframeCheck methods to test in batch
+that they don't change the actual dataframe
+in the method chain """
 
 import pandas_checks as pdc
 
@@ -12,6 +14,100 @@ def method_assert_data():
         raise_exception=False,
         exception_to_raise=AttributeError,
         verbose=True,
+    )
+
+
+def method_assert_datetime():
+    return lambda df, args: df.check.assert_datetime(
+        subset=args["first_num_col"],
+        raise_exception=False,
+    )
+
+
+def method_assert_float():
+    return lambda df, args: df.check.assert_float(
+        subset=args["first_num_col"],
+        raise_exception=False,
+    )
+
+
+def method_assert_int():
+    return lambda df, args: df.check.assert_int(
+        subset=args["first_num_col"],
+        raise_exception=False,
+    )
+
+
+def method_assert_less_than():
+    return lambda df, args: df.check.assert_less_than(
+        max=1000,
+        subset=args["first_num_col"],
+        raise_exception=False,
+    )
+
+
+def method_assert_greater_than():
+    return lambda df, args: df.check.assert_greater_than(
+        min=-1000,
+        subset=args["first_num_col"],
+        raise_exception=False,
+    )
+
+
+def method_assert_negative():
+    return lambda df, args: df.check.assert_negative(
+        subset=args["first_num_col"],
+        raise_exception=False,
+    )
+
+
+def method_assert_not_null():
+    return lambda df, args: df.check.assert_not_null(
+        subset=args["first_num_col"],
+        raise_exception=False,
+    )
+
+
+def method_assert_null():
+    return lambda df, args: df.check.assert_null(
+        subset=args["first_num_col"],
+        raise_exception=False,
+    )
+
+
+def method_assert_positive():
+    return lambda df, args: df.check.assert_positive(
+        subset=args["first_num_col"],
+        raise_exception=False,
+    )
+
+
+def method_assert_str():
+    return lambda df, args: df.check.assert_str(
+        subset=args["first_num_col"],
+        raise_exception=False,
+    )
+
+
+def method_assert_timedelta():
+    return lambda df, args: df.check.assert_timedelta(
+        subset=args["first_num_col"],
+        raise_exception=False,
+    )
+
+
+def method_assert_type():
+    return lambda df, args: df.check.assert_type(
+        dtype=float,
+        subset=args["first_num_col"],
+        raise_exception=False,
+    )
+
+
+def method_assert_unique():
+    return lambda df, args: df.check.assert_unique(
+        subset=args["first_num_col"],
+        raise_exception=False,
     )
 
 

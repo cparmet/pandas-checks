@@ -11,3 +11,4 @@ dev.ipynb
 dev_script.py
 
 dist/*
+site/*

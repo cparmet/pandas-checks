@@ -39,7 +39,7 @@ def test_format_background_color(color, expected):
             "Hello",
             "red",
             "green",
-            "<span style='color:red; background-color:green'>Hello:</span>",
+            "<span style='color:red; background-color:green'>Hello</span>:",
         ),
         (None, "red", "green", ""),
     ],

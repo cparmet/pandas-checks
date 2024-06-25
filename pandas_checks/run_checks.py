@@ -2,8 +2,6 @@
 
 from typing import Any, Callable, List, Union
 
-import pandas as pd
-
 from .display import _display_check
 from .options import get_mode
 
