@@ -164,7 +164,8 @@ Also, most Pandas Checks methods accept 3 additional arguments:
 <img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/power_user_output.jpg" alt="Power user output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;">
 
 
-### Configuring Pandas Check globally
+### Configuring Pandas Check
+#### Global configuration
 You can change how Pandas Checks works everywhere. For example:
 
 ```python
@@ -178,13 +179,17 @@ pdc.disable_checks()
 ```
 
 Run `pdc.describe_options()` to see the arguments you can pass to `.set_format()`.
-  
-Has this ever happened to you? You've done Exploratory Data Analysis, then moved to production data processing, but the scope changed. Maybe you added a new year of data with different features or noise. You wished you could EDA again, but your EDA code is stale -- the data processing is different from prod. 
-  
-You can also adjust settings within a method chain. This will set the global configuration. So if you only want the settings to be changed during the method chain, reset them at the end.
+    
+> 💡 Tip:  
+> By default, `disable_checks()` and `enable_checks()` do not change whether Pandas Checks will run assertion methods (`.check.assert_*`). 
+>
+> To turn off assertions too, add the argument as follows: `disable_checks(enable_asserts=False)`.
+
+#### Local configuration
+You can also adjust settings within a method chain by bookending the chain, like this:
 
 ```python
-# Customize format
+# Customize format during one method chain
 (
     iris
     .check.set_format(precision=7, use_emojis=False)
@@ -192,7 +197,7 @@ You can also adjust settings within a method chain. This will set the global con
     .check.reset_format() # Restore default format
 )
 
-# Turn off Pandas Checks
+# Turn off Pandas Checks during one method chain
 (
     iris
     .check.disable_checks()
@@ -201,6 +206,7 @@ You can also adjust settings within a method chain. This will set the global con
 )
 ```
   
+
 ### Hybrid EDA-Production data processing
 
 Exploratory Data Analysis is often taught as a one-time step we do to plan our production data processing. But sometimes EDA is a cyclical process we go back to for deeper inspection during debugging, code edits, or changes in the input data. If explorations were useful in EDA, they may be useful again.

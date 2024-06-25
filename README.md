@@ -174,7 +174,8 @@ Also, most Pandas Checks methods accept 3 additional arguments:
 <img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/power_user_output.jpg" alt="Power user output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;">
 
 
-### Configuring Pandas Check globally
+### Configuring Pandas Check
+#### Global configuration
 You can change how Pandas Checks works everywhere. For example:
 
 ```python
@@ -186,16 +187,19 @@ pdc.set_format(precision=3, use_emojis=False)
 # Don't run any of the calls to Pandas Checks, globally. Useful when switching your code to production mode
 pdc.disable_checks()
 ```
-  
     
+Run `pdc.describe_options()` to see the arguments you can pass to `.set_format()`.
+  
 > 💡 Tip:  
-> Run `pdc.describe_options()` to see the arguments you can pass to `.set_format()`.
-  
-  
-You can also adjust settings within a method chain. This will set the global configuration. So if you only want the settings to be changed during the method chain, reset them at the end.
+> By default, `disable_checks()` and `enable_checks()` do not change whether Pandas Checks will run assertion methods (`.check.assert_*`).
+> 
+> To turn off assertions too, add the argument `enable_asserts=False`, such as: `disable_checks(enable_asserts=False)`.
+
+#### Local configuration
+You can also adjust settings within a method chain by bookending the chain, like this:
 
 ```python
-# Customize format
+# Customize format during one method chain
 (
     iris
     .check.set_format(precision=7, use_emojis=False)
@@ -203,7 +207,7 @@ You can also adjust settings within a method chain. This will set the global con
     .check.reset_format() # Restore default format
 )
 
-# Turn off Pandas Checks
+# Turn off Pandas Checks during one method chain
 (
     iris
     .check.disable_checks()
