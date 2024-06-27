@@ -40,16 +40,13 @@ def print_time_elapsed(
     Args:
         start_time: The index time when the stopwatch started, which comes from the Pandas Checks start_timer()
         lead_in: Optional text to print before the elapsed time.
-        units: The units in which to display the elapsed time. Accepted values:
-            - "auto"
-            - "milliseconds", "seconds", "minutes", "hours"
-            - "ms", "s", "m", "h"
+        units: The units in which to display the elapsed time. Allowed values: "auto", "milliseconds", "seconds", "minutes", "hours" or shorthands "ms", "s", "m", "h"
 
     Returns:
         None
 
     Raises:
-        ValueError: If `units` is not one of expected time units
+        ValueError: If `units` is not one of allowed values.
 
     Note:
         If you change the default values for this function's argument,
