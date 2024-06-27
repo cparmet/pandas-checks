@@ -1163,10 +1163,10 @@ class DataFrameChecks:
         Args:
             start_time: The index time when the stopwatch started, which comes from the Pandas Checks start_timer()
             lead_in: Optional text to print before the elapsed time.
-            units: The units in which to display the elapsed time. Can be "auto", "seconds", "minutes", or "hours".
+            units: The units in which to display the elapsed time. Allowed values: "auto", "milliseconds", "seconds", "minutes", "hours" or shorthands "ms", "s", "m", "h".
 
         Raises:
-            ValueError: If `units` is not one of "auto", "seconds", "minutes", or "hours".
+            ValueError: If `units` is not one of allowed values.
 
         Returns:
             The original DataFrame, unchanged.
