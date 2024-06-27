@@ -545,7 +545,7 @@ class SeriesChecks:
         """Tests whether Series meets type assumption. Optionally raises an exception. Does not modify the Series itself.
 
         Args:
-            type: The required variable type
+            dtype: The required variable type
 
             pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
