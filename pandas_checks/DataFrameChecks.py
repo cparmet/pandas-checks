@@ -581,7 +581,7 @@ class DataFrameChecks:
         """Tests whether Dataframe or subset of columns meets type assumption. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
-            type: The required variable type
+            dtype: The required variable type
             subset: Optional, which column or columns to check the condition against. `
             pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
