@@ -66,7 +66,7 @@ class DataFrameChecks:
         """Tests whether Dataframe meets condition. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
-            condition: Assertion criteria in the form of a lambda function, such as `lambda df: df.shape[0]>10` or
+            condition: Assertion criteria in the form of a lambda function, such as `lambda df: df.shape[0]>10`.
             subset: Optional, which column or columns to check the condition against. Applied after fn. Subsetting can also be done within the `condition`, such as `lambda df: df['column_name'].sum()>10`
             pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
