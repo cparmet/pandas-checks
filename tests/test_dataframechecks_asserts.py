@@ -161,35 +161,35 @@ def test_DataFrameChecks_assert_negative_one_null_pass(iris):
     (
         iris.assign(
             one_null=lambda df: -df["sepal_length"].replace(5.1, np.nan)
-        ).check.assert_negative(assert_not_null=False, subset=["one_null"])
+        ).check.assert_negative(assert_no_nulls=False, subset=["one_null"])
     )
 
 
-def test_DataFrameChecks_assert_not_null_fail(iris):
+def test_DataFrameChecks_assert_no_nulls_fail(iris):
     with pytest.raises(DataError):
         assert iris.assign(
             one_null=lambda df: df["sepal_length"].replace(5.1, np.nan)
-        ).check.assert_not_null(subset=["one_null"])
+        ).check.assert_no_nulls(subset=["one_null"])
 
 
-def test_DataFrameChecks_assert_not_null_pass(iris):
-    (iris.check.assert_not_null(subset=["species"]))
+def test_DataFrameChecks_assert_no_nulls_pass(iris):
+    (iris.check.assert_no_nulls(subset=["species"]))
 
 
-def test_DataFrameChecks_assert_null_fail(iris):
+def test_DataFrameChecks_assert_all_nulls_fail(iris):
     with pytest.raises(DataError):
-        assert iris.check.assert_null(subset=["species"])
+        assert iris.check.assert_all_nulls(subset=["species"])
 
 
-def test_DataFrameChecks_assert_null_one_null_fail(iris):
+def test_DataFrameChecks_assert_all_nulls_one_null_fail(iris):
     with pytest.raises(DataError):
         assert iris.assign(
             one_null=lambda df: df["sepal_length"].replace(5.1, np.nan)
-        ).check.assert_null(subset=["one_null"])
+        ).check.assert_all_nulls(subset=["one_null"])
 
 
-def test_DataFrameChecks_assert_null_pass(iris):
-    (iris.assign(all_nulls=np.nan).check.assert_null(subset=["all_nulls"]))
+def test_DataFrameChecks_assert_all_nulls_pass(iris):
+    (iris.assign(all_nulls=np.nan).check.assert_all_nulls(subset=["all_nulls"]))
 
 
 def test_DataFrameChecks_assert_positive_pass(iris):
@@ -215,7 +215,7 @@ def test_DataFrameChecks_assert_positive_one_null_pass(iris):
     (
         iris.assign(
             one_null=lambda df: df["sepal_length"].replace(5.1, np.nan)
-        ).check.assert_positive(assert_not_null=False, subset=["one_null"])
+        ).check.assert_positive(assert_no_nulls=False, subset=["one_null"])
     )
 
 

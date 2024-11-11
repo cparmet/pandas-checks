@@ -61,15 +61,15 @@ def method_assert_negative():
     )
 
 
-def method_assert_not_null():
-    return lambda df, args: df.check.assert_not_null(
+def method_assert_no_nulls():
+    return lambda df, args: df.check.assert_no_nulls(
         subset=args["first_num_col"],
         raise_exception=False,
     )
 
 
-def method_assert_null():
-    return lambda df, args: df.check.assert_null(
+def method_assert_all_nulls():
+    return lambda df, args: df.check.assert_all_nulls(
         subset=args["first_num_col"],
         raise_exception=False,
     )

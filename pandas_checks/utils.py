@@ -45,12 +45,12 @@ def _has_nulls(
     if has_nulls:
         if raise_exception:
             raise exception_to_raise(
-                f"{fail_message}: Nulls present (to disable, pass `assert_not_null=False`)"
+                f"{fail_message}: Nulls present (to disable, pass `assert_no_nulls=False`)"
             )
         else:
             _display_line(
                 lead_in=fail_message,
-                line="Nulls present (to disable, pass `assert_not_null=False`)",
+                line="Nulls present (to disable, pass `assert_no_nulls=False`)",
                 colors={
                     "lead_in_text_color": pd.get_option(
                         "pdchecks.fail_message_fg_color"

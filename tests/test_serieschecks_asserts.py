@@ -163,35 +163,35 @@ def test_SeriesChecks_assert_negative_one_null_pass(iris):
     (
         iris.assign(one_null=lambda df: -df["sepal_length"].replace(5.1, np.nan))[
             "one_null"
-        ].check.assert_negative(assert_not_null=False)
+        ].check.assert_negative(assert_no_nulls=False)
     )
 
 
-def test_SeriesChecks_assert_not_null_fail(iris):
+def test_SeriesChecks_assert_no_nulls_fail(iris):
     with pytest.raises(DataError):
         assert iris.assign(one_null=lambda df: df["sepal_length"].replace(5.1, np.nan))[
             "one_null"
-        ].check.assert_not_null()
+        ].check.assert_no_nulls()
 
 
-def test_SeriesChecks_assert_not_null_pass(iris):
-    (iris["species"].check.assert_not_null())
+def test_SeriesChecks_assert_no_nulls_pass(iris):
+    (iris["species"].check.assert_no_nulls())
 
 
-def test_SeriesChecks_assert_null_fail(iris):
+def test_SeriesChecks_assert_all_nulls_fail(iris):
     with pytest.raises(DataError):
-        assert iris["species"].check.assert_null()
+        assert iris["species"].check.assert_all_nulls()
 
 
-def test_SeriesChecks_assert_null_one_null_fail(iris):
+def test_SeriesChecks_assert_all_nulls_one_null_fail(iris):
     with pytest.raises(DataError):
         assert iris.assign(one_null=lambda df: df["sepal_length"].replace(5.1, np.nan))[
             "one_null"
-        ].check.assert_null()
+        ].check.assert_all_nulls()
 
 
-def test_SeriesChecks_assert_null_pass(iris):
-    (iris.assign(all_nulls=np.nan)["all_nulls"].check.assert_null())
+def test_SeriesChecks_assert_all_nulls_pass(iris):
+    (iris.assign(all_nulls=np.nan)["all_nulls"].check.assert_all_nulls())
 
 
 def test_SeriesChecks_assert_positive_pass(iris):
@@ -215,7 +215,7 @@ def test_SeriesChecks_assert_positive_one_null_pass(iris):
     (
         iris.assign(one_null=lambda df: df["sepal_length"].replace(5.1, np.nan))[
             "one_null"
-        ].check.assert_positive(assert_not_null=False)
+        ].check.assert_positive(assert_no_nulls=False)
     )
 
 
