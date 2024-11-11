@@ -340,7 +340,7 @@ class DataFrameChecks:
     def assert_negative(
         self,
         subset: Union[str, List, None] = None,
-        assert_not_null: bool = True,
+        assert_no_nulls: bool = True,
         pass_message: str = " ✔️ Assert negative passed ",
         fail_message: str = " ㄨ Assert negative failed ",
         raise_exception: bool = True,
@@ -351,7 +351,7 @@ class DataFrameChecks:
 
         Args:
             subset: Optional, which column or columns to check the condition against.`
-            assert_not_null: Whether to also enforce that data has no nulls.
+            assert_no_nulls: Whether to also enforce that data has no nulls.
             pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
             raise_exception: Whether to raise an exception if the condition fails.
@@ -362,7 +362,7 @@ class DataFrameChecks:
             The original DataFrame, unchanged.
         """
 
-        if assert_not_null:
+        if assert_no_nulls:
             if _has_nulls(
                 data=self._obj[subset] if subset else self._obj,
                 fail_message=fail_message,
@@ -384,7 +384,7 @@ class DataFrameChecks:
         )
         return self._obj
 
-    def assert_not_null(
+    def assert_no_nulls(
         self,
         subset: Union[str, List, None] = None,
         pass_message: str = " ✔️ Assert no nulls passed ",
@@ -419,7 +419,7 @@ class DataFrameChecks:
         )
         return self._obj
 
-    def assert_null(
+    def assert_all_nulls(
         self,
         subset: Union[str, List, None] = None,
         pass_message: str = " ✔️ Assert all nulls passed ",
@@ -457,7 +457,7 @@ class DataFrameChecks:
     def assert_positive(
         self,
         subset: Union[str, List, None] = None,
-        assert_not_null: bool = True,
+        assert_no_nulls: bool = True,
         pass_message: str = " ✔️ Assert positive passed ",
         fail_message: str = " ㄨ Assert positive failed ",
         raise_exception: bool = True,
@@ -468,7 +468,7 @@ class DataFrameChecks:
 
         Args:
             subset: Optional, which column or columns to check the condition against. `
-            assert_not_null: Whether to also enforce that data has no nulls.
+            assert_no_nulls: Whether to also enforce that data has no nulls.
             pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
             raise_exception: Whether to raise an exception if the condition fails.
@@ -478,7 +478,7 @@ class DataFrameChecks:
         Returns:
             The original DataFrame, unchanged.
         """
-        if assert_not_null:
+        if assert_no_nulls:
             if _has_nulls(
                 data=self._obj[subset] if subset else self._obj,
                 fail_message=fail_message,

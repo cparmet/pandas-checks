@@ -76,18 +76,18 @@ def method_assert_negative():
     )
 
 
-def method_assert_not_null():
+def method_assert_no_nulls():
     return (
-        lambda s, _: s.check.assert_not_null(
+        lambda s, _: s.check.assert_no_nulls(
             raise_exception=False,
         ),
         False,
     )
 
 
-def method_assert_null():
+def method_assert_all_nulls():
     return (
-        lambda s, _: s.check.assert_null(
+        lambda s, _: s.check.assert_all_nulls(
             raise_exception=False,
         ),
         False,

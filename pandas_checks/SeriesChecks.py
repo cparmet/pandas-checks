@@ -317,7 +317,7 @@ class SeriesChecks:
 
     def assert_negative(
         self,
-        assert_not_null: bool = True,
+        assert_no_nulls: bool = True,
         pass_message: str = " ✔️ Assert negative passed ",
         fail_message: str = " ㄨ Assert negative failed ",
         raise_exception: bool = True,
@@ -327,7 +327,7 @@ class SeriesChecks:
         """Tests whether Series has all negative values. Optionally raises an exception. Does not modify the Series itself.
 
         Args:
-            assert_not_null: Whether to also enforce that data has no nulls.
+            assert_no_nulls: Whether to also enforce that data has no nulls.
             pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
             raise_exception: Whether to raise an exception if the condition fails.
@@ -338,7 +338,7 @@ class SeriesChecks:
             The original Series, unchanged.
         """
 
-        if assert_not_null:
+        if assert_no_nulls:
             if _has_nulls(
                 data=self._obj,
                 fail_message=fail_message,
@@ -359,7 +359,7 @@ class SeriesChecks:
         )
         return self._obj
 
-    def assert_not_null(
+    def assert_no_nulls(
         self,
         pass_message: str = " ✔️ Assert no nulls passed ",
         fail_message: str = " ㄨ Assert no nulls failed ",
@@ -392,7 +392,7 @@ class SeriesChecks:
         )
         return self._obj
 
-    def assert_null(
+    def assert_all_nulls(
         self,
         pass_message: str = " ✔️ Assert all nulls passed ",
         fail_message: str = " ㄨ Assert all nulls failed ",
@@ -427,7 +427,7 @@ class SeriesChecks:
 
     def assert_positive(
         self,
-        assert_not_null: bool = True,
+        assert_no_nulls: bool = True,
         pass_message: str = " ✔️ Assert positive passed ",
         fail_message: str = " ㄨ Assert positive failed ",
         raise_exception: bool = True,
@@ -438,7 +438,7 @@ class SeriesChecks:
 
         Args:
 
-            assert_not_null: Whether to also enforce that data has no nulls.
+            assert_no_nulls: Whether to also enforce that data has no nulls.
             pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
             raise_exception: Whether to raise an exception if the condition fails.
@@ -448,7 +448,7 @@ class SeriesChecks:
         Returns:
             The original Series, unchanged.
         """
-        if assert_not_null:
+        if assert_no_nulls:
             if _has_nulls(
                 data=self._obj,
                 fail_message=fail_message,
