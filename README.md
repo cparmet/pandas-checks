@@ -61,9 +61,9 @@ def clean_iris_data(iris: pd.DataFrame) -> pd.DataFrame:
 
     return (
         iris
-        .dropna() # Drop rows with any null values
-        .rename(columns={"FLOWER_SPECIES": "species"}) # Rename a column
-        .query("species=='setosa'") # Filter to rows with a certain value
+        .dropna()
+        .rename(columns={"FLOWER_SPECIES": "species"})
+        .query("species=='setosa'")
     )
 ```
 
@@ -72,7 +72,6 @@ But what if you want to make the chain more robust? Or see what's happening to t
 You can add some `.check` steps.
 
 ```python
-
 (
     iris
     .dropna()
@@ -92,9 +91,9 @@ You can add some `.check` steps.
 ```
 
 The `.check` methods will display the following results:
-
+<br/><br/>
 <img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/sample_output.jpg" alt="Sample output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;"/>
-  
+<br/><br/>
   
 The `.check` methods didn't modify how the `iris` data is processed by your code. They just let you check the data as it flows down the pipeline. That's the difference between Pandas `.head()` and Pandas Checks `.check.head()`.
   
@@ -105,12 +104,12 @@ Here's what's in the doctor's bag.
 ### Describe data
 Standard Pandas methods:
 - `.check.columns()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.columns) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.columns)
-- `.check.dtypes()` for [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.dtypes) | `.check.dtype()` for [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.dtype)
+- `.check.dtype()` - [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.dtype)
+- `.check.dtypes()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.dtypes)
 - `.check.describe()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.describe) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.describe)
 - `.check.head()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.head) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.head)
 - `.check.info()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.info) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.info)
 - `.check.memory_usage()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.memory_usage) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.memory_usage)
-- `.check.nrows()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.nrows) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.nrows)
 - `.check.nunique()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.nunique) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.nunique)
 - `.check.shape()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.shape) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.shape)
 - `.check.tail()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.tail) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.tail)
@@ -122,6 +121,7 @@ New methods in Pandas Checks:
 - `.check.ncols()`: Count columns - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.ncols) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.ncols)
 - `.check.ndups()`: Count rows with duplicate values - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.ndups) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.ndups)
 - `.check.nnulls()`: Count rows with null values - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.nnulls) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.nnulls)
+- `.check.nrows()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.nrows) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.nrows)
 - `.check.print()`: Print a string, a variable, or the current dataframe - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.print) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.print)
 
 ### Export interim files
@@ -129,23 +129,24 @@ New methods in Pandas Checks:
 
 ### Time your code
 - `.check.print_time_elapsed(start_time)`: Print the execution time since you called `start_time = pdc.start_timer()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.print_time_elapsed) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.print_time_elapsed)
-- 💡 Tip:  You can also use this stopwatch outside a method chain, anywhere in your Python code:  
+<br></br>
+> 💡 Tip:  You can also use this stopwatch outside a method chain, anywhere in your Python code:  
 
-    ```python
-    from pandas_checks import print_elapsed_time, start_timer
+```python
+from pandas_checks import print_elapsed_time, start_timer
 
-    start_time = start_timer()
-    ...
-    print_elapsed_time(start_time)
-    ```
+start_time = start_timer()
+...
+print_elapsed_time(start_time)
+```
         
-### Turn on/off Pandas Checks
-These can be used to disable subsequent Pandas Checks methods, either temporarily for a single method chain or permanently such as in a production environment.
+### Turn Pandas Checks on or off
+These methods can be used to disable subsequent Pandas Checks methods, either temporarily for a single method chain or permanently such as in a production environment.
 - `.check.disable_checks()`: Don't run checks. By default, still runs assertions. - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.disable_checks) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.disable_checks)
-- `.check.enable_checks()`: Run checks again - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.enable_checks) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.enable_checks)
+- `.check.enable_checks()`: Run checks again. - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.enable_checks) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.enable_checks)
 
 ### Validate data
-General:
+Custom:
 - `.check.assert_data()`: Check that data passes an arbitrary condition - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.assert_data) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.assert_data)
 
 Types:
@@ -190,6 +191,7 @@ Also, most Pandas Checks methods accept 3 additional arguments:
     .check.describe(subset=['sepal_width', 'sepal_length'])  # Only apply the check to certain columns
 )
 ```
+<br/><br/>
 <img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/power_user_output.jpg" alt="Power user output" width="350" style="display: block; margin-left: auto; margin-right: auto;  width: 50%;">
 
 
@@ -237,7 +239,7 @@ You can also adjust settings within a method chain by bookending the chain, like
 
 > 💡 Tip:  **Hybrid EDA-Prod data processing**
 >    
-> Exploratory data analysis (EDA) is traditionally thought of as the first step of data projects. But often when we're in production, we wish we could reuse parts of the EDA. Maybe we're debugging, editing prod code, or need to change the input data. Unfortunately, the EDA code is often too stale to fire up again. The prod pipeline has changed too much.  
+> Exploratory data analysis (EDA) is traditionally thought of as the first step of data projects. But often when we're in production, we wish we could reuse parts of the EDA. Maybe we're debugging, editing prod code, or need to change the input data. Unfortunately, the original EDA code is often too stale to fire up again. The prod pipeline has changed too much.  
 >  
 > If you used Pandas Checks during EDA, you can keep your `.check` methods in your first prod code. In production, you can disable Pandas Checks, but enable it when you need it. This can make your prod pipline more transparent and easier to inspect.  
 
