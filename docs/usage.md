@@ -7,7 +7,7 @@ First make Pandas Check available in your environment.
 pip install pandas-checks
 ```
 
-Then import it in your code. It works in Jupyter, IPython, and Python scripts run from the command line.
+Then import it in your code. It works in Jupyter notebooks, IPython, and Python scripts run from the command line.
 
 ```python
 import pandas_checks

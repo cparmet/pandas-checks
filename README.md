@@ -3,8 +3,8 @@
   
 <img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/pandas-check-gh-social.jpg" alt="Banner image for Pandas Checks">  
   
-## Introduction
-**Pandas Checks** is a Python library for data science and data engineering. It adds non-invasive health checks for Pandas method chains.
+## What is it?
+**Pandas Checks** is a Python package for data science and data engineering. It adds non-invasive health checks for Pandas method chains.
 
 It can inspect and validate your data at various points in your Pandas pipelines, without modifying the underlying data.
 
@@ -27,7 +27,7 @@ pip install pandas-checks
 import pandas_checks
 ```
     
-It works in Jupyter, IPython, and Python scripts run from the command line.  
+It works in Jupyter notebooks, IPython, and Python scripts run from the command line.  
   
 ## Usage
 Pandas Checks adds `.check` methods to Pandas DataFrames and Series.  

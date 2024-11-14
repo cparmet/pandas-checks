@@ -2,9 +2,9 @@
   
 <img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/pandas-check-gh-social.jpg" alt="Banner image for Pandas Checks">  
   
-## Introduction
+## What is it?
 
-**Pandas Checks** is a Python library for data science and data engineering. It adds non-invasive health checks for Pandas method chains.
+**Pandas Checks** is a Python package for data science and data engineering. It adds non-invasive health checks for [Pandas](https://github.com/pandas-dev/pandas/) method chains.  
 
 ## What are method chains?
 Method chains are one of the [coolest features](https://tomaugspurger.net/posts/method-chaining/) of the Pandas library! They allow you to write more functional code with fewer intermediate variables and fewer side effects. If you're familiar with R, method chains are Python's version of [dplyr pipes](https://style.tidyverse.org/pipes.html).
