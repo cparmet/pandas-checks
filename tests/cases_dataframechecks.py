@@ -8,9 +8,9 @@ import pandas_checks as pdc
 def method_assert_data():
     return lambda df, args: df.check.assert_data(
         condition=lambda s: s.sum() > 0,  # Series because we apply subset first
-        subset=args["first_num_col"],
-        pass_message="Pass",
         fail_message="Fail",
+        pass_message="Pass",
+        subset=args["first_num_col"],
         raise_exception=False,
         exception_to_raise=AttributeError,
         verbose=True,

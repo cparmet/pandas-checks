@@ -55,9 +55,9 @@ class DataFrameChecks:
     def assert_data(
         self,
         condition: Callable,
-        subset: Union[str, List, None] = None,
-        pass_message: str = " ✔️ Assertion passed ",
         fail_message: str = " ㄨ Assertion failed ",
+        pass_message: str = " ✔️ Assertion passed ",
+        subset: Union[str, List, None] = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         message_shows_condition: bool = True,
@@ -67,9 +67,9 @@ class DataFrameChecks:
 
         Args:
             condition: Assertion criteria in the form of a lambda function, such as `lambda df: df.shape[0]>10`.
-            subset: Optional, which column or columns to check the condition against. Applied after fn. Subsetting can also be done within the `condition`, such as `lambda df: df['column_name'].sum()>10`
-            pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            subset: Optional, which column or columns to check the condition against. Applied after fn. Subsetting can also be done within the `condition`, such as `lambda df: df['column_name'].sum()>10`
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             message_shows_condition: Whether the fail/pass message should also print the assertion criteria
@@ -151,9 +151,9 @@ class DataFrameChecks:
 
     def assert_datetime(
         self,
-        subset: Union[str, List, None] = None,
-        pass_message: str = " ✔️ Assert datetime passed ",
         fail_message: Union[str, None] = None,
+        pass_message: str = " ✔️ Assert datetime passed ",
+        subset: Union[str, List, None] = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
@@ -174,9 +174,9 @@ class DataFrameChecks:
 
         self._obj.check.assert_type(
             dtype=datetime,
-            subset=subset,
-            pass_message=pass_message,
             fail_message=fail_message,
+            pass_message=pass_message,
+            subset=subset,
             raise_exception=raise_exception,
             exception_to_raise=exception_to_raise,
             verbose=verbose,
@@ -185,9 +185,9 @@ class DataFrameChecks:
 
     def assert_float(
         self,
-        subset: Union[str, List, None] = None,
-        pass_message: str = " ✔️ Assert float passed ",
         fail_message: Union[str, None] = None,
+        pass_message: str = " ✔️ Assert float passed ",
+        subset: Union[str, List, None] = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
@@ -195,9 +195,9 @@ class DataFrameChecks:
         """Tests whether Dataframe or subset of columns is floats. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
-            subset: Optional, which column or columns to check the condition against. `
-            pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            subset: Optional, which column or columns to check the condition against. `
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -208,9 +208,9 @@ class DataFrameChecks:
 
         self._obj.check.assert_type(
             dtype=float,
-            subset=subset,
-            pass_message=pass_message,
             fail_message=fail_message,
+            pass_message=pass_message,
+            subset=subset,
             raise_exception=raise_exception,
             exception_to_raise=exception_to_raise,
             verbose=verbose,
@@ -219,9 +219,9 @@ class DataFrameChecks:
 
     def assert_int(
         self,
-        subset: Union[str, List, None] = None,
-        pass_message: str = " ✔️ Assert integeer passed ",
         fail_message: Union[str, None] = None,
+        pass_message: str = " ✔️ Assert integeer passed ",
+        subset: Union[str, List, None] = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
@@ -229,9 +229,9 @@ class DataFrameChecks:
         """Tests whether Dataframe or subset of columns is integers. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
-            subset: Optional, which column or columns to check the condition against. `
-            pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            subset: Optional, which column or columns to check the condition against. `
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -242,9 +242,9 @@ class DataFrameChecks:
 
         self._obj.check.assert_type(
             dtype=int,
-            subset=subset,
-            pass_message=pass_message,
             fail_message=fail_message,
+            pass_message=pass_message,
+            subset=subset,
             raise_exception=raise_exception,
             exception_to_raise=exception_to_raise,
             verbose=verbose,
@@ -254,10 +254,10 @@ class DataFrameChecks:
     def assert_less_than(
         self,
         max: Any,
+        fail_message: str = " ㄨ Assert maximum failed ",
+        pass_message: str = " ✔️ Assert maximum passed ",
         or_equal_to: bool = True,
         subset: Union[str, List, None] = None,
-        pass_message: str = " ✔️ Assert maximum passed ",
-        fail_message: str = " ㄨ Assert maximum failed ",
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
@@ -267,9 +267,9 @@ class DataFrameChecks:
         Args:
             max: the max value to compare DataFrame to. Accepts any type that can be used in <, such as int, float, str, datetime
             or_equal_to: whether to test for <= min (True) or < max (False)
-            subset: Optional, which column or columns to check the condition against. `
-            pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            subset: Optional, which column or columns to check the condition against. `
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -284,9 +284,9 @@ class DataFrameChecks:
 
         self._obj.check.assert_data(
             condition=max_fn,
-            subset=subset,
-            pass_message=pass_message,
             fail_message=fail_message,
+            pass_message=pass_message,
+            subset=subset,
             raise_exception=raise_exception,
             exception_to_raise=exception_to_raise,
             message_shows_condition=False,
@@ -297,10 +297,10 @@ class DataFrameChecks:
     def assert_greater_than(
         self,
         min: Any,
+        fail_message: str = " ㄨ Assert minimum failed ",
+        pass_message: str = " ✔️ Assert minimum passed ",
         or_equal_to: bool = True,
         subset: Union[str, List, None] = None,
-        pass_message: str = " ✔️ Assert minimum passed ",
-        fail_message: str = " ㄨ Assert minimum failed ",
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
@@ -309,10 +309,10 @@ class DataFrameChecks:
 
         Args:
             min: the minimum value to compare DataFrame to. Accepts any type that can be used in >, such as int, float, str, datetime
+            fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
             or_equal_to: whether to test for >= min (True) or > min (False)
             subset: Optional, which column or columns to check the condition against. `
-            pass_message: Message to display if the condition passes.
-            fail_message: Message to display if the condition fails.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -327,9 +327,9 @@ class DataFrameChecks:
 
         self._obj.check.assert_data(
             condition=min_fn,
-            subset=subset,
-            pass_message=pass_message,
             fail_message=fail_message,
+            pass_message=pass_message,
+            subset=subset,
             raise_exception=raise_exception,
             exception_to_raise=exception_to_raise,
             message_shows_condition=False,
@@ -339,10 +339,10 @@ class DataFrameChecks:
 
     def assert_negative(
         self,
+        fail_message: str = " ㄨ Assert negative failed ",
+        pass_message: str = " ✔️ Assert negative passed ",
         subset: Union[str, List, None] = None,
         assert_no_nulls: bool = True,
-        pass_message: str = " ✔️ Assert negative passed ",
-        fail_message: str = " ㄨ Assert negative failed ",
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
@@ -350,10 +350,10 @@ class DataFrameChecks:
         """Tests whether Dataframe or subset of columns has all negative values. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
+            fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
             subset: Optional, which column or columns to check the condition against.`
             assert_no_nulls: Whether to also enforce that data has no nulls.
-            pass_message: Message to display if the condition passes.
-            fail_message: Message to display if the condition fails.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -374,9 +374,9 @@ class DataFrameChecks:
 
         self._obj.dropna().check.assert_data(
             condition=lambda df: (df < 0).all().all(),
-            subset=subset,
-            pass_message=pass_message,
             fail_message=fail_message,
+            pass_message=pass_message,
+            subset=subset,
             raise_exception=raise_exception,
             exception_to_raise=exception_to_raise,
             message_shows_condition=False,
@@ -386,9 +386,9 @@ class DataFrameChecks:
 
     def assert_no_nulls(
         self,
-        subset: Union[str, List, None] = None,
-        pass_message: str = " ✔️ Assert no nulls passed ",
         fail_message: str = " ㄨ Assert no nulls failed ",
+        pass_message: str = " ✔️ Assert no nulls passed ",
+        subset: Union[str, List, None] = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
@@ -396,9 +396,9 @@ class DataFrameChecks:
         """Tests whether Dataframe or subset of columns has no nulls. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
-            subset: Optional, which column or columns to check the condition against. `
-            pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            subset: Optional, which column or columns to check the condition against. `
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -409,9 +409,9 @@ class DataFrameChecks:
 
         self._obj.check.assert_data(
             condition=lambda df: df.isna().any().any() == False,
-            subset=subset,
-            pass_message=pass_message,
             fail_message=fail_message,
+            pass_message=pass_message,
+            subset=subset,
             raise_exception=raise_exception,
             exception_to_raise=exception_to_raise,
             message_shows_condition=False,
@@ -421,9 +421,9 @@ class DataFrameChecks:
 
     def assert_all_nulls(
         self,
-        subset: Union[str, List, None] = None,
-        pass_message: str = " ✔️ Assert all nulls passed ",
         fail_message: str = " ㄨ Assert all nulls failed ",
+        pass_message: str = " ✔️ Assert all nulls passed ",
+        subset: Union[str, List, None] = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
@@ -431,9 +431,9 @@ class DataFrameChecks:
         """Tests whether Dataframe or subset of columns has all nulls. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
-            subset: Optional, which column or columns to check the condition against. `
-            pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            subset: Optional, which column or columns to check the condition against. `
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -444,9 +444,9 @@ class DataFrameChecks:
 
         self._obj.check.assert_data(
             condition=lambda df: df.isna().all().all(),
-            subset=subset,
-            pass_message=pass_message,
             fail_message=fail_message,
+            pass_message=pass_message,
+            subset=subset,
             raise_exception=raise_exception,
             exception_to_raise=exception_to_raise,
             message_shows_condition=False,
@@ -456,10 +456,10 @@ class DataFrameChecks:
 
     def assert_positive(
         self,
+        fail_message: str = " ㄨ Assert positive failed ",
+        pass_message: str = " ✔️ Assert positive passed ",
         subset: Union[str, List, None] = None,
         assert_no_nulls: bool = True,
-        pass_message: str = " ✔️ Assert positive passed ",
-        fail_message: str = " ㄨ Assert positive failed ",
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
@@ -467,10 +467,10 @@ class DataFrameChecks:
         """Tests whether Dataframe or subset of columns has all positive values. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
+            fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
             subset: Optional, which column or columns to check the condition against. `
             assert_no_nulls: Whether to also enforce that data has no nulls.
-            pass_message: Message to display if the condition passes.
-            fail_message: Message to display if the condition fails.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -490,9 +490,9 @@ class DataFrameChecks:
 
         self._obj.dropna().check.assert_data(
             condition=lambda df: (df > 0).all().all(),
-            subset=subset,
-            pass_message=pass_message,
             fail_message=fail_message,
+            pass_message=pass_message,
+            subset=subset,
             raise_exception=raise_exception,
             exception_to_raise=exception_to_raise,
             message_shows_condition=False,
@@ -502,9 +502,9 @@ class DataFrameChecks:
 
     def assert_str(
         self,
-        subset: Union[str, List, None] = None,
-        pass_message: str = " ✔️ Assert string passed ",
         fail_message: Union[str, None] = None,
+        pass_message: str = " ✔️ Assert string passed ",
+        subset: Union[str, List, None] = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
@@ -512,9 +512,9 @@ class DataFrameChecks:
         """Tests whether Dataframe or subset of columns is strings. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
-            subset: Optional, which column or columns to check the condition against. `
-            pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            subset: Optional, which column or columns to check the condition against. `
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -525,9 +525,9 @@ class DataFrameChecks:
 
         self._obj.check.assert_type(
             dtype=str,
-            subset=subset,
-            pass_message=pass_message,
             fail_message=fail_message,
+            pass_message=pass_message,
+            subset=subset,
             raise_exception=raise_exception,
             exception_to_raise=exception_to_raise,
             verbose=verbose,
@@ -536,9 +536,9 @@ class DataFrameChecks:
 
     def assert_timedelta(
         self,
-        subset: Union[str, List, None] = None,
-        pass_message: str = " ✔️ Assert timedelta passed ",
         fail_message: Union[str, None] = None,
+        pass_message: str = " ✔️ Assert timedelta passed ",
+        subset: Union[str, List, None] = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
@@ -546,9 +546,9 @@ class DataFrameChecks:
         """Tests whether Dataframe or subset of columns is of type timedelta. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
-            subset: Optional, which column or columns to check the condition against. `
-            pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            subset: Optional, which column or columns to check the condition against. `
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -559,9 +559,9 @@ class DataFrameChecks:
 
         self._obj.check.assert_type(
             dtype=timedelta,
-            subset=subset,
-            pass_message=pass_message,
             fail_message=fail_message,
+            pass_message=pass_message,
+            subset=subset,
             raise_exception=raise_exception,
             exception_to_raise=exception_to_raise,
             verbose=verbose,
@@ -571,9 +571,9 @@ class DataFrameChecks:
     def assert_type(
         self,
         dtype: Type[Any],
-        subset: Union[str, List, None] = None,
-        pass_message: str = " ✔️ Assert type passed ",
         fail_message: Union[str, None] = None,
+        pass_message: str = " ✔️ Assert type passed ",
+        subset: Union[str, List, None] = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
@@ -582,9 +582,9 @@ class DataFrameChecks:
 
         Args:
             dtype: The required variable type
-            subset: Optional, which column or columns to check the condition against. `
-            pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            subset: Optional, which column or columns to check the condition against. `
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -612,9 +612,9 @@ class DataFrameChecks:
             )
         self._obj.check.assert_data(
             condition=lambda df: _is_type(df, dtype),
-            subset=subset,
-            pass_message=pass_message,
             fail_message=fail_message,
+            pass_message=pass_message,
+            subset=subset,
             raise_exception=raise_exception,
             exception_to_raise=exception_to_raise,
             message_shows_condition=False,
@@ -624,9 +624,9 @@ class DataFrameChecks:
 
     def assert_unique(
         self,
-        subset: Union[str, List, None] = None,
-        pass_message: str = " ✔️ Assert unique passed ",
         fail_message: str = " ㄨ Assert unique failed ",
+        pass_message: str = " ✔️ Assert unique passed ",
+        subset: Union[str, List, None] = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
@@ -634,9 +634,9 @@ class DataFrameChecks:
         """Tests whether Dataframe or subset of columns has no duplicate rows. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Args:
-            subset: Optional, which column or columns to check the condition against. `
-            pass_message: Message to display if the condition passes.
             fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            subset: Optional, which column or columns to check the condition against. `
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -647,9 +647,9 @@ class DataFrameChecks:
 
         self._obj.check.assert_data(
             condition=lambda df: df.duplicated().sum() == 0,
-            subset=subset,
-            pass_message=pass_message,
             fail_message=fail_message,
+            pass_message=pass_message,
+            subset=subset,
             raise_exception=raise_exception,
             exception_to_raise=exception_to_raise,
             message_shows_condition=False,
