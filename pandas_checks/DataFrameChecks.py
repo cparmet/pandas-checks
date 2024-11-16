@@ -184,8 +184,8 @@ class DataFrameChecks:
 
         Args:
             subset: Optional, which column or columns to check the condition against.
+            fail_message: Message to display if the condition fails. If None, will report expected vs observed type.
             pass_message: Message to display if the condition passes.
-            fail_message: Message to display if the condition fails.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -618,7 +618,7 @@ class DataFrameChecks:
             # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
-            fail_message: Message to display if the condition fails.
+            fail_message: Message to display if the condition fails. If None, will report expected vs observed type.
             pass_message: Message to display if the condition passes.
             subset: Optional, which column or columns to check the condition against.
             raise_exception: Whether to raise an exception if the condition fails.
@@ -660,7 +660,7 @@ class DataFrameChecks:
             # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
-            fail_message: Message to display if the condition fails.
+            fail_message: Message to display if the condition fails. If None, will report expected vs observed type.
             pass_message: Message to display if the condition passes.
             subset: Optional, which column or columns to check the condition against.
             raise_exception: Whether to raise an exception if the condition fails.
@@ -705,7 +705,7 @@ class DataFrameChecks:
 
         Args:
             dtype: The required variable type
-            fail_message: Message to display if the condition fails.
+            fail_message: Message to display if the condition fails. If None, will report expected vs observed type.
             pass_message: Message to display if the condition passes.
             subset: Optional, which column or columns to check the condition against.
             raise_exception: Whether to raise an exception if the condition fails.

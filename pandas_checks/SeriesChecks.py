@@ -174,7 +174,7 @@ class SeriesChecks:
             # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
-            fail_message: Message to display if the condition fails.
+            fail_message: Message to display if the condition fails. If None, will report expected vs observed type.
             pass_message: Message to display if the condition passes.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
@@ -214,7 +214,7 @@ class SeriesChecks:
             # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
-            fail_message: Message to display if the condition fails.
+            fail_message: Message to display if the condition fails. If None, will report expected vs observed type.
             pass_message: Message to display if the condition passes.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
@@ -254,7 +254,7 @@ class SeriesChecks:
             # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
-            fail_message: Message to display if the condition fails.
+            fail_message: Message to display if the condition fails. If None, will report expected vs observed type.
             pass_message: Message to display if the condition passes.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
@@ -586,7 +586,7 @@ class SeriesChecks:
             # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
-            fail_message: Message to display if the condition fails.
+            fail_message: Message to display if the condition fails. If None, will report expected vs observed type.
             pass_message: Message to display if the condition passes.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
@@ -625,7 +625,7 @@ class SeriesChecks:
             # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
-            fail_message: Message to display if the condition fails.
+            fail_message: Message to display if the condition fails. If None, will report expected vs observed type.
             pass_message: Message to display if the condition passes.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
@@ -668,7 +668,7 @@ class SeriesChecks:
 
         Args:
             dtype: The required variable type
-            fail_message: Message to display if the condition fails.
+            fail_message: Message to display if the condition fails. If None, will report expected vs observed type.
             pass_message: Message to display if the condition passes.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
