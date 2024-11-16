@@ -514,6 +514,49 @@ class SeriesChecks:
         )
         return self._obj
 
+    def assert_nrows(
+        self,
+        nrows: int,
+        fail_message: str = " ㄨ Assert nrows failed ",
+        pass_message: str = " ✔️ Assert nrows passed ",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether Series has a given number of rows. Optionally raises an exception. Does not modify the Series itself.
+
+        Example:
+            (
+                iris
+                ["species"]
+                .check.assert_nrows(20)
+            )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
+        Args:
+            nrows: The expected number of rows
+            fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original Series, unchanged.
+        """
+
+        self._obj.check.assert_data(
+            condition=lambda s: s.shape[0] == nrows,
+            fail_message=fail_message,
+            pass_message=pass_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
     def assert_positive(
         self,
         fail_message: str = " ㄨ Assert positive failed ",
