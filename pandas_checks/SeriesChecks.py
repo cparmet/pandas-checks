@@ -279,7 +279,7 @@ class SeriesChecks:
         max: Any,
         fail_message: str = " ㄨ Assert maximum failed ",
         pass_message: str = " ✔️ Assert maximum passed ",
-        or_equal_to: bool = True,
+        or_equal_to: bool = False,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
@@ -304,7 +304,7 @@ class SeriesChecks:
             max: the max value to compare Series to. Accepts any type that can be used in <, such as int, float, str, datetime
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
-            or_equal_to: whether to test for <= min (True) or < max (False)
+            or_equal_to: whether to test for <= max (True) or < max (False)
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -333,7 +333,7 @@ class SeriesChecks:
         min: Any,
         fail_message: str = " ㄨ Assert minimum failed ",
         pass_message: str = " ✔️ Assert minimum passed ",
-        or_equal_to: bool = True,
+        or_equal_to: bool = False,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,

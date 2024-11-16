@@ -294,7 +294,7 @@ class DataFrameChecks:
         max: Any,
         fail_message: str = " ㄨ Assert maximum failed ",
         pass_message: str = " ✔️ Assert maximum passed ",
-        or_equal_to: bool = True,
+        or_equal_to: bool = False,
         subset: Union[str, List, None] = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
@@ -317,7 +317,7 @@ class DataFrameChecks:
 
         Args:
             max: the max value to compare DataFrame to. Accepts any type that can be used in <, such as int, float, str, datetime
-            or_equal_to: whether to test for <= min (True) or < max (False)
+            or_equal_to: whether to test for <= max (True) or < max (False)
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
             subset: Optional, which column or columns to check the condition against.
@@ -350,7 +350,7 @@ class DataFrameChecks:
         min: Any,
         fail_message: str = " ㄨ Assert minimum failed ",
         pass_message: str = " ✔️ Assert minimum passed ",
-        or_equal_to: bool = True,
+        or_equal_to: bool = False,
         subset: Union[str, List, None] = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
