@@ -47,6 +47,49 @@ class SeriesChecks:
     def __init__(self, pandas_obj: pd.Series) -> None:
         self._obj = pandas_obj
 
+    def assert_all_nulls(
+        self,
+        fail_message: str = " ㄨ Assert all nulls failed ",
+        pass_message: str = " ✔️ Assert all nulls passed ",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.Series:
+        """Tests whether Series has all nulls. Optionally raises an exception. Does not modify the Series itself.
+
+        Example:
+            (
+                iris
+                ["sepal_length"]
+                .check.assert_all_nulls()
+            )
+
+            # Will raise an exception, "ㄨ Assert all nulls failed"
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
+        Args:
+            fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original Series, unchanged.
+        """
+
+        self._obj.check.assert_data(
+            condition=lambda s: s.isna().all().all(),
+            fail_message=fail_message,
+            pass_message=pass_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
     def assert_data(
         self,
         condition: Callable,
@@ -234,6 +277,56 @@ class SeriesChecks:
         )
         return self._obj
 
+    def assert_greater_than(
+        self,
+        min: Any,
+        fail_message: str = " ㄨ Assert minimum failed ",
+        pass_message: str = " ✔️ Assert minimum passed ",
+        or_equal_to: bool = False,
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.Series:
+        """Tests whether Series is > or >= a minimum threshold. Optionally raises an exception. Does not modify the Series itself.
+
+        Example:
+            (
+                iris
+                ["sepal_length"]
+                # Validate that the Series is always >= 0
+                .check.assert_greater_than(0, or_equal_to=True)
+            )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
+        Args:
+            min: the minimum value to compare Series to. Accepts any type that can be used in >, such as int, float, str, datetime
+            fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            or_equal_to: whether to test for >= min (True) or > min (False)
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original Series, unchanged.
+        """
+        if or_equal_to:
+            min_fn = lambda s: (s >= min).all().all()
+        else:
+            min_fn = lambda s: (s > min).all().all()
+
+        self._obj.check.assert_data(
+            condition=min_fn,
+            fail_message=fail_message,
+            pass_message=pass_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
     def assert_int(
         self,
         fail_message: Union[str, None] = None,
@@ -328,56 +421,6 @@ class SeriesChecks:
         )
         return self._obj
 
-    def assert_greater_than(
-        self,
-        min: Any,
-        fail_message: str = " ㄨ Assert minimum failed ",
-        pass_message: str = " ✔️ Assert minimum passed ",
-        or_equal_to: bool = False,
-        raise_exception: bool = True,
-        exception_to_raise: Type[BaseException] = DataError,
-        verbose: bool = False,
-    ) -> pd.Series:
-        """Tests whether Series is > or >= a minimum threshold. Optionally raises an exception. Does not modify the Series itself.
-
-        Example:
-            (
-                iris
-                ["sepal_length"]
-                # Validate that the Series is always >= 0
-                .check.assert_greater_than(0, or_equal_to=True)
-            )
-
-            # See docs for .check.assert_data() for examples of how to customize assertions
-
-        Args:
-            min: the minimum value to compare Series to. Accepts any type that can be used in >, such as int, float, str, datetime
-            fail_message: Message to display if the condition fails.
-            pass_message: Message to display if the condition passes.
-            or_equal_to: whether to test for >= min (True) or > min (False)
-            raise_exception: Whether to raise an exception if the condition fails.
-            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
-            verbose: Whether to display the pass message if the condition passes.
-
-        Returns:
-            The original Series, unchanged.
-        """
-        if or_equal_to:
-            min_fn = lambda s: (s >= min).all().all()
-        else:
-            min_fn = lambda s: (s > min).all().all()
-
-        self._obj.check.assert_data(
-            condition=min_fn,
-            fail_message=fail_message,
-            pass_message=pass_message,
-            raise_exception=raise_exception,
-            exception_to_raise=exception_to_raise,
-            message_shows_condition=False,
-            verbose=verbose,
-        )
-        return self._obj
-
     def assert_negative(
         self,
         fail_message: str = " ㄨ Assert negative failed ",
@@ -462,49 +505,6 @@ class SeriesChecks:
 
         self._obj.check.assert_data(
             condition=lambda s: s.isna().any().any() == False,
-            fail_message=fail_message,
-            pass_message=pass_message,
-            raise_exception=raise_exception,
-            exception_to_raise=exception_to_raise,
-            message_shows_condition=False,
-            verbose=verbose,
-        )
-        return self._obj
-
-    def assert_all_nulls(
-        self,
-        fail_message: str = " ㄨ Assert all nulls failed ",
-        pass_message: str = " ✔️ Assert all nulls passed ",
-        raise_exception: bool = True,
-        exception_to_raise: Type[BaseException] = DataError,
-        verbose: bool = False,
-    ) -> pd.Series:
-        """Tests whether Series has all nulls. Optionally raises an exception. Does not modify the Series itself.
-
-        Example:
-            (
-                iris
-                ["sepal_length"]
-                .check.assert_all_nulls()
-            )
-
-            # Will raise an exception, "ㄨ Assert all nulls failed"
-
-            # See docs for .check.assert_data() for examples of how to customize assertions
-
-        Args:
-            fail_message: Message to display if the condition fails.
-            pass_message: Message to display if the condition passes.
-            raise_exception: Whether to raise an exception if the condition fails.
-            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
-            verbose: Whether to display the pass message if the condition passes.
-
-        Returns:
-            The original Series, unchanged.
-        """
-
-        self._obj.check.assert_data(
-            condition=lambda s: s.isna().all().all(),
             fail_message=fail_message,
             pass_message=pass_message,
             raise_exception=raise_exception,

@@ -52,6 +52,51 @@ class DataFrameChecks:
     def __init__(self, pandas_obj: Union[pd.DataFrame, pd.Series]) -> None:
         self._obj = pandas_obj
 
+    def assert_all_nulls(
+        self,
+        fail_message: str = " ㄨ Assert all nulls failed ",
+        pass_message: str = " ✔️ Assert all nulls passed ",
+        subset: Union[str, List, None] = None,
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether Dataframe or subset of columns has all nulls. Optionally raises an exception. Does not modify the DataFrame itself.
+
+        Example:
+            (
+                iris
+                .check.assert_all_nulls(subset=["sepal_length"])
+            )
+
+            # Will raise an exception "ㄨ Assert all nulls failed"
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
+        Args:
+            fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            subset: Optional, which column or columns to check the condition against.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+
+        self._obj.check.assert_data(
+            condition=lambda df: df.isna().all().all(),
+            fail_message=fail_message,
+            pass_message=pass_message,
+            subset=subset,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
     def assert_data(
         self,
         condition: Callable,
@@ -247,6 +292,62 @@ class DataFrameChecks:
         )
         return self._obj
 
+    def assert_greater_than(
+        self,
+        min: Any,
+        fail_message: str = " ㄨ Assert minimum failed ",
+        pass_message: str = " ✔️ Assert minimum passed ",
+        or_equal_to: bool = False,
+        subset: Union[str, List, None] = None,
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether all values in a Dataframe or subset of columns is > or >= a minimum threshold. Optionally raises an exception. Does not modify the DataFrame itself.
+
+
+        Example:
+            (
+                iris
+                # Validate that sepal_length is always greater than 0.1
+                .check.assert_greater_than(0.1, subset="sepal_length")
+
+                # Validate that two columns are each always greater than or equal to 0.1
+                .check.assert_greater_than(0.1, subset=["sepal_length", "petal_length"], or_equal_to=True)
+            )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
+        Args:
+            min: the minimum value to compare DataFrame to. Accepts any type that can be used in >, such as int, float, str, datetime
+            fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            or_equal_to: whether to test for >= min (True) or > min (False)
+            subset: Optional, which column or columns to check the condition against.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+        if or_equal_to:
+            min_fn = lambda df: (df >= min).all().all()
+        else:
+            min_fn = lambda df: (df > min).all().all()
+
+        self._obj.check.assert_data(
+            condition=min_fn,
+            fail_message=fail_message,
+            pass_message=pass_message,
+            subset=subset,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
     def assert_int(
         self,
         fail_message: Union[str, None] = None,
@@ -345,62 +446,6 @@ class DataFrameChecks:
         )
         return self._obj
 
-    def assert_greater_than(
-        self,
-        min: Any,
-        fail_message: str = " ㄨ Assert minimum failed ",
-        pass_message: str = " ✔️ Assert minimum passed ",
-        or_equal_to: bool = False,
-        subset: Union[str, List, None] = None,
-        raise_exception: bool = True,
-        exception_to_raise: Type[BaseException] = DataError,
-        verbose: bool = False,
-    ) -> pd.DataFrame:
-        """Tests whether all values in a Dataframe or subset of columns is > or >= a minimum threshold. Optionally raises an exception. Does not modify the DataFrame itself.
-
-
-        Example:
-            (
-                iris
-                # Validate that sepal_length is always greater than 0.1
-                .check.assert_greater_than(0.1, subset="sepal_length")
-
-                # Validate that two columns are each always greater than or equal to 0.1
-                .check.assert_greater_than(0.1, subset=["sepal_length", "petal_length"], or_equal_to=True)
-            )
-
-            # See docs for .check.assert_data() for examples of how to customize assertions
-
-        Args:
-            min: the minimum value to compare DataFrame to. Accepts any type that can be used in >, such as int, float, str, datetime
-            fail_message: Message to display if the condition fails.
-            pass_message: Message to display if the condition passes.
-            or_equal_to: whether to test for >= min (True) or > min (False)
-            subset: Optional, which column or columns to check the condition against.
-            raise_exception: Whether to raise an exception if the condition fails.
-            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
-            verbose: Whether to display the pass message if the condition passes.
-
-        Returns:
-            The original DataFrame, unchanged.
-        """
-        if or_equal_to:
-            min_fn = lambda df: (df >= min).all().all()
-        else:
-            min_fn = lambda df: (df > min).all().all()
-
-        self._obj.check.assert_data(
-            condition=min_fn,
-            fail_message=fail_message,
-            pass_message=pass_message,
-            subset=subset,
-            raise_exception=raise_exception,
-            exception_to_raise=exception_to_raise,
-            message_shows_condition=False,
-            verbose=verbose,
-        )
-        return self._obj
-
     def assert_negative(
         self,
         fail_message: str = " ㄨ Assert negative failed ",
@@ -489,51 +534,6 @@ class DataFrameChecks:
 
         self._obj.check.assert_data(
             condition=lambda df: df.isna().any().any() == False,
-            fail_message=fail_message,
-            pass_message=pass_message,
-            subset=subset,
-            raise_exception=raise_exception,
-            exception_to_raise=exception_to_raise,
-            message_shows_condition=False,
-            verbose=verbose,
-        )
-        return self._obj
-
-    def assert_all_nulls(
-        self,
-        fail_message: str = " ㄨ Assert all nulls failed ",
-        pass_message: str = " ✔️ Assert all nulls passed ",
-        subset: Union[str, List, None] = None,
-        raise_exception: bool = True,
-        exception_to_raise: Type[BaseException] = DataError,
-        verbose: bool = False,
-    ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns has all nulls. Optionally raises an exception. Does not modify the DataFrame itself.
-
-        Example:
-            (
-                iris
-                .check.assert_all_nulls(subset=["sepal_length"])
-            )
-
-            # Will raise an exception "ㄨ Assert all nulls failed"
-
-            # See docs for .check.assert_data() for examples of how to customize assertions
-
-        Args:
-            fail_message: Message to display if the condition fails.
-            pass_message: Message to display if the condition passes.
-            subset: Optional, which column or columns to check the condition against.
-            raise_exception: Whether to raise an exception if the condition fails.
-            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
-            verbose: Whether to display the pass message if the condition passes.
-
-        Returns:
-            The original DataFrame, unchanged.
-        """
-
-        self._obj.check.assert_data(
-            condition=lambda df: df.isna().all().all(),
             fail_message=fail_message,
             pass_message=pass_message,
             subset=subset,
