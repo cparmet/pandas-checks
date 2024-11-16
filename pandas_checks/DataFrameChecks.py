@@ -52,6 +52,51 @@ class DataFrameChecks:
     def __init__(self, pandas_obj: Union[pd.DataFrame, pd.Series]) -> None:
         self._obj = pandas_obj
 
+    def assert_all_nulls(
+        self,
+        fail_message: str = " ㄨ Assert all nulls failed ",
+        pass_message: str = " ✔️ Assert all nulls passed ",
+        subset: Union[str, List, None] = None,
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether Dataframe or subset of columns has all nulls. Optionally raises an exception. Does not modify the DataFrame itself.
+
+        Example:
+            (
+                iris
+                .check.assert_all_nulls(subset=["sepal_length"])
+            )
+
+            # Will raise an exception "ㄨ Assert all nulls failed"
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
+        Args:
+            fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            subset: Optional, which column or columns to check the condition against.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+
+        self._obj.check.assert_data(
+            condition=lambda df: df.isna().all().all(),
+            fail_message=fail_message,
+            pass_message=pass_message,
+            subset=subset,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
     def assert_data(
         self,
         condition: Callable,
@@ -64,6 +109,20 @@ class DataFrameChecks:
         verbose: bool = False,
     ) -> pd.DataFrame:
         """Tests whether Dataframe meets condition. Optionally raises an exception. Does not modify the DataFrame itself.
+
+        Example:
+            # Validate that the Dataframe has at least 2 rows
+
+            (
+                iris
+                .check.assert_data(lambda df: df.shape[0]>1)
+
+                # Or customize the message displayed when alert fails
+                .check.assert_data(lambda df: df.shape[0]>1, "Assertion failed, DataFrame has no rows!")
+
+                # Or show a warning instead of raising an exception
+                .check.assert_data(lambda df: s.shape[0]>1, "FYI Series has no rows", raise_exception=False)
+            )
 
         Args:
             condition: Assertion criteria in the form of a lambda function, such as `lambda df: df.shape[0]>10`.
@@ -160,10 +219,18 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Tests whether Dataframe or subset of columns is datetime or timestamp. Optionally raises an exception. Does not modify the DataFrame itself.
 
+        Example:
+            (
+                df
+                .check.assert_datetime(subset="datetime_col")
+            )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
         Args:
-            subset: Optional, which column or columns to check the condition against. `
+            subset: Optional, which column or columns to check the condition against.
+            fail_message: Message to display if the condition fails. If None, will report expected vs observed type.
             pass_message: Message to display if the condition passes.
-            fail_message: Message to display if the condition fails.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -194,10 +261,18 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Tests whether Dataframe or subset of columns is floats. Optionally raises an exception. Does not modify the DataFrame itself.
 
+        Example:
+            (
+                df
+                .check.assert_float(subset="float_col")
+            )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
         Args:
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
-            subset: Optional, which column or columns to check the condition against. `
+            subset: Optional, which column or columns to check the condition against.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -217,102 +292,38 @@ class DataFrameChecks:
         )
         return self._obj
 
-    def assert_int(
-        self,
-        fail_message: Union[str, None] = None,
-        pass_message: str = " ✔️ Assert integeer passed ",
-        subset: Union[str, List, None] = None,
-        raise_exception: bool = True,
-        exception_to_raise: Type[BaseException] = TypeError,
-        verbose: bool = False,
-    ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns is integers. Optionally raises an exception. Does not modify the DataFrame itself.
-
-        Args:
-            fail_message: Message to display if the condition fails.
-            pass_message: Message to display if the condition passes.
-            subset: Optional, which column or columns to check the condition against. `
-            raise_exception: Whether to raise an exception if the condition fails.
-            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
-            verbose: Whether to display the pass message if the condition passes.
-
-        Returns:
-            The original DataFrame, unchanged.
-        """
-
-        self._obj.check.assert_type(
-            dtype=int,
-            fail_message=fail_message,
-            pass_message=pass_message,
-            subset=subset,
-            raise_exception=raise_exception,
-            exception_to_raise=exception_to_raise,
-            verbose=verbose,
-        )
-        return self._obj
-
-    def assert_less_than(
-        self,
-        max: Any,
-        fail_message: str = " ㄨ Assert maximum failed ",
-        pass_message: str = " ✔️ Assert maximum passed ",
-        or_equal_to: bool = True,
-        subset: Union[str, List, None] = None,
-        raise_exception: bool = True,
-        exception_to_raise: Type[BaseException] = DataError,
-        verbose: bool = False,
-    ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns is < or <= a value. Optionally raises an exception. Does not modify the DataFrame itself.
-
-        Args:
-            max: the max value to compare DataFrame to. Accepts any type that can be used in <, such as int, float, str, datetime
-            or_equal_to: whether to test for <= min (True) or < max (False)
-            fail_message: Message to display if the condition fails.
-            pass_message: Message to display if the condition passes.
-            subset: Optional, which column or columns to check the condition against. `
-            raise_exception: Whether to raise an exception if the condition fails.
-            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
-            verbose: Whether to display the pass message if the condition passes.
-
-        Returns:
-            The original DataFrame, unchanged.
-        """
-        if or_equal_to:
-            max_fn = lambda df: (df <= max).all().all()
-        else:
-            max_fn = lambda df: (df < max).all().all()
-
-        self._obj.check.assert_data(
-            condition=max_fn,
-            fail_message=fail_message,
-            pass_message=pass_message,
-            subset=subset,
-            raise_exception=raise_exception,
-            exception_to_raise=exception_to_raise,
-            message_shows_condition=False,
-            verbose=verbose,
-        )
-        return self._obj
-
     def assert_greater_than(
         self,
         min: Any,
         fail_message: str = " ㄨ Assert minimum failed ",
         pass_message: str = " ✔️ Assert minimum passed ",
-        or_equal_to: bool = True,
+        or_equal_to: bool = False,
         subset: Union[str, List, None] = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
     ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns is > or >= a value. Optionally raises an exception. Does not modify the DataFrame itself.
+        """Tests whether all values in a Dataframe or subset of columns is > or >= a minimum threshold. Optionally raises an exception. Does not modify the DataFrame itself.
+
+
+        Example:
+            (
+                iris
+                # Validate that sepal_length is always greater than 0.1
+                .check.assert_greater_than(0.1, subset="sepal_length")
+
+                # Validate that two columns are each always greater than or equal to 0.1
+                .check.assert_greater_than(0.1, subset=["sepal_length", "petal_length"], or_equal_to=True)
+            )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             min: the minimum value to compare DataFrame to. Accepts any type that can be used in >, such as int, float, str, datetime
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
             or_equal_to: whether to test for >= min (True) or > min (False)
-            subset: Optional, which column or columns to check the condition against. `
+            subset: Optional, which column or columns to check the condition against.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -337,6 +348,104 @@ class DataFrameChecks:
         )
         return self._obj
 
+    def assert_int(
+        self,
+        fail_message: Union[str, None] = None,
+        pass_message: str = " ✔️ Assert integeer passed ",
+        subset: Union[str, List, None] = None,
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = TypeError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether Dataframe or subset of columns is integers. Optionally raises an exception. Does not modify the DataFrame itself.
+
+        Example:
+            (
+                df
+                .check.assert_int(subset="int_col")
+            )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
+        Args:
+            fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            subset: Optional, which column or columns to check the condition against.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+
+        self._obj.check.assert_type(
+            dtype=int,
+            fail_message=fail_message,
+            pass_message=pass_message,
+            subset=subset,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_less_than(
+        self,
+        max: Any,
+        fail_message: str = " ㄨ Assert maximum failed ",
+        pass_message: str = " ✔️ Assert maximum passed ",
+        or_equal_to: bool = False,
+        subset: Union[str, List, None] = None,
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether all values in a Dataframe or subset of columns is < or <= a maximum threshold. Optionally raises an exception. Does not modify the DataFrame itself.
+
+        Example:
+            (
+                iris
+
+                # Validate that sepal_length is always < 1000
+                .check.assert_less_than(1000, subset="sepal_length")
+
+                # Validate that two columns are each always less than or equal too 100
+                .check.assert_less_than(1000, subset=["sepal_length", "petal_length"], or_equal_to=True)
+            )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
+        Args:
+            max: the max value to compare DataFrame to. Accepts any type that can be used in <, such as int, float, str, datetime
+            or_equal_to: whether to test for <= max (True) or < max (False)
+            fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            subset: Optional, which column or columns to check the condition against.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+        if or_equal_to:
+            max_fn = lambda df: (df <= max).all().all()
+        else:
+            max_fn = lambda df: (df < max).all().all()
+
+        self._obj.check.assert_data(
+            condition=max_fn,
+            fail_message=fail_message,
+            pass_message=pass_message,
+            subset=subset,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
     def assert_negative(
         self,
         fail_message: str = " ㄨ Assert negative failed ",
@@ -348,6 +457,14 @@ class DataFrameChecks:
         verbose: bool = False,
     ) -> pd.DataFrame:
         """Tests whether Dataframe or subset of columns has all negative values. Optionally raises an exception. Does not modify the DataFrame itself.
+
+        Example:
+            (
+                df
+                .check.assert_negative(subset="column_name")
+            )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             fail_message: Message to display if the condition fails.
@@ -395,10 +512,18 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Tests whether Dataframe or subset of columns has no nulls. Optionally raises an exception. Does not modify the DataFrame itself.
 
+        Example:
+            (
+                iris
+                .check.assert_no_nulls(subset=["sepal_length"])
+            )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
         Args:
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
-            subset: Optional, which column or columns to check the condition against. `
+            subset: Optional, which column or columns to check the condition against.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -409,41 +534,6 @@ class DataFrameChecks:
 
         self._obj.check.assert_data(
             condition=lambda df: df.isna().any().any() == False,
-            fail_message=fail_message,
-            pass_message=pass_message,
-            subset=subset,
-            raise_exception=raise_exception,
-            exception_to_raise=exception_to_raise,
-            message_shows_condition=False,
-            verbose=verbose,
-        )
-        return self._obj
-
-    def assert_all_nulls(
-        self,
-        fail_message: str = " ㄨ Assert all nulls failed ",
-        pass_message: str = " ✔️ Assert all nulls passed ",
-        subset: Union[str, List, None] = None,
-        raise_exception: bool = True,
-        exception_to_raise: Type[BaseException] = DataError,
-        verbose: bool = False,
-    ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns has all nulls. Optionally raises an exception. Does not modify the DataFrame itself.
-
-        Args:
-            fail_message: Message to display if the condition fails.
-            pass_message: Message to display if the condition passes.
-            subset: Optional, which column or columns to check the condition against. `
-            raise_exception: Whether to raise an exception if the condition fails.
-            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
-            verbose: Whether to display the pass message if the condition passes.
-
-        Returns:
-            The original DataFrame, unchanged.
-        """
-
-        self._obj.check.assert_data(
-            condition=lambda df: df.isna().all().all(),
             fail_message=fail_message,
             pass_message=pass_message,
             subset=subset,
@@ -466,10 +556,18 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Tests whether Dataframe or subset of columns has all positive values. Optionally raises an exception. Does not modify the DataFrame itself.
 
+        Example:
+            (
+                iris
+                .check.assert_positive(subset=["sepal_length"])
+            )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
         Args:
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
-            subset: Optional, which column or columns to check the condition against. `
+            subset: Optional, which column or columns to check the condition against.
             assert_no_nulls: Whether to also enforce that data has no nulls.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
@@ -511,10 +609,18 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Tests whether Dataframe or subset of columns is strings. Optionally raises an exception. Does not modify the DataFrame itself.
 
+        Example:
+            (
+                iris
+                .check.assert_str(subset=["species", "another_string_column"])
+            )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
         Args:
-            fail_message: Message to display if the condition fails.
+            fail_message: Message to display if the condition fails. If None, will report expected vs observed type.
             pass_message: Message to display if the condition passes.
-            subset: Optional, which column or columns to check the condition against. `
+            subset: Optional, which column or columns to check the condition against.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -545,10 +651,18 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Tests whether Dataframe or subset of columns is of type timedelta. Optionally raises an exception. Does not modify the DataFrame itself.
 
+        Example:
+            (
+                df
+                .check.assert_timedelta(subset=["timedelta_col"])
+            )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
         Args:
-            fail_message: Message to display if the condition fails.
+            fail_message: Message to display if the condition fails. If None, will report expected vs observed type.
             pass_message: Message to display if the condition passes.
-            subset: Optional, which column or columns to check the condition against. `
+            subset: Optional, which column or columns to check the condition against.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -580,11 +694,20 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Tests whether Dataframe or subset of columns meets type assumption. Optionally raises an exception. Does not modify the DataFrame itself.
 
+        Example:
+            # Validate that a column of mixed types has overall type `object`
+            (
+                iris
+                .check.assert_type(object, subset="column_with_mixed_types")
+            )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
         Args:
             dtype: The required variable type
-            fail_message: Message to display if the condition fails.
+            fail_message: Message to display if the condition fails. If None, will report expected vs observed type.
             pass_message: Message to display if the condition passes.
-            subset: Optional, which column or columns to check the condition against. `
+            subset: Optional, which column or columns to check the condition against.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -631,12 +754,24 @@ class DataFrameChecks:
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
     ) -> pd.DataFrame:
-        """Tests whether Dataframe or subset of columns has no duplicate rows. Optionally raises an exception. Does not modify the DataFrame itself.
+        """Validates that a subset of columns have no duplicate values, or validates that a DataFrame has no duplicate rows. Optionally raises an exception. Does not modify the DataFrame itself.
+
+        Example:
+            (
+                df
+                # Validate that a column has no duplicate values
+                .check.assert_unique(subset="id_column")
+
+                # Validate that a DataFrame has no duplicate rows
+                .check.assert_unique()
+            )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
-            subset: Optional, which column or columns to check the condition against. `
+            subset: Optional, which column or columns to check the condition against.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
             verbose: Whether to display the pass message if the condition passes.
@@ -664,6 +799,12 @@ class DataFrameChecks:
         check_name: Union[str, None] = "🏛️ Columns",
     ) -> pd.DataFrame:
         """Prints the column names of a DataFrame, without modifying the DataFrame itself.
+
+        Example:
+            (
+                df
+                .check.columns()
+            )
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before printing columns. Example: `lambda df: df.shape[0]>10`. Applied before subset.
@@ -693,6 +834,12 @@ class DataFrameChecks:
 
         See Pandas docs for describe() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
+        Example:
+            (
+                df
+                .check.describe()
+            )
+
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas describe(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string to select a subset of columns before running Pandas describe(). Applied after fn.
@@ -714,6 +861,14 @@ class DataFrameChecks:
     def disable_checks(self, enable_asserts: bool = True) -> pd.DataFrame:
         """Turns off Pandas Checks globally, such as in production mode. Calls to .check functions will not be run. Does not modify the DataFrame itself.
 
+        Example:
+            (
+                iris
+                .check.disable_checks()
+                .check.assert_data(lambda df: df.shape[0]>10) #  This check will NOT be run
+                .check.enable_checks() # Subsequent calls to .check will be run
+            )
+
         Args
             enable_assert: Optionally, whether to also enable or disable assert statements
 
@@ -732,6 +887,12 @@ class DataFrameChecks:
         """Displays the data types of a DataFrame's columns without modifying the DataFrame itself.
 
         See Pandas docs for dtypes for additional usage information.
+
+        Example:
+            (
+                iris
+                .check.dtypes()
+            )
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas dtypes. Example: `lambda df: df.shape[0]>10`. Applied before subset.
@@ -753,6 +914,15 @@ class DataFrameChecks:
     def enable_checks(self, enable_asserts: bool = True) -> pd.DataFrame:
         """Globally enables Pandas Checks. Subequent calls to .check methods will be run. Does not modify the DataFrame itself.
 
+        Example:
+            (
+                iris
+                ["sepal_length"]
+                .check.disable_checks()
+                .check.assert_data(lambda s: s.shape[0]>10) #  This check will NOT be run
+                .check.enable_checks() # Subsequent calls to .check will be run
+            )
+
         Args:
             enable_asserts: Optionally, whether to globally enable or disable calls to .check.assert_data().
 
@@ -772,7 +942,8 @@ class DataFrameChecks:
 
         Example:
             .check.function(fn=lambda df: df.shape[0]>10, check_name='Has at least 10 rows?')
-            which will result in 'True' or 'False'
+
+            # Will return either 'True' or 'False'
 
         Args:
             fn: A lambda function to apply to the DataFrame. Example: `lambda df: df.shape[0]>10`. Applied before subset.
@@ -789,6 +960,16 @@ class DataFrameChecks:
         self, check_name: Union[str, None] = "🐼🩺 Pandas Checks mode"
     ) -> pd.DataFrame:
         """Displays the current values of Pandas Checks global options enable_checks and enable_asserts. Does not modify the DataFrame itself.
+
+        Example:
+            (
+                iris
+                .check.get_mode()
+            )
+
+            # The check will print:
+            # "🐼🩺 Pandas Checks mode: {'enable_checks': True, 'enable_asserts': True}"
+
 
         Args:
             check_name: An optional name for the check. Will be used as a preface the printed result.
@@ -809,6 +990,12 @@ class DataFrameChecks:
         """Displays the first n rows of a DataFrame, without modifying the DataFrame itself.
 
         See Pandas docs for head() for additional usage information.
+
+        Example:
+            (
+                iris
+                .check.head(10)
+            )
 
         Args:
             n: The number of rows to display.
@@ -838,6 +1025,12 @@ class DataFrameChecks:
         """Displays a histogram for the DataFrame, without modifying the DataFrame itself.
 
         See Pandas docs for hist() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+
+        Example:
+            (
+                iris
+                .check.hist(subset=["sepal_length", "sepal_width"])
+            )
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas hist(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
@@ -878,6 +1071,12 @@ class DataFrameChecks:
 
         See Pandas docs for info() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
+        Example:
+            (
+                iris
+                .check.info()
+            )
+
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas info(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string to select a subset of columns before running Pandas info(). Applied after fn.
@@ -903,6 +1102,12 @@ class DataFrameChecks:
         """Displays the memory footprint of a DataFrame, without modifying the DataFrame itself.
 
         See Pandas docs for memory_usage() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+
+        Example:
+            (
+                iris
+                .check.memory_usage()
+            )
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas memory_usage(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
@@ -933,6 +1138,12 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Displays the number of columns in a DataFrame, without modifying the DataFrame itself.
 
+        Example:
+            (
+                iris
+                .check.ncols()
+            )
+
         Args:
             fn: An optional lambda function to apply to the DataFrame before counting the number of columns. Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string to select a subset of columns before counting the number of columns. Applied after fn.
@@ -960,6 +1171,13 @@ class DataFrameChecks:
         """Displays the number of duplicated rows in a DataFrame, without modifying the DataFrame itself.
 
         See Pandas docs for duplicated() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+
+        Example:
+            # Count the rows with duplicate pairs of values in two columns
+            (
+                iris
+                .check.ndups(subset=["sepal_length", "sepal_width"])
+            )
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before counting the number of duplicates. Example: `lambda df: df.shape[0]>10`. Applied before subset.
@@ -993,6 +1211,19 @@ class DataFrameChecks:
         """Displays the number of rows with null values in a DataFrame, without modifying the DataFrame itself.
 
         See Pandas docs for isna() for additional usage information.
+
+        Example:
+            # Count the number of rows that have any nulls, one count per column
+            (
+                iris
+                .check.nnulls()
+            )
+
+            # Count the number of rows in the DataFrame that have a null in any column
+            (
+                iris
+                .check.nnulls(by_column=False)
+            )
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before counting the number of rows with a null. Example: `lambda df: df.shape[0]>10`. Applied before subset.
@@ -1038,6 +1269,12 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Displays the number of rows in a DataFrame, without modifying the DataFrame itself.
 
+        Example:
+            (
+                iris
+                .check.nrows()
+            )
+
         Args:
             fn: An optional lambda function to apply to the DataFrame before counting the number of rows. Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string name of one column to limit which columns are considered when counting rows. Applied after fn.
@@ -1065,6 +1302,12 @@ class DataFrameChecks:
         """Displays the number of unique rows in a single column, without modifying the DataFrame itself.
 
         See Pandas docs for nunique() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+
+        Example:
+            (
+                iris
+                .check.nunique(column="sepal_width")
+            )
 
         Args:
             column: The name of a column to count uniques in. Applied after fn.
@@ -1098,6 +1341,13 @@ class DataFrameChecks:
         """Displays a plot of the DataFrame, without modifying the DataFrame itself.
 
         See Pandas docs for plot() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+
+
+        Example:
+            (
+                iris
+                .check.plot(kind="scatter", x="sepal_width", y="sepal_length", title="Sepal width vs sepal length")
+            )
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas plot(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
@@ -1133,6 +1383,21 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Displays text, another object, or (by default) the current DataFrame's head. Does not modify the DataFrame itself.
 
+        Example:
+            # Print messages and milestones
+            (
+                iris
+                .check.print("Starting data cleaning..."")
+                ...
+            )
+
+            # Inspect a DataFrame, such as the interim result of data processing
+            (
+                iris
+                ...
+                .check.print(fn=lambda df: df.query("sepal_width<0"), check_name="Rows with negative sepal_width")
+            )
+
         Args:
             object: Object to print. Can be anything printable: str, int, list, another DataFrame, etc. If None, print the DataFrame's head (with `max_rows` rows).
             fn: An optional lambda function to apply to the DataFrame before printing `object`. Example: `lambda df: df.shape[0]>10`. Applied before subset.
@@ -1160,6 +1425,24 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Displays the time elapsed since start_time.
 
+        Example:
+            import pandas_checks as pdc
+
+            start_time = pdc.start_timer()
+
+            (
+                iris
+                ... # Do some data processing
+                .check.print_time_elapsed(start_time, "Cleaning took")
+
+                ... # Do more
+                .check.print_time_elapsed(start_time, "Processing total time", units="seconds") # Force units to stay in seconds
+
+            )
+
+            # Result: "Cleaning took: 17.298324584960938 seconds
+            #         "Processing total time: 71.0400543212890625 seconds
+
         Args:
             start_time: The index time when the stopwatch started, which comes from the Pandas Checks start_timer()
             lead_in: Optional text to print before the elapsed time.
@@ -1179,6 +1462,17 @@ class DataFrameChecks:
     def reset_format(self) -> pd.DataFrame:
         """Globally restores all Pandas Checks formatting options to their default "factory" settings. Does not modify the DataFrame itself.
 
+        Example:
+            (
+                iris
+                .check.set_format(precision=9, use_emojis=False)
+
+                # Print DF summary stats with precision 9 digits and no Pandas Checks emojis
+                .check.describe()
+
+                .check.reset_format() # Go back to default precision and emojis 🥳
+            )
+
         Returns:
             The original DataFrame, unchanged.
         """
@@ -1190,8 +1484,16 @@ class DataFrameChecks:
 
         Run pandas_checks.describe_options() to see a list of available options.
 
-        For example, .check.set_format(check_text_tag= "h1", use_emojis=False`)
-        will globally change Pandas Checks to display text results as H1 headings and remove all emojis.
+        Example:
+            (
+                iris
+                .check.set_format(precision=9, use_emojis=False)
+
+                # Print DF summary stats with precision 9 digits and no Pandas Checks emojis
+                .check.describe()
+
+                .check.reset_format() # Go back to default precision and emojis 🥳
+            )
 
         Args:
             **kwargs: Pairs of setting name and its new value.
@@ -1205,9 +1507,26 @@ class DataFrameChecks:
     def set_mode(self, enable_checks: bool, enable_asserts: bool) -> pd.DataFrame:
         """Configures the operation mode for Pandas Checks globally. Does not modify the DataFrame itself.
 
+        Example:
+
+            # Disable checks except keep running assertions
+            # Same as using .check.disable_checks()
+            (
+                iris
+                .check.set_mode(enable_checks=False)
+                .check.describe() # This check will not be run
+                .check.assert_data(lambda s: s.shape[0]>10) #  This check will still be run
+            )
+
+            # Disable checks and assertions
+            (
+                iris
+                .check.set_mode(enable_checks=False, enable_asserts=False)
+            )
+
         Args:
-            enable_checks: Whether to run any Pandas Checks methods globally. Does not affect .check.assert_data().
-            enable_asserts: Whether to run calls to Pandas Checks .check.assert_data() statements globally.
+            enable_checks: Whether to run any Pandas Checks methods globally. Does not affect .check.assert_*().
+            enable_asserts: Whether to run calls to Pandas Checks .check.assert_*() statements globally.
 
         Returns:
             The original DataFrame, unchanged.
@@ -1224,6 +1543,13 @@ class DataFrameChecks:
         """Displays the Dataframe's dimensions, without modifying the DataFrame itself.
 
         See Pandas docs for shape for additional usage information.
+
+        Example:
+            (
+                iris
+                .check.shape()
+                .check.shape(fn=lambda df: df.query("sepal_length<5"), check_name="Shape of DataFrame subgroup with sepal_length<5")
+            )
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas `shape`. Example: `lambda df: df.shape[0]>10`. Applied before subset.
@@ -1256,6 +1582,12 @@ class DataFrameChecks:
 
         See Pandas docs for tail() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
+        Example:
+            (
+                iris
+                .check.tail(10)
+            )
+
         Args:
             n: Number of rows to show.
             fn: An optional lambda function to apply to the DataFrame before running Pandas tail(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
@@ -1283,6 +1615,14 @@ class DataFrameChecks:
         """Displays the unique values in a column, without modifying the DataFrame itself.
 
         See Pandas docs for unique() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+
+        Example:
+            (
+                iris
+                .check.unique("species")
+            )
+            # The check will print:
+            # 🌟 Unique values of species: ['setosa', 'versicolor', 'virginica']
 
         Args:
             column: Column to check for unique values.
@@ -1318,6 +1658,12 @@ class DataFrameChecks:
         """Displays the value counts for a column, without modifying the DataFrame itself.
 
         See Pandas docs for value_counts() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+
+        Example:
+            (
+                iris
+                .check.value_counts("sepal_length")
+            )
 
         Args:
             column: Column to check for value counts.
@@ -1356,9 +1702,29 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Exports DataFrame to file, without modifying the DataFrame itself.
 
-        Format is inferred from path extension like .csv.
+        The file format is inferred from the extension. Supports:
+            - .csv
+            - .feather
+            - .parquet
+            - .pkl # Pickle
+            - .tsv # Tab-separated data file
+            - .xlsx
 
         This functions uses the corresponding Pandas export function such as to_csv(). See Pandas docs for those functions for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+
+        Example:
+            (
+                iris
+
+                # Process data
+                ...
+
+                # Export the interim data for inspection
+                .check.write("iris_interim.xlsx")
+
+                # Continue processing
+                ...
+            )
 
         Args:
             path: Path to write the file to.
