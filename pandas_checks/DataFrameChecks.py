@@ -70,7 +70,13 @@ class DataFrameChecks:
 
             (
                 iris
-                .check.assert_data(lambda df: df.shape[0]>1, verbose=True)
+                .check.assert_data(lambda df: df.shape[0]>1)
+
+                # Or customize the message displayed when alert fails
+                .check.assert_data(lambda df: df.shape[0]>1, "Assertion failed, DataFrame has no rows!")
+
+                # Or show a warning instead of raising an exception
+                .check.assert_data(lambda df: s.shape[0]>1, "FYI Series has no rows", raise_exception=False)
             )
 
         Args:
@@ -174,6 +180,8 @@ class DataFrameChecks:
                 .check.assert_datetime(subset="datetime_col")
             )
 
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
         Args:
             subset: Optional, which column or columns to check the condition against.
             pass_message: Message to display if the condition passes.
@@ -213,6 +221,8 @@ class DataFrameChecks:
                 df
                 .check.assert_float(subset="float_col")
             )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             fail_message: Message to display if the condition fails.
@@ -254,6 +264,8 @@ class DataFrameChecks:
                 .check.assert_int(subset="int_col")
             )
 
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
         Args:
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
@@ -291,17 +303,17 @@ class DataFrameChecks:
         """Tests whether all values in a Dataframe or subset of columns is < or <= a maximum threshold. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Example:
-            # Validate that sepal_length is always < 1000
             (
                 iris
-                .check.assert_less_than(1000, subset="sepal_length")
-            )
 
-            # Validate that two columns are each always <= 1000
-            (
-                iris
+                # Validate that sepal_length is always < 1000
+                .check.assert_less_than(1000, subset="sepal_length")
+
+                # Validate that two columns are each always less than or equal too 100
                 .check.assert_less_than(1000, subset=["sepal_length", "petal_length"], or_equal_to=True)
             )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             max: the max value to compare DataFrame to. Accepts any type that can be used in <, such as int, float, str, datetime
@@ -348,17 +360,16 @@ class DataFrameChecks:
 
 
         Example:
-            # Validate that sepal_length is always >0
             (
                 iris
-                .check.assert_greater_than(0, subset="sepal_length")
-            )
+                # Validate that sepal_length is always greater than 0.1
+                .check.assert_greater_than(0.1, subset="sepal_length")
 
-            # Validate that two columns are each always >= 0.1
-            (
-                iris
+                # Validate that two columns are each always greater than or equal to 0.1
                 .check.assert_greater_than(0.1, subset=["sepal_length", "petal_length"], or_equal_to=True)
             )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             min: the minimum value to compare DataFrame to. Accepts any type that can be used in >, such as int, float, str, datetime
@@ -407,6 +418,8 @@ class DataFrameChecks:
                 df
                 .check.assert_negative(subset="column_name")
             )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             fail_message: Message to display if the condition fails.
@@ -460,6 +473,8 @@ class DataFrameChecks:
                 .check.assert_no_nulls(subset=["sepal_length"])
             )
 
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
         Args:
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
@@ -501,7 +516,9 @@ class DataFrameChecks:
                 .check.assert_all_nulls(subset=["sepal_length"])
             )
 
-            # Will raise an exception, "ㄨ Assert all nulls failed"
+            # Will raise an exception "ㄨ Assert all nulls failed"
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             fail_message: Message to display if the condition fails.
@@ -544,6 +561,8 @@ class DataFrameChecks:
                 iris
                 .check.assert_positive(subset=["sepal_length"])
             )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             fail_message: Message to display if the condition fails.
@@ -596,6 +615,8 @@ class DataFrameChecks:
                 .check.assert_str(subset=["species", "another_string_column"])
             )
 
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
         Args:
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
@@ -635,6 +656,8 @@ class DataFrameChecks:
                 df
                 .check.assert_timedelta(subset=["timedelta_col"])
             )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             fail_message: Message to display if the condition fails.
@@ -677,6 +700,8 @@ class DataFrameChecks:
                 iris
                 .check.assert_type(object, subset="column_with_mixed_types")
             )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             dtype: The required variable type
@@ -732,17 +757,16 @@ class DataFrameChecks:
         """Validates that a subset of columns have no duplicate values, or validates that a DataFrame has no duplicate rows. Optionally raises an exception. Does not modify the DataFrame itself.
 
         Example:
-            # Validate that a column has no duplicate values
             (
                 df
+                # Validate that a column has no duplicate values
                 .check.assert_unique(subset="id_column")
-            )
 
-            # Validate that a DataFrame has no duplicate rows
-            (
-                df
+                # Validate that a DataFrame has no duplicate rows
                 .check.assert_unique()
             )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             fail_message: Message to display if the condition fails.

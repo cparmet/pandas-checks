@@ -65,7 +65,13 @@ class SeriesChecks:
             (
                 iris
                 ["sepal_length"]
-                .check.assert_data(lambda s: s.shape[0]>1, verbose=True)
+                .check.assert_data(lambda s: s.shape[0]>1)
+
+                # Or customize the message displayed when alert fails
+                .check.assert_data(lambda df: s.shape[0]>1, "Assertion failed, Series has no rows!")
+
+                # Or show a warning instead of raising an exception
+                .check.assert_data(lambda df: s.shape[0]>1, "FYI Series has no rows", raise_exception=False)
             )
 
         Args:
@@ -165,6 +171,8 @@ class SeriesChecks:
                 .check.assert_datetime()
             )
 
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
         Args:
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
@@ -202,6 +210,8 @@ class SeriesChecks:
                 ["float_col"]
                 .check.assert_float()
             )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             fail_message: Message to display if the condition fails.
@@ -241,6 +251,8 @@ class SeriesChecks:
                 .check.assert_int()
             )
 
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
         Args:
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
@@ -275,19 +287,18 @@ class SeriesChecks:
         """Tests whether all values in Series are < or <= a maximum threshold. Optionally raises an exception. Does not modify the Series itself.
 
         Example:
-            # Validate that sepal_length is always < 1000
             (
                 iris
                 ["sepal_length"]
-                .check.assert_less_than(1000)
-            )
 
-            # Validate that it's always <= 1000
-            (
-                iris
-                ["sepal_length"]
+                # Validate that sepal_length is always < 1000
+                .check.assert_less_than(1000)
+
+                # Validate that it's always <= 1000
                 .check.assert_less_than(1000, or_equal_to=True)
             )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             max: the max value to compare Series to. Accepts any type that can be used in <, such as int, float, str, datetime
@@ -330,19 +341,14 @@ class SeriesChecks:
         """Tests whether Series is > or >= a minimum threshold. Optionally raises an exception. Does not modify the Series itself.
 
         Example:
-            # Validate that sepal_length is always >0
             (
                 iris
                 ["sepal_length"]
-                .check.assert_greater_than(0)
+                # Validate that the Series is always >= 0
+                .check.assert_greater_than(0, or_equal_to=True)
             )
 
-            # Validate that two columns are each always >= 0.1
-            (
-                iris
-                [["sepal_length", "petal_length"]]
-                .check.assert_greater_than(0.1, or_equal_to=True)
-            )
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             min: the minimum value to compare Series to. Accepts any type that can be used in >, such as int, float, str, datetime
@@ -389,6 +395,8 @@ class SeriesChecks:
                 ["column_name"]
                 .check.assert_negative()
             )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             fail_message: Message to display if the condition fails.
@@ -439,6 +447,8 @@ class SeriesChecks:
                 .check.assert_no_nulls()
             )
 
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
         Args:
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
@@ -480,6 +490,8 @@ class SeriesChecks:
 
             # Will raise an exception, "ㄨ Assert all nulls failed"
 
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
         Args:
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
@@ -519,6 +531,8 @@ class SeriesChecks:
                 ["sepal_length"]
                 .check.assert_positive()
             )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             fail_message: Message to display if the condition fails.
@@ -569,6 +583,8 @@ class SeriesChecks:
                 .check.assert_str()
             )
 
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
         Args:
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
@@ -605,6 +621,8 @@ class SeriesChecks:
                 df
                 .check.assert_timedelta(subset=["timedelta_col"])
             )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             fail_message: Message to display if the condition fails.
@@ -645,6 +663,8 @@ class SeriesChecks:
                 ["column_with_mixed_types"]
                 .check.assert_type(object)
             )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             dtype: The required variable type
@@ -693,6 +713,8 @@ class SeriesChecks:
                 ["id_column"]
                 .check.assert_unique()
             )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
 
         Args:
             fail_message: Message to display if the condition fails.
