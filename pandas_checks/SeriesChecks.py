@@ -59,6 +59,15 @@ class SeriesChecks:
     ) -> pd.Series:
         """Tests whether Series meets condition. Optionally raises an exception. Does not modify the Series itself.
 
+        Example:
+            # Validate that the Series has at least 2 rows
+
+            (
+                iris
+                ["sepal_length"]
+                .check.assert_data(lambda s: s.shape[0]>1, verbose=True)
+            )
+
         Args:
             condition: Assertion criteria in the form of a lambda function, such as `lambda s: s.shape[0]>10`.
             fail_message: Message to display if the condition fails.
@@ -149,6 +158,13 @@ class SeriesChecks:
     ) -> pd.Series:
         """Tests whether Series is datetime or timestamp. Optionally raises an exception. Does not modify the Series itself.
 
+        Example:
+            (
+                df
+                ["datetime_col"]
+                .check.assert_datetime()
+            )
+
         Args:
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
@@ -179,6 +195,13 @@ class SeriesChecks:
         verbose: bool = False,
     ) -> pd.Series:
         """Tests whether Series is floats. Optionally raises an exception. Does not modify the Series itself.
+
+        Example:
+            (
+                df
+                ["float_col"]
+                .check.assert_float()
+            )
 
         Args:
             fail_message: Message to display if the condition fails.
@@ -211,6 +234,13 @@ class SeriesChecks:
     ) -> pd.Series:
         """Tests whether Series is integers. Optionally raises an exception. Does not modify the Series itself.
 
+        Example:
+            (
+                df
+                ["int_col"]
+                .check.assert_int()
+            )
+
         Args:
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
@@ -242,7 +272,22 @@ class SeriesChecks:
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
     ) -> pd.Series:
-        """Tests whether Series is < or <= a value. Optionally raises an exception. Does not modify the Series itself.
+        """Tests whether all values in Series are < or <= a maximum threshold. Optionally raises an exception. Does not modify the Series itself.
+
+        Example:
+            # Validate that sepal_length is always < 1000
+            (
+                iris
+                ["sepal_length"]
+                .check.assert_less_than(1000)
+            )
+
+            # Validate that it's always <= 1000
+            (
+                iris
+                ["sepal_length"]
+                .check.assert_less_than(1000, or_equal_to=True)
+            )
 
         Args:
             max: the max value to compare Series to. Accepts any type that can be used in <, such as int, float, str, datetime
@@ -282,7 +327,22 @@ class SeriesChecks:
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
     ) -> pd.Series:
-        """Tests whether Series is > or >= a value. Optionally raises an exception. Does not modify the Series itself.
+        """Tests whether Series is > or >= a minimum threshold. Optionally raises an exception. Does not modify the Series itself.
+
+        Example:
+            # Validate that sepal_length is always >0
+            (
+                iris
+                ["sepal_length"]
+                .check.assert_greater_than(0)
+            )
+
+            # Validate that two columns are each always >= 0.1
+            (
+                iris
+                [["sepal_length", "petal_length"]]
+                .check.assert_greater_than(0.1, or_equal_to=True)
+            )
 
         Args:
             min: the minimum value to compare Series to. Accepts any type that can be used in >, such as int, float, str, datetime
@@ -322,6 +382,13 @@ class SeriesChecks:
         verbose: bool = False,
     ) -> pd.Series:
         """Tests whether Series has all negative values. Optionally raises an exception. Does not modify the Series itself.
+
+        Example:
+            (
+                df
+                ["column_name"]
+                .check.assert_negative()
+            )
 
         Args:
             fail_message: Message to display if the condition fails.
@@ -366,6 +433,12 @@ class SeriesChecks:
     ) -> pd.Series:
         """Tests whether Series has no nulls. Optionally raises an exception. Does not modify the Series itself.
 
+        Example:
+            (
+                ["sepal_length"]
+                .check.assert_no_nulls()
+            )
+
         Args:
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
@@ -397,6 +470,15 @@ class SeriesChecks:
         verbose: bool = False,
     ) -> pd.Series:
         """Tests whether Series has all nulls. Optionally raises an exception. Does not modify the Series itself.
+
+        Example:
+            (
+                iris
+                ["sepal_length"]
+                .check.assert_all_nulls()
+            )
+
+            # Will raise an exception, "ㄨ Assert all nulls failed"
 
         Args:
             fail_message: Message to display if the condition fails.
@@ -431,6 +513,13 @@ class SeriesChecks:
     ) -> pd.Series:
         """Tests whether Series has all positive values. Optionally raises an exception. Does not modify the Series itself.
 
+        Example:
+            (
+                iris
+                ["sepal_length"]
+                .check.assert_positive()
+            )
+
         Args:
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
@@ -454,8 +543,8 @@ class SeriesChecks:
 
         self._obj.dropna().check.assert_data(
             condition=lambda s: (s > 0).all().all(),
-            fail_message=fail_message,
             pass_message=pass_message,
+            fail_message=fail_message,
             raise_exception=raise_exception,
             exception_to_raise=exception_to_raise,
             message_shows_condition=False,
@@ -472,6 +561,13 @@ class SeriesChecks:
         verbose: bool = False,
     ) -> pd.Series:
         """Tests whether Series is strings. Optionally raises an exception. Does not modify the Series itself.
+
+        Example:
+            (
+                iris
+                ["species"]
+                .check.assert_str()
+            )
 
         Args:
             fail_message: Message to display if the condition fails.
@@ -504,6 +600,12 @@ class SeriesChecks:
     ) -> pd.Series:
         """Tests whether Series is of type timedelta. Optionally raises an exception. Does not modify the Series itself.
 
+        Example:
+            (
+                df
+                .check.assert_timedelta(subset=["timedelta_col"])
+            )
+
         Args:
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
@@ -535,6 +637,14 @@ class SeriesChecks:
         verbose: bool = False,
     ) -> pd.Series:
         """Tests whether Series meets type assumption. Optionally raises an exception. Does not modify the Series itself.
+
+        Example:
+            # Validate that a column of mixed types has overall type `object`
+            (
+                iris
+                ["column_with_mixed_types"]
+                .check.assert_type(object)
+            )
 
         Args:
             dtype: The required variable type
@@ -575,7 +685,14 @@ class SeriesChecks:
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
     ) -> pd.Series:
-        """Tests whether Series has no duplicate rows. Optionally raises an exception. Does not modify the Series itself.
+        """Validates that a Series has no duplicate values. Optionally raises an exception. Does not modify the Series itself.
+
+        Example:
+            (
+                df
+                ["id_column"]
+                .check.assert_unique()
+            )
 
         Args:
             fail_message: Message to display if the condition fails.
@@ -609,6 +726,13 @@ class SeriesChecks:
 
         See Pandas docs for describe() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
+        Example:
+            (
+                iris
+                ["sepal_length"]
+                .check.describe()
+            )
+
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas describe(). Example: `lambda s: s.dropna()`.
             check_name: An optional name for the check to preface the result with.
@@ -624,6 +748,15 @@ class SeriesChecks:
 
     def disable_checks(self, enable_asserts: bool = True) -> pd.Series:
         """Turns off Pandas Checks globally, such as in production mode. Calls to .check functions will not be run. Does not modify the Series itself.
+
+        Example:
+            (
+                iris
+                ["sepal_length"]
+                .check.disable_checks()
+                .check.assert_data(lambda s: s.shape[0]>10) #  This check will NOT be run
+                .check.enable_checks() # Subsequent calls to .check will be run
+            )
 
         Args
             enable_assert: Optionally, whether to also enable or disable assert statements
@@ -643,6 +776,13 @@ class SeriesChecks:
 
         See Pandas docs for .dtype for additional usage information.
 
+        Example:
+            (
+                iris
+                ["sepal_length"]
+                .check.dtype()
+            )
+
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas dtype. Example: `lambda s: s.dropna()`.
             check_name: An optional name for the check to preface the result with.
@@ -660,6 +800,15 @@ class SeriesChecks:
 
     def enable_checks(self, enable_asserts: bool = True) -> pd.Series:
         """Globally enables Pandas Checks. Subequent calls to .check methods will be run. Does not modify the Series itself.
+
+        Example:
+            (
+                iris
+                ["sepal_length"]
+                .check.disable_checks()
+                .check.assert_data(lambda s: s.shape[0]>10) #  This check will NOT be run
+                .check.enable_checks() # Subsequent calls to .check will be run
+            )
 
         Args:
             enable_asserts: Optionally, whether to globally enable or disable calls to .check.assert_data().
@@ -679,7 +828,8 @@ class SeriesChecks:
 
         Example:
             .check.function(fn=lambda s: s.shape[0]>10, check_name='Has at least 10 rows?')
-            which will result in 'True' or 'False'
+
+            # Will return either 'True' or 'False'
 
         Args:
             fn: The lambda function to apply to the Series. Example: `lambda s: s.dropna()`.
@@ -695,6 +845,17 @@ class SeriesChecks:
         self, check_name: Union[str, None] = "⚙️ Pandas Checks mode"
     ) -> pd.Series:
         """Displays the current values of Pandas Checks global options enable_checks and enable_asserts. Does not modify the Series itself.
+
+        Example:
+            (
+                iris
+                ["sepal_length"]
+                .check.get_mode()
+            )
+
+            # The check will print:
+            # "🐼🩺 Pandas Checks mode: {'enable_checks': True, 'enable_asserts': True}"
+
 
         Args:
             check_name: An optional name for the check. Will be used as a preface the printed result.
@@ -714,6 +875,13 @@ class SeriesChecks:
         """Displays the first n rows of a Series, without modifying the Series itself.
 
         See Pandas docs for head() for additional usage information.
+
+        Example:
+            (
+                iris
+                ["sepal_length"]
+                .check.head(10)
+            )
 
         Args:
             n: The number of rows to display.
@@ -737,6 +905,13 @@ class SeriesChecks:
         """Displays a histogram for the Series's distribution, without modifying the Series itself.
 
         See Pandas docs for hist() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+
+        Example:
+            (
+                iris
+                ["sepal_length"]
+                .check.hist()
+            )
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas head(). Example: `lambda s: s.dropna()`.
@@ -764,6 +939,13 @@ class SeriesChecks:
 
         See Pandas docs for info() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
+        Example:
+            (
+                iris
+                ["sepal_length"]
+                .check.info()
+            )
+
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas info(). Example: `lambda s: s.dropna()`.
             check_name: An optional name for the check, to be printed as preface to the result.
@@ -787,6 +969,13 @@ class SeriesChecks:
         """Displays the memory footprint of a Series, without modifying the Series itself.
 
         See Pandas docs for memory_usage() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+
+        Example:
+            (
+                iris
+                ["sepal_length"]
+                .check.memory_usage()
+            )
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas memory_usage(). Example: `lambda s: s.dropna()`.
@@ -814,6 +1003,13 @@ class SeriesChecks:
 
         See Pandas docs for duplicated() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
+        Example:
+            (
+                iris
+                ["sepal_length"]
+                .check.ndups()
+            )
+
         Args:
             fn: An optional lambda function to apply to the Series before counting the number of duplicates. Example: `lambda s: s.dropna()`.
             check_name: An optional name for the check, to be printed as preface to the result.
@@ -836,6 +1032,13 @@ class SeriesChecks:
 
         See Pandas docs for isna() for additional usage information.
 
+        Example:
+            (
+                iris
+                ["sepal_length"]
+                .check.nnulls()
+            )
+
         Args:
             fn: An optional lambda function to apply to the Series before counting rows with nulls. Example: `lambda s: s.dropna()`.
             check_name: An optional name for the check, to be printed as preface to the result.
@@ -854,6 +1057,13 @@ class SeriesChecks:
         check_name: Union[str, None] = "☰ Rows",
     ) -> pd.Series:
         """Displays the number of rows in a Series, without modifying the Series itself.
+
+        Example:
+            (
+                iris
+                ["sepal_width"]
+                .check.nrows()
+            )
 
         Args:
             fn: An optional lambda function to apply to the Series before counting the number of rows. Example: `lambda s: s.dropna()`.
@@ -876,6 +1086,13 @@ class SeriesChecks:
         """Displays the number of unique rows in a Series, without modifying the Series itself.
 
         See Pandas docs for nunique() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+
+        Example:
+            (
+                iris
+                ["sepal_width"]
+                .check.nunique()
+            )
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas nunique(). Example: `lambda s: s.dropna()`.
@@ -905,6 +1122,15 @@ class SeriesChecks:
 
         See Pandas docs for plot() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
+        Example:
+            # Show a box plot of the Series distribution
+            (
+                iris
+                ["sepal_width"]
+                .check.plot(kind="box", title="Distribution of sepal width")
+            )
+
+
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas plot(). Example: `lambda s: s.dropna()`.
             check_name: An optional title for the plot.
@@ -932,6 +1158,22 @@ class SeriesChecks:
     ) -> pd.Series:
         """Displays text, another object, or (by default) the current DataFrame's head. Does not modify the Series itself.
 
+        Example:
+            # Print messages and milestones
+            (
+                iris
+                ["sepal_width"]
+                .check.print("Starting data cleaning..."")
+                ...
+            )
+
+            # Inspect a Series, such as the interim result of data processing
+            (
+                iris
+                ...
+                .check.print(fn=lambda s: s[s<0], check_name="Negative values of sepal_width")
+            )
+
         Args:
             object: Object to print. Can be anything printable: str, int, list, another DataFrame, etc. If None, print the Series's head (with `max_rows` rows).
             fn: An optional lambda function to apply to the Series before printing `object`. Example: `lambda s: s.dropna()`.
@@ -954,10 +1196,29 @@ class SeriesChecks:
     ) -> pd.Series:
         """Displays the time elapsed since start_time.
 
+        Example:
+            import pandas_checks as pdc
+
+            start_time = pdc.start_timer()
+
+            (
+                iris
+                ["species"]
+                ... # Do some data processing
+                .check.print_time_elapsed(start_time, "Cleaning took")
+
+                ... # Do more
+                .check.print_time_elapsed(start_time, "Processing total time", units="seconds") # Force units to stay in seconds
+
+            )
+
+            # Result: "Cleaning took: 17.298324584960938 seconds
+            #         "Processing total time: 71.0400543212890625 seconds
+
         Args:
-        start_time: The index time when the stopwatch started, which comes from the Pandas Checks start_timer()
-        lead_in: Optional text to print before the elapsed time.
-        units: The units in which to display the elapsed time. Allowed values: "auto", "milliseconds", "seconds", "minutes", "hours" or shorthands "ms", "s", "m", "h".
+            start_time: The index time when the stopwatch started, which comes from the Pandas Checks start_timer()
+            lead_in: Optional text to print before the elapsed time.
+            units: The units in which to display the elapsed time. Allowed values: "auto", "milliseconds", "seconds", "minutes", "hours" or shorthands "ms", "s", "m", "h".
 
         Raises:
             ValueError: If `units` is not one of allowed values.
@@ -973,6 +1234,18 @@ class SeriesChecks:
     def reset_format(self) -> pd.Series:
         """Globally restores all Pandas Checks formatting options to their default "factory" settings. Does not modify the Series itself.
 
+        Example:
+            (
+                iris
+                ["sepal_width"]
+                .check.set_format(precision=9, use_emojis=False)
+
+                # Print Series summary stats with precision 9 digits and no Pandas Checks emojis
+                .check.describe()
+
+                .check.reset_format() # Go back to default precision and emojis 🥳
+            )
+
         Returns:
             The original Series, unchanged.
         """
@@ -980,10 +1253,23 @@ class SeriesChecks:
         return self._obj
 
     def set_format(self, **kwargs: Any) -> pd.Series:
-        """Configures selected formatting options for Pandas Checks. Run pandas_checks.describe_options() to see a list of available options. Does not modify the Series itself
+        """Configures selected formatting options for Pandas Checks. Does not modify the Series itself.
 
-        For example, .check.set_format(check_text_tag= "h1", use_emojis=False`)
-        will globally change Pandas Checks to display text results as H1 headings and remove all emojis.
+        Run pandas_checks.describe_options() to see a list of available options.
+
+        See .check.reset_format() to restore defaults.
+
+        Example:
+            (
+                iris
+                ["sepal_width"]
+                .check.set_format(precision=9, use_emojis=False)
+
+                # Print Series summary stats with precision 9 digits and no Pandas Checks emojis
+                .check.describe()
+
+                .check.reset_format() # Go back to default precision and emojis 🥳
+            )
 
         Args:
             **kwargs: Pairs of setting name and its new value.
@@ -997,9 +1283,28 @@ class SeriesChecks:
     def set_mode(self, enable_checks: bool, enable_asserts: bool) -> pd.Series:
         """Configures the operation mode for Pandas Checks globally. Does not modify the Series itself.
 
+        Example:
+
+            # Disable checks except keep running assertions
+            # Same as using .check.disable_checks()
+            (
+                iris
+                ["sepal_width"]
+                .check.set_mode(enable_checks=False)
+                .check.describe() # This check will not be run
+                .check.assert_data(lambda s: s.shape[0]>10) #  This check will still be run
+            )
+
+            # Disable checks and assertions
+            (
+                iris
+                ["sepal_width"]
+                .check.set_mode(enable_checks=False, enable_asserts=False)
+            )
+
         Args:
-            enable_checks: Whether to run any Pandas Checks methods globally. Does not affect .check.assert_data().
-            enable_asserts: Whether to run calls to Pandas Checks .check.assert_data() globally.
+            enable_checks: Whether to run any Pandas Checks methods globally. Does not affect .check.assert_*() calls.
+            enable_asserts: Whether to run calls to Pandas Checks .check.assert_*() globally.
 
         Returns:
             The original Series, unchanged.
@@ -1015,6 +1320,14 @@ class SeriesChecks:
         """Displays the Series's dimensions, without modifying the Series itself.
 
         See Pandas docs for `shape` for additional usage information.
+
+        Example:
+            (
+                iris
+                ["sepal_width"]
+                .check.shape()
+                .check.shape(fn=lambda s: s[s<5]), check_name="Shape of sepal_width series with values <5")
+            )
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas `shape`. Example: `lambda s: s.dropna()`.
@@ -1045,6 +1358,12 @@ class SeriesChecks:
 
         See Pandas docs for tail() for additional usage information.
 
+        Example:
+            (
+                iris
+                .check.tail(10)
+            )
+
         Args:
             n: Number of rows to show.
             fn: An optional lambda function to apply to the Series before running Pandas tail(). Example: `lambda s: s.dropna()`.
@@ -1066,6 +1385,15 @@ class SeriesChecks:
         """Displays the unique values in a Series, without modifying the Series itself.
 
         See Pandas docs for unique() for additional usage information.
+
+        Example:
+            (
+                iris
+                ["species"]
+                .check.unique()
+            )
+            # The check will print:
+            # 🌟 Unique values of species: ['setosa', 'versicolor', 'virginica']
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas unique(). Example: `lambda s: s.dropna()`.
@@ -1094,6 +1422,13 @@ class SeriesChecks:
         """Displays the value counts for a Series, without modifying the Series itself.
 
         See Pandas docs for value_counts() for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+
+        Example:
+            (
+                iris
+                ["sepal_length"]
+                .check.value_counts()
+            )
 
         Args:
             max_rows: Maximum number of rows to show in the value counts.
@@ -1126,9 +1461,33 @@ class SeriesChecks:
     ) -> pd.Series:
         """Exports Series to file, without modifying the Series itself.
 
-        Format is inferred from path extension like .csv.
+        The file format is inferred from the extension. Supports:
+            - .csv
+            - .feather
+            - .parquet
+            - .pkl # Pickle
+            - .tsv # Tab-separated data file
+            - .xlsx
 
         This functions uses the corresponding Pandas export function such as to_csv(). See Pandas docs for those functions for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+
+        Note:
+            Exporting to some formats such as Excel, Feather, and Parquet may require you to install additional packages.
+
+        Example:
+            (
+                iris
+                ["sepal_length"]
+
+                # Process data
+                ...
+
+                # Export the interim data for inspection
+                .check.write("sepal_length_interim.xlsx")
+
+                # Continue processing
+                ...
+            )
 
         Args:
             path: Path to write the file to.
@@ -1140,8 +1499,6 @@ class SeriesChecks:
         Returns:
             The original Series, unchanged.
 
-        Note:
-            Exporting to some formats such as Excel, Feather, and Parquet may require you to install additional packages.
         """
         (
             pd.DataFrame(_apply_modifications(self._obj, fn)).check.write(
