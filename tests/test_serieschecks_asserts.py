@@ -1,10 +1,27 @@
 from datetime import datetime, timedelta
 
 import numpy as np
+import pandas as pd
 import pytest
 from pandas.core.groupby.groupby import DataError
 
 import pandas_checks  # Install the .check methods
+
+
+def test_SeriesChecks_assert_all_nulls_fail(iris):
+    with pytest.raises(DataError):
+        assert iris["species"].check.assert_all_nulls()
+
+
+def test_SeriesChecks_assert_all_nulls_one_null_fail(iris):
+    with pytest.raises(DataError):
+        assert iris.assign(one_null=lambda df: df["sepal_length"].replace(5.1, np.nan))[
+            "one_null"
+        ].check.assert_all_nulls()
+
+
+def test_SeriesChecks_assert_all_nulls_pass(iris):
+    (iris.assign(all_nulls=np.nan)["all_nulls"].check.assert_all_nulls())
 
 
 def test_SeriesChecks_assert_data_pass(iris):
@@ -178,20 +195,13 @@ def test_SeriesChecks_assert_no_nulls_pass(iris):
     (iris["species"].check.assert_no_nulls())
 
 
-def test_SeriesChecks_assert_all_nulls_fail(iris):
+def test_SeriesChecks_assert_nrows_pass(iris):
+    (iris["species"].check.assert_nrows(nrows=iris.shape[0]))
+
+
+def test_SeriesChecks_assert_nrows_fail(iris):
     with pytest.raises(DataError):
-        assert iris["species"].check.assert_all_nulls()
-
-
-def test_SeriesChecks_assert_all_nulls_one_null_fail(iris):
-    with pytest.raises(DataError):
-        assert iris.assign(one_null=lambda df: df["sepal_length"].replace(5.1, np.nan))[
-            "one_null"
-        ].check.assert_all_nulls()
-
-
-def test_SeriesChecks_assert_all_nulls_pass(iris):
-    (iris.assign(all_nulls=np.nan)["all_nulls"].check.assert_all_nulls())
+        iris["species"].check.assert_nrows(nrows=0)
 
 
 def test_SeriesChecks_assert_positive_pass(iris):
@@ -219,11 +229,22 @@ def test_SeriesChecks_assert_positive_one_null_pass(iris):
     )
 
 
+def test_SeriesChecks_assert_same_nrows_pass(iris):
+    (iris["species"].check.assert_same_nrows(iris))
+
+
+def test_SeriesChecks_assert_same_nrows_fail(iris):
+    with pytest.raises(DataError):
+        iris["species"].check.assert_same_nrows(
+            pd.concat([iris, iris], ignore_index=True)
+        )
+
+
 def test_SeriesChecks_assert_str_pass(iris):
     (iris["species"].check.assert_str())
 
 
-def test_SeriesChecks_assert_int_fail(iris):
+def test_SeriesChecks_assert_str_fail(iris):
     with pytest.raises(TypeError):
         assert iris["sepal_width"].check.assert_str()
 

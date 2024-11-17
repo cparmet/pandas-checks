@@ -13,7 +13,7 @@ keywords = ["pandas", "method chains", "data science", "data engineering"]
 "Issues" = "https://github.com/cparmet/pandas-checks/issues"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.8" # For Python 3.12 tests, replace with python = ">=3.9.1,<4.0"
 emoji = ">=2.12.1"
 ipython = ">=7.23.1"
 Jinja2 = ">=3.1.4"

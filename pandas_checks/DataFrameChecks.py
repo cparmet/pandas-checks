@@ -544,6 +544,48 @@ class DataFrameChecks:
         )
         return self._obj
 
+    def assert_nrows(
+        self,
+        nrows: int,
+        fail_message: str = " ㄨ Assert nrows failed ",
+        pass_message: str = " ✔️ Assert nrows passed ",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether Dataframe has a given number of rows. Optionally raises an exception. Does not modify the DataFrame itself.
+
+        Example:
+            (
+                iris
+                .check.assert_nrows(20)
+            )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
+        Args:
+            nrows: The expected number of rows
+            fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+
+        self._obj.check.assert_data(
+            condition=lambda df: df.shape[0] == nrows,
+            fail_message=fail_message,
+            pass_message=pass_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
     def assert_positive(
         self,
         fail_message: str = " ㄨ Assert positive failed ",
@@ -591,6 +633,53 @@ class DataFrameChecks:
             fail_message=fail_message,
             pass_message=pass_message,
             subset=subset,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
+    def assert_same_nrows(
+        self,
+        other: Union[pd.DataFrame, pd.Series],
+        fail_message: str = " ㄨ Assert same_nrows failed ",
+        pass_message: str = " ✔️ Assert same_nrows passed ",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether Dataframe has the same number of rows as another DataFrame/Series has.
+
+        Optionally raises an exception. Does not modify the DataFrame itself.
+
+        Example:
+            # Validate that an expected one-to-one join didn't add rows due to duplicate keys in the right table.
+            (
+                transactions_df
+                .merge(how="left", right=products_df, on="product_id")
+                .check.assert_same_nrows(transactions_df, "Left join changed row count! Check for duplicate `product_id` keys in product_df.")
+            )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
+        Args:
+            other: The DataFrame or Series that we expect to have the same # of rows as
+            fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            subset: Optional, which column or columns to check the condition against.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+
+        self._obj.check.assert_data(
+            condition=lambda df: df.shape[0] == other.shape[0],
+            fail_message=fail_message,
+            pass_message=pass_message,
             raise_exception=raise_exception,
             exception_to_raise=exception_to_raise,
             message_shows_condition=False,
