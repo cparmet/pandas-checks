@@ -609,6 +609,52 @@ class SeriesChecks:
         )
         return self._obj
 
+    def assert_same_nrows(
+        self,
+        other: Union[pd.DataFrame, pd.Series],
+        fail_message: str = " ㄨ Assert same_nrows failed ",
+        pass_message: str = " ✔️ Assert same_nrows passed ",
+        raise_exception: bool = True,
+        exception_to_raise: Type[BaseException] = DataError,
+        verbose: bool = False,
+    ) -> pd.DataFrame:
+        """Tests whether Series has the same number of rows as another DataFrame/Series has.
+
+        Optionally raises an exception. Does not modify the Series itself.
+
+        Example:
+            (
+                df1
+                ["column"]
+                .check.assert_same_nrows(df2)
+            )
+
+            # See docs for .check.assert_data() for examples of how to customize assertions
+
+        Args:
+            other: The DataFrame or Series that we expect to have the same # of rows as
+            fail_message: Message to display if the condition fails.
+            pass_message: Message to display if the condition passes.
+            subset: Optional, which column or columns to check the condition against.
+            raise_exception: Whether to raise an exception if the condition fails.
+            exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
+            verbose: Whether to display the pass message if the condition passes.
+
+        Returns:
+            The original DataFrame, unchanged.
+        """
+
+        self._obj.check.assert_data(
+            condition=lambda df: df.shape[0] == other.shape[0],
+            fail_message=fail_message,
+            pass_message=pass_message,
+            raise_exception=raise_exception,
+            exception_to_raise=exception_to_raise,
+            message_shows_condition=False,
+            verbose=verbose,
+        )
+        return self._obj
+
     def assert_str(
         self,
         fail_message: Union[str, None] = None,

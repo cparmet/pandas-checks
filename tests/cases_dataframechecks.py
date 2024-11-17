@@ -5,6 +5,13 @@ in the method chain """
 import pandas_checks as pdc
 
 
+def method_assert_all_nulls():
+    return lambda df, args: df.check.assert_all_nulls(
+        subset=args["first_num_col"],
+        raise_exception=False,
+    )
+
+
 def method_assert_data():
     return lambda df, args: df.check.assert_data(
         condition=lambda s: s.sum() > 0,  # Series because we apply subset first
@@ -68,9 +75,9 @@ def method_assert_no_nulls():
     )
 
 
-def method_assert_all_nulls():
-    return lambda df, args: df.check.assert_all_nulls(
-        subset=args["first_num_col"],
+def method_assert_nrows():
+    return lambda df, _: df.check.assert_nrows(
+        nrows=df.shape[0],
         raise_exception=False,
     )
 
@@ -78,6 +85,13 @@ def method_assert_all_nulls():
 def method_assert_positive():
     return lambda df, args: df.check.assert_positive(
         subset=args["first_num_col"],
+        raise_exception=False,
+    )
+
+
+def method_assert_same_nrows():
+    return lambda df, _: df.check.assert_same_nrows(
+        other=df,
         raise_exception=False,
     )
 

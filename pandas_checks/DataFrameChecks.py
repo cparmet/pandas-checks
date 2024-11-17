@@ -643,8 +643,8 @@ class DataFrameChecks:
     def assert_same_nrows(
         self,
         other: Union[pd.DataFrame, pd.Series],
-        fail_message: str = " ㄨ Assert nrows failed ",
-        pass_message: str = " ✔️ Assert nrows passed ",
+        fail_message: str = " ㄨ Assert same_nrows failed ",
+        pass_message: str = " ✔️ Assert same_nrows passed ",
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,

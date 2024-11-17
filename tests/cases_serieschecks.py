@@ -10,6 +10,15 @@ import pandas_checks as pdc
 #    Which tells test_serieschecks.py whether it can test this method on a str column, for example.
 
 
+def method_assert_all_nulls():
+    return (
+        lambda s, _: s.check.assert_all_nulls(
+            raise_exception=False,
+        ),
+        False,
+    )
+
+
 def method_assert_data():
     return (
         lambda s, _: s.check.assert_data(
@@ -85,9 +94,10 @@ def method_assert_no_nulls():
     )
 
 
-def method_assert_all_nulls():
+def method_assert_nrows():
     return (
-        lambda s, _: s.check.assert_all_nulls(
+        lambda s, _: s.check.assert_nrows(
+            nrows=s.shape[0],
             raise_exception=False,
         ),
         False,
@@ -100,6 +110,16 @@ def method_assert_positive():
             raise_exception=False,
         ),
         True,
+    )
+
+
+def method_assert_same_nrows():
+    return (
+        lambda s, _: s.check.assert_same_nrows(
+            other=s,
+            raise_exception=False,
+        ),
+        False,
     )
 
 

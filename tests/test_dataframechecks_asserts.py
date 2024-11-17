@@ -7,6 +7,22 @@ from pandas.core.groupby.groupby import DataError
 import pandas_checks  # Install the .check methods
 
 
+def test_DataFrameChecks_assert_all_nulls_fail(iris):
+    with pytest.raises(DataError):
+        assert iris.check.assert_all_nulls(subset=["species"])
+
+
+def test_DataFrameChecks_assert_all_nulls_one_null_fail(iris):
+    with pytest.raises(DataError):
+        assert iris.assign(
+            one_null=lambda df: df["sepal_length"].replace(5.1, np.nan)
+        ).check.assert_all_nulls(subset=["one_null"])
+
+
+def test_DataFrameChecks_assert_all_nulls_pass(iris):
+    (iris.assign(all_nulls=np.nan).check.assert_all_nulls(subset=["all_nulls"]))
+
+
 def test_DataFrameChecks_assert_data_pass(iris):
     # Shouldn't raise an exception
     iris.check.assert_data(
@@ -176,20 +192,13 @@ def test_DataFrameChecks_assert_no_nulls_pass(iris):
     (iris.check.assert_no_nulls(subset=["species"]))
 
 
-def test_DataFrameChecks_assert_all_nulls_fail(iris):
+def test_DataFrameChecks_assert_nrows_pass(iris):
+    (iris.check.assert_nrows(nrows=iris.shape[0]))
+
+
+def test_DataFrameChecks_assert_nrows_fail(iris):
     with pytest.raises(DataError):
-        assert iris.check.assert_all_nulls(subset=["species"])
-
-
-def test_DataFrameChecks_assert_all_nulls_one_null_fail(iris):
-    with pytest.raises(DataError):
-        assert iris.assign(
-            one_null=lambda df: df["sepal_length"].replace(5.1, np.nan)
-        ).check.assert_all_nulls(subset=["one_null"])
-
-
-def test_DataFrameChecks_assert_all_nulls_pass(iris):
-    (iris.assign(all_nulls=np.nan).check.assert_all_nulls(subset=["all_nulls"]))
+        assert iris.check.assert_nrows(nrows=0)
 
 
 def test_DataFrameChecks_assert_positive_pass(iris):
@@ -219,11 +228,19 @@ def test_DataFrameChecks_assert_positive_one_null_pass(iris):
     )
 
 
+def method_assert_same_nrows_pass(iris):
+    (iris.check.assert_same_nrows(other=iris))
+
+
+def method_assert_same_nrows_fail(iris):
+    (iris.check.assert_same_nrows(other=pd.concat([iris, iris], ignore_index=True)))
+
+
 def test_DataFrameChecks_assert_str_pass(iris):
     (iris.check.assert_str(subset=["species"]))
 
 
-def test_DataFrameChecks_assert_int_fail(iris):
+def test_DataFrameChecks_assert_str_fail(iris):
     with pytest.raises(TypeError):
         assert iris.check.assert_str(subset=["sepal_width"])
 
