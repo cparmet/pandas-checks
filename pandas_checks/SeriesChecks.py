@@ -110,14 +110,14 @@ class SeriesChecks:
                 iris
                 ["sepal_length"]
 
-                # Validate that a Series has at least 2 rows:
-                .check.assert_data(lambda s: s.shape[0]>1)
+                # Validate that a Series has at least 1 row:
+                .check.assert_data(lambda s: s.shape[0]>0)
 
                 # Or customize the message displayed when alert fails
-                .check.assert_data(lambda df: s.shape[0]>1, "Assertion failed, Series has no rows!")
+                .check.assert_data(lambda df: s.shape[0]>0, "Assertion failed, Series has no rows!")
 
                 # Or show a warning instead of raising an exception
-                .check.assert_data(lambda df: s.shape[0]>1, "FYI Series has no rows", raise_exception=False)
+                .check.assert_data(lambda df: s.shape[0]>0, "FYI Series has no rows", raise_exception=False)
             )
             ```
 

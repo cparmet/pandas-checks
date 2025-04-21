@@ -114,23 +114,23 @@ class DataFrameChecks:
 
         Example:
             ```python
-                # Validate that the Dataframe has at least 2 rows
+                # Validate that the Dataframe has at least 1 row
 
                 (
                     iris
-                    .check.assert_data(lambda df: df.shape[0]>1)
+                    .check.assert_data(lambda df: df.shape[0]>0)
 
                     # Or customize the message displayed when alert fails
-                    .check.assert_data(lambda df: df.shape[0]>1, "Assertion failed, DataFrame has no rows!")
+                    .check.assert_data(lambda df: df.shape[0]>0, "Assertion failed, DataFrame has no rows!")
 
                     # Or show a warning instead of raising an exception
-                    .check.assert_data(lambda df: s.shape[0]>1, "FYI Series has no rows", raise_exception=False)
+                    .check.assert_data(lambda df: s.shape[0]>0, "FYI DataFrame has no rows", raise_exception=False)
 
                     # Or show a message if it passes, and raise a specific exception (ValueError) if it fails.
                     .check.assert_data(
                         lambda df: s.shape[0]>1,
-                        fail_message="FYI Series has no rows",
-                        pass_message="Series has rows!",
+                        fail_message="FYI DataFrame has 0 rows",
+                        pass_message="DataFrame has at least 1 row!",
                         exception_to_raise=ValueError,
                         verbose=True # To show pass_message when assertion passes
                         )
