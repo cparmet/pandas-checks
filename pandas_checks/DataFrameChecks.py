@@ -128,7 +128,7 @@ class DataFrameChecks:
 
                     # Or show a message if it passes, and raise a specific exception (ValueError) if it fails.
                     .check.assert_data(
-                        lambda df: s.shape[0]>1,
+                        lambda df: s.shape[0]>0,
                         fail_message="FYI DataFrame has 0 rows",
                         pass_message="DataFrame has at least 1 row!",
                         exception_to_raise=ValueError,
