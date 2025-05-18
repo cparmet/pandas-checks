@@ -1,38 +1,44 @@
-[tool.poetry]
+[project]
 name = "pandas-checks"
 version = "0.3.1"
 description = "Non-invasive health checks for Pandas method chains"
-authors = ["Chad Parmet <cparmet@gmail.com>"]
+authors = [{name = "Chad Parmet", email= "cparmet@gmail.com"}]
 readme = "README.md"
 license = "BSD-3-Clause"
+keywords = ["pandas", "method chains", "data science", "data engineering"]
+requires-python = ">=3.9"
+dependencies = [
+    "emoji>=2.12.1",
+    "ipython>=7.23.1",
+    "Jinja2>=3.1.4",
+    "matplotlib>=3.5.3",
+    "pandas>=1.4,<3.0",
+    "termcolor>=2.3.0",
+    "tornado>=6.5.0",
+]
+
+[project.urls]
 repository = "https://github.com/cparmet/pandas-checks"
 documentation = "https://cparmet.github.io/pandas-checks/"
-keywords = ["pandas", "method chains", "data science", "data engineering"]
+issues =  "https://github.com/cparmet/pandas-checks/issues"
 
-[tool.poetry.urls]
-"Issues" = "https://github.com/cparmet/pandas-checks/issues"
-
-[tool.poetry.dependencies]
-python = "^3.8" # For Python 3.12 tests, replace with python = ">=3.9.1,<4.0"
-emoji = ">=2.12.1"
-ipython = ">=7.23.1"
-Jinja2 = ">=3.1.4"
-matplotlib = ">=3.5.3"
-pandas = ">=1.4,<3.0"
-termcolor = ">=2.3.0"
-tornado = "6.4.2"
-
-[tool.poetry.group.dev.dependencies]
-ipykernel = ">=6.16.2"
-pre-commit = "3.5.0" # Pin to fix trouble
-pytest = "^8.2.2"
-pytest-cases = "^3.8.5"
-pyarrow = "^16.1.0"
-openpyxl = "^3.1.4"
-setuptools = ">=65.0.0"
-mkdocs = "^1.6.0"
-mkdocstrings = {extras = ["python"], version = "^0.25.1"}
-mkdocs-material = "^9.5.27"
+[dependency-groups]
+# Development dependencies will be installed by default in uv run and uv sync, but will not appear in the project's published metadata.
+dev = [
+    "ipykernel>=6.16.2",
+    "mkdocs>=1.6.0",
+    "mkdocstrings[python]>=0.25.1",
+    "mkdocs-material>=9.5.27",
+    "nox-uv>=0.3.0",
+    "pre-commit==3.5.0", # Pin to fix trouble
+    "setuptools>=65.0.0",
+]
+test = [
+    "openpyxl>=3.1.4",
+    "pyarrow>=16.1.0",
+    "pytest>=8.2.2",
+    "pytest-cases>=3.8.5",
+]
 
 [build-system]
 requires = ["poetry-core"]
