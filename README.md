@@ -1,7 +1,7 @@
 # Pandas Checks
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pandas-checks)
   
-<img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/pandas-check-gh-social.jpg" alt="Banner image for Pandas Checks">  
+<img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/pandas-check-gh-social.jpg" alt="Banner image for Pandas Checks" style="max-height: 125px; width: auto;">  
   
 ## What is it?
 **Pandas Checks** is a Python package for data science and data engineering. It adds non-invasive health checks for Pandas method chains.
