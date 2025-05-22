@@ -120,7 +120,7 @@ class DataFrameChecks:
                     iris
                     .check.assert_data(lambda df: df.shape[0]>0)
 
-                    # Or customize the message displayed when alert fails
+                    # Or customize the message displayed when assert fails
                     .check.assert_data(lambda df: df.shape[0]>0, "Assertion failed, DataFrame has no rows!")
 
                     # Or show a warning instead of raising an exception

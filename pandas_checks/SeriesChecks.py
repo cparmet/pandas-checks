@@ -113,7 +113,7 @@ class SeriesChecks:
                 # Validate that a Series has at least 1 row:
                 .check.assert_data(lambda s: s.shape[0]>0)
 
-                # Or customize the message displayed when alert fails
+                # Or customize the message displayed when assert fails
                 .check.assert_data(lambda df: s.shape[0]>0, "Assertion failed, Series has no rows!")
 
                 # Or show a warning instead of raising an exception
