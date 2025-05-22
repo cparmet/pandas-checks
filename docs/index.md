@@ -1,7 +1,11 @@
-# About
-  
+---
+title: About
+---
+
 <img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/pandas-check-gh-social.jpg" alt="Banner image for Pandas Checks" style="max-height: 200px; width: auto;">  
   
+[TOC]
+
 ## What is it?
 
 **Pandas Checks** is a Python package for data science and data engineering. It adds non-invasive health checks for [Pandas](https://github.com/pandas-dev/pandas/) method chains.  

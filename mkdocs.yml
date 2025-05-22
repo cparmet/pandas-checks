@@ -9,3 +9,6 @@ plugins:
 theme:
   name: material
 repo_url: https://github.com/cparmet/pandas-checks/
+
+markdown_extensions:
+  - toc
