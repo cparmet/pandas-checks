@@ -120,7 +120,7 @@ class DataFrameChecks:
                     iris
                     .check.assert_data(lambda df: df.shape[0]>0)
 
-                    # Or customize the message displayed when alert fails
+                    # Or customize the message displayed when assert fails
                     .check.assert_data(lambda df: df.shape[0]>0, "Assertion failed, DataFrame has no rows!")
 
                     # Or show a warning instead of raising an exception
@@ -1788,7 +1788,7 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Displays the unique values in a column, without modifying the DataFrame itself.
 
-        See Pandas docs for [unique()]((https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.unique.html)) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [unique()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.unique.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1832,7 +1832,7 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Displays the value counts for a column, without modifying the DataFrame itself.
 
-        See Pandas docs for [value_counts()]((https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.value_counts.html)) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [value_counts()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.value_counts.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1887,7 +1887,7 @@ class DataFrameChecks:
             - .tsv # Tab-separated data file
             - .xlsx
 
-        This functions uses the corresponding Pandas export function, such as `to_csv()` and `to_feather()`. See [Pandas docs for those corresponding export functions][Pandas docs for those export functions](https://pandas.pydata.org/docs/reference/io.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        This functions uses the corresponding Pandas export function, such as `to_csv()` and `to_feather()`. See [Pandas docs for those corresponding export functions](https://pandas.pydata.org/docs/reference/io.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
         Example:
             ```python

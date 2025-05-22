@@ -1,7 +1,11 @@
-# About
+---
+title: About
+---
+
+<img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/pandas-check-gh-social.jpg" alt="Banner image for Pandas Checks" style="max-height: 200px; width: auto;">  
   
-<img src="https://raw.githubusercontent.com/cparmet/pandas-checks/main/static/pandas-check-gh-social.jpg" alt="Banner image for Pandas Checks">  
-  
+[TOC]
+
 ## What is it?
 
 **Pandas Checks** is a Python package for data science and data engineering. It adds non-invasive health checks for [Pandas](https://github.com/pandas-dev/pandas/) method chains.  
@@ -24,8 +28,17 @@ As Fleetwood Mac says, you would never break the chain.
 
 If you run into trouble or have questions, I'd love to know. Please [open an issue](https://github.com/cparmet/pandas-checks/issues).
 
-Contributions are appreciated! Please open an [issue](https://github.com/cparmet/pandas-checks/issues) or submit a [pull request](https://github.com/cparmet/pandas-checks/pulls). Pandas Checks uses the wonderful libraries [poetry](https://python-poetry.org) for package and dependency management, [nox](https://nox.thea.codes/en/stable/) for test automation, and [mkdocs](https://www.mkdocs.org/) for docs.
+Contributions are appreciated! Please open an [issue](https://github.com/cparmet/pandas-checks/issues) or submit a [pull request](https://github.com/cparmet/pandas-checks/pulls). To run the tests, run `uv run --group dev nox`
+  
+## Acknowledgments
+ 
+Pandas Checks uses the following wonderful libraries:
 
+- [uv](https://github.com/astral-sh/uv) for package and dependency management
+- [nox](https://nox.thea.codes/en/stable/) for test automation
+- [mkdocs](https://www.mkdocs.org/) for...making docs!
+- [pre-commit hooks](https://pre-commit.com/)
+- [black](https://black.readthedocs.io/en/stable/) for code formatting
 
 ## License
 

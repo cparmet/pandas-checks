@@ -1,4 +1,8 @@
-# Usage
+---
+title: Usage
+---
+
+[TOC]
 
 ## Installation
 First make Pandas Check available in your environment.
@@ -93,7 +97,7 @@ New methods in Pandas Checks:
 - `.check.ncols()`: Count columns - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.ncols) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.ncols)
 - `.check.ndups()`: Count rows with duplicate values - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.ndups) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.ndups)
 - `.check.nnulls()`: Count rows with null values - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.nnulls) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.nnulls)
-- `.check.nrows()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.nrows) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.nrows)
+- `.check.nrows()`: Count rows - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.nrows) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.nrows)
 - `.check.print()`: Print a string, a variable, or the current dataframe - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.print) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.print)
 
 ### Export interim files
@@ -120,17 +124,20 @@ These methods can be used to disable subsequent Pandas Checks methods, either te
 
 ### Validate data
 Custom:
+
 - `.check.assert_data()`: Check that data passes an arbitrary condition - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.assert_data) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.assert_data)
 
 Types:
+
 - `.check.assert_datetime()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.assert_datetime) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.assert_datetime)
 - `.check.assert_float()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.assert_float) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.assert_float)
 - `.check.assert_int()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.assert_int) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.assert_int)
 - `.check.assert_str()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.assert_str) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.assert_str)
 - `.check.assert_timedelta()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.assert_timedelta) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.assert_timedelta)
 - `.check.assert_type()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.assert_type) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.assert_type)
-  
+
 Values:
+
 - `.check.assert_all_nulls()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.assert_all_nulls) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.assert_all_nulls)
 - `.check.assert_less_than()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.assert_less_than) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.assert_less_than)
 - `.check.assert_greater_than()` - [DataFrame](https://cparmet.github.io/pandas-checks/API%20reference/DataFrameChecks/#pandas_checks.DataFrameChecks.DataFrameChecks.assert_greater_than) | [Series](https://cparmet.github.io/pandas-checks/API%20reference/SeriesChecks/#pandas_checks.SeriesChecks.SeriesChecks.assert_greater_than)
@@ -210,14 +217,3 @@ You can also adjust settings within a method chain by bookending the chain, like
     .check.enable_checks() # Turn it back on for the next code
 )
 ```
-  
-
-### Hybrid EDA-Production data processing
-
-Exploratory Data Analysis is often taught as a one-time step we do to plan our production data processing. But sometimes EDA is a cyclical process we go back to for deeper inspection during debugging, code edits, or changes in the input data. If explorations were useful in EDA, they may be useful again.
-  
-Unfortunately, it's hard to go back to the original EDA code. It's too out of sync. The prod data processing pipeline has usually evolved too much, making the EDA code a historical artifact full of cobwebs that we can't easily fire up again. 
-  
-But if you use Pandas Checks during EDA, you could roll your `.check` methods into your first production code. Then in prod mode, disable Pandas Checks when you don't need it, to save compute and streamline output. When you ever need to pull out those EDA tools, enable Pandas Checks globally or locally.  
-  
-This can make your prod pipline more transparent and easier to inspect.  

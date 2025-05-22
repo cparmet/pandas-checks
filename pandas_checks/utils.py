@@ -70,9 +70,9 @@ def _series_is_type(s: pd.Series, dtype: Type[Any]) -> bool:
     if dtype in [str, "str"]:
         return pd.api.types.is_string_dtype(s)
     elif dtype in [datetime, "datetime", "date"]:
-        return pd.api.types.is_datetime64_any_dtype(
-            s
-        ) or pd.api.types.is_datetime64tz_dtype(s)
+        return pd.api.types.is_datetime64_any_dtype(s) or isinstance(
+            s, pd.DatetimeTZDtype
+        )
     elif dtype in [timedelta, "timedelta"]:
         return pd.api.types.is_timedelta64_dtype(s)
     else:
