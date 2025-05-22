@@ -217,14 +217,3 @@ You can also adjust settings within a method chain by bookending the chain, like
     .check.enable_checks() # Turn it back on for the next code
 )
 ```
-  
-
-### Hybrid EDA-Production data processing
-
-Exploratory Data Analysis is often taught as a one-time step we do to plan our production data processing. But sometimes EDA is a cyclical process we go back to for deeper inspection during debugging, code edits, or changes in the input data. If explorations were useful in EDA, they may be useful again.
-  
-Unfortunately, it's hard to go back to the original EDA code. It's too out of sync. The prod data processing pipeline has usually evolved too much, making the EDA code a historical artifact full of cobwebs that we can't easily fire up again. 
-  
-But if you use Pandas Checks during EDA, you could roll your `.check` methods into your first production code. Then in prod mode, disable Pandas Checks when you don't need it, to save compute and streamline output. When you ever need to pull out those EDA tools, enable Pandas Checks globally or locally.  
-  
-This can make your prod pipline more transparent and easier to inspect.  
