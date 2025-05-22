@@ -1671,7 +1671,7 @@ wheels = [
 
 [[package]]
 name = "pandas-checks"
-version = "0.3.1"
+version = "1.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "emoji" },
