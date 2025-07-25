@@ -1482,14 +1482,14 @@ class DataFrameChecks:
 
         if get_mode()["enable_checks"]:
             (
-                _apply_modifications(
-                    self._obj, fn=fn, subset=column
-                ).check.nunique(  # Apply fn, then filter to `column`, pass to SeriesChecks.check.nunique()
+                # Apply fn, then filter to `column`, pass to SeriesChecks.check.nunique()
+                _apply_modifications(self._obj, fn=fn, subset=column)
+                .check.nunique(
                     fn=lambda df: df,  # Identity function
                     check_name=check_name,
                     **kwargs,
                 )
-            )
+            )  # fmt: skip
         return self._obj
 
     def plot(
@@ -1813,13 +1813,14 @@ class DataFrameChecks:
         """
         if get_mode()["enable_checks"]:
             (
-                _apply_modifications(
-                    self._obj, fn=fn, subset=column
-                ).check.unique(  # Apply fn, then filter to `column`  # Use SeriesChecks method
-                    fn=lambda df: df,  # Identify function
+                # Apply fn, then filter to `column`
+                _apply_modifications(self._obj, fn=fn, subset=column)
+                # Use SeriesChecks method
+                .check.unique(
+                    fn=lambda s: s,  # Identify function
                     check_name=check_name,
                 )
-            )
+            )  # fmt: skip
         return self._obj
 
     def value_counts(
@@ -1857,15 +1858,16 @@ class DataFrameChecks:
         """
         if get_mode()["enable_checks"]:
             (
-                _apply_modifications(
-                    self._obj, fn=fn, subset=column
-                ).check.value_counts(  # Apply fn, then filter to `column``  # Use SeriesChecks method
+                # Apply fn, then filter to `column`
+                _apply_modifications(self._obj, fn=fn, subset=column)
+                # Use SeriesChecks method
+                .check.value_counts(
                     max_rows=max_rows,
-                    fn=lambda df: df,  # Identity function
+                    fn=lambda s: s,  # Identity function
                     check_name=check_name,
                     **kwargs,
                 )
-            )
+            )  # fmt: skip
         return self._obj
 
     def write(

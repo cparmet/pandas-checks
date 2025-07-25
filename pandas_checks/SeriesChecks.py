@@ -620,15 +620,19 @@ class SeriesChecks:
                 # _has_nulls() will raise exception or print failure
                 return self._obj
 
-        self._obj.dropna().check.assert_data(
-            condition=lambda s: (s > 0).all().all(),
-            pass_message=pass_message,
-            fail_message=fail_message,
-            raise_exception=raise_exception,
-            exception_to_raise=exception_to_raise,
-            message_shows_condition=False,
-            verbose=verbose,
-        )
+        (
+            self._obj
+            .dropna()
+            .check.assert_data(
+                condition=lambda s: (s > 0).all().all(),
+                pass_message=pass_message,
+                fail_message=fail_message,
+                raise_exception=raise_exception,
+                exception_to_raise=exception_to_raise,
+                message_shows_condition=False,
+                verbose=verbose,
+            )
+        )  # fmt: skip
         return self._obj
 
     def assert_same_nrows(
@@ -885,9 +889,10 @@ class SeriesChecks:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(_apply_modifications(self._obj, fn)).check.describe(
-            check_name=check_name, **kwargs
-        )
+        (
+            pd.DataFrame(_apply_modifications(self._obj, fn))
+            .check.describe(check_name=check_name, **kwargs)
+        )  # fmt: skip
         return self._obj
 
     def disable_checks(self, enable_asserts: bool = True) -> pd.Series:
@@ -1015,7 +1020,10 @@ class SeriesChecks:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(self._obj).check.get_mode(check_name=check_name)
+        (
+            pd.DataFrame(self._obj)
+            .check.get_mode(check_name=check_name)
+        )  # fmt: skip
         return self._obj
 
     def head(
@@ -1045,9 +1053,10 @@ class SeriesChecks:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(_apply_modifications(self._obj, fn)).check.head(
-            n=n, check_name=check_name
-        )
+        (
+            pd.DataFrame(_apply_modifications(self._obj, fn))
+            .check.head(n=n, check_name=check_name)
+        )  # fmt: skip
         return self._obj
 
     def hist(
@@ -1080,9 +1089,10 @@ class SeriesChecks:
         Note:
             Plots are only displayed when code is run in IPython/Jupyter, not in terminal.
         """
-        pd.DataFrame(_apply_modifications(self._obj, fn)).check.hist(
-            check_name=check_name, subset=[], **kwargs
-        )
+        (
+            pd.DataFrame(_apply_modifications(self._obj, fn))
+            .check.hist(check_name=check_name, subset=[], **kwargs)
+        )  # fmt: skip
         return self._obj
 
     def info(
@@ -1148,9 +1158,10 @@ class SeriesChecks:
         Note:
             Include argument `deep=True` to get further memory usage of object dtypes. See Pandas docs for memory_usage() for more info.
         """
-        pd.DataFrame(_apply_modifications(self._obj, fn)).check.memory_usage(
-            check_name=check_name, **kwargs
-        )
+        (
+            pd.DataFrame(_apply_modifications(self._obj, fn))
+            .check.memory_usage(check_name=check_name, **kwargs)
+        )  # fmt: skip
         return self._obj
 
     def ndups(
@@ -1180,9 +1191,10 @@ class SeriesChecks:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(_apply_modifications(self._obj, fn)).check.ndups(
-            fn, check_name=check_name, **kwargs
-        )
+        (
+            pd.DataFrame(_apply_modifications(self._obj, fn))
+            .check.ndups(fn, check_name=check_name, **kwargs)
+        )  # fmt: skip
         return self._obj
 
     def nnulls(
@@ -1210,9 +1222,10 @@ class SeriesChecks:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(_apply_modifications(self._obj, fn)).check.nnulls(
-            by_column=False, check_name=check_name
-        )
+        (
+            pd.DataFrame(_apply_modifications(self._obj, fn))
+            .check.nnulls(by_column=False, check_name=check_name)
+        )  # fmt: skip
         return self._obj
 
     def nrows(
@@ -1238,9 +1251,10 @@ class SeriesChecks:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(_apply_modifications(self._obj, fn)).check.nrows(
-            check_name=check_name
-        )
+        (
+            pd.DataFrame(_apply_modifications(self._obj, fn))
+            .check.nrows(check_name=check_name)
+        )  # fmt: skip
         return self._obj
 
     def nunique(
@@ -1313,9 +1327,10 @@ class SeriesChecks:
 
             If you pass a 'title' kwarg, it becomes the plot title, overriding check_name
         """
-        pd.DataFrame(_apply_modifications(self._obj, fn)).check.plot(
-            fn, check_name=check_name, **kwargs
-        )
+        (
+            pd.DataFrame(_apply_modifications(self._obj, fn))
+            .check.plot(fn, check_name=check_name, **kwargs)
+        )  # fmt: skip
         return self._obj
 
     def print(
@@ -1351,9 +1366,10 @@ class SeriesChecks:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(_apply_modifications(self._obj, fn)).check.print(
-            object=object, check_name=check_name, max_rows=max_rows
-        )
+        (
+            pd.DataFrame(_apply_modifications(self._obj, fn))
+            .check.print(object=object, check_name=check_name, max_rows=max_rows)
+        )  # fmt: skip
         return self._obj
 
     def print_time_elapsed(
@@ -1396,9 +1412,7 @@ class SeriesChecks:
         Returns:
             The original Series, unchanged.
         """
-        print_time_elapsed(
-            start_time, lead_in=lead_in, units=units
-        )  # Call the public function
+        print_time_elapsed(start_time, lead_in=lead_in, units=units)
         return self._obj
 
     def reset_format(self) -> pd.Series:
@@ -1545,9 +1559,10 @@ class SeriesChecks:
         Returns:
             The original Series, unchanged.
         """
-        pd.DataFrame(_apply_modifications(self._obj, fn)).check.tail(
-            n=n, check_name=check_name
-        )
+        (
+            pd.DataFrame(_apply_modifications(self._obj, fn))
+            .check.tail(n=n, check_name=check_name)
+        )  # fmt: skip
         return self._obj
 
     def unique(
@@ -1623,7 +1638,7 @@ class SeriesChecks:
             if check_name
             else f"🧮 Value counts, first {max_rows} values"
             if max_rows
-            else f"🧮 Value counts",
+            else "🧮 Value counts",
         )
         return self._obj
 
@@ -1679,8 +1694,7 @@ class SeriesChecks:
 
         """
         (
-            pd.DataFrame(_apply_modifications(self._obj, fn)).check.write(
-                path=path, format=format, verbose=verbose, **kwargs
-            )
-        )
+            pd.DataFrame(_apply_modifications(self._obj, fn))
+            .check.write(path=path, format=format, verbose=verbose, **kwargs)
+        )  # fmt: skip
         return self._obj
