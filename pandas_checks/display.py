@@ -18,6 +18,43 @@ from termcolor import colored
 # -----------------------
 
 
+def _display_router(data: Any, data_for_print_fn: Union[str, None] = None) -> None:
+    """Renders content to the output destination(s) as configured globally, including rich content such as plots in IPython/Jupyter environments.
+
+    Args:
+        data: A displayable object, such as a string, DataFrame, Series, or plot.
+        data_for_print_fn: Optional, simplied version of text to display when data is formatted HTML (so it doesn't look odd when print_fn is logging.info, for example)
+
+    Returns:
+        None
+    """
+
+    if pd.get_option("pdchecks.print_to_stdout"):
+        display(data)
+
+    if callable(print_fn := pd.get_option("pdchecks.custom_print_fn")):
+        # Output "plain" version of data, if it exists, to custom_print_fn (e.g. logger)
+        print_fn(data_for_print_fn if data_for_print_fn else data)
+
+
+def _print_router(text: Union[str, None], custom_print_fn_only: bool = False) -> None:
+    """Prints given text to the output destination(s) as configured globally.
+
+    Args:
+        text: The text to print.
+        custom_print_fn_only: Whether to only call the custom print function if it exists, without attempting to print to standard output. Used when _print_router() is called only to access custom_print_fn.
+
+    Returns:
+        None
+    """
+
+    if pd.get_option("pdchecks.print_to_stdout") and not custom_print_fn_only:
+        print(text)
+
+    if callable(print_fn := pd.get_option("pdchecks.custom_print_fn")):
+        print_fn(text)
+
+
 def _filter_emojis(text: str) -> str:
     """Removes emojis from text if user has globally forbidden them.
 
@@ -42,7 +79,7 @@ def _render_html_with_indent(object_as_html: str) -> None:
         None
     """
     indent = pd.get_option("pdchecks.indent_table_plot_ipython")  # In pixels
-    display(
+    _display_router(
         HTML(
             f'<div style="margin-left: {indent}px;">{object_as_html}</div>'
             if indent
@@ -97,13 +134,13 @@ def _render_text(
 
         # If we're not in IPython, display as text
         if pd.core.config_init.is_terminal():
-            print()  # White space for terminal display
+            _print_router("")  # White space
             lead_in_rendered = (
                 f"{colored(_filter_emojis(lead_in), text_color, _format_background_color(lead_in_background_color))}: "
                 if lead_in
                 else ""
             )
-            print(
+            _print_router(
                 lead_in_rendered
                 + f"{colored(_filter_emojis(text), text_color, _format_background_color(text_background_color))}"
             )
@@ -111,10 +148,11 @@ def _render_text(
             lead_in_rendered = _lead_in(
                 lead_in, lead_in_text_color, lead_in_background_color
             )
-            display(
-                Markdown(
+            _display_router(
+                data=Markdown(
                     f"<{tag} style='text-align: left'>{lead_in_rendered + ' ' if lead_in_rendered else ''}<span style='color:{text_color}; background-color:{text_background_color}'>{_filter_emojis(text)}</span></{tag}>"
-                )
+                ),
+                data_for_print_fn=f"{lead_in}: {_filter_emojis(text)}",
             )
 
 
@@ -149,7 +187,9 @@ def _warning(
 # -----------------------
 
 
-def _print_table_terminal(table: Union[pd.DataFrame, pd.Series]) -> None:
+def _print_table(
+    table: Union[pd.DataFrame, pd.Series], custom_print_fn_only: bool = False
+) -> None:
     """Prints a Pandas table in a terminal with an optional indent.
 
     Args:
@@ -159,10 +199,11 @@ def _print_table_terminal(table: Union[pd.DataFrame, pd.Series]) -> None:
         None
     """
     indent_prefix = pd.get_option("pdchecks.indent_table_terminal")  # In spaces
-    print(
+    _print_router(
         textwrap.indent(
             text=table.to_string(), prefix=" " * indent_prefix if indent_prefix else ""
-        )
+        ),
+        custom_print_fn_only=custom_print_fn_only,
     )
 
 
@@ -176,7 +217,7 @@ def _display_table(table: Union[pd.DataFrame, pd.Series]) -> None:
         None
     """
     _render_html_with_indent(
-        table.style.set_table_styles(
+        object_as_html=table.style.set_table_styles(
             [pd.get_option("pdchecks.table_row_hover_style")]
             if pd.get_option("pdchecks.table_row_hover_style")
             else []
@@ -184,6 +225,8 @@ def _display_table(table: Union[pd.DataFrame, pd.Series]) -> None:
         .format(precision=pd.get_option("pdchecks.precision"))
         .to_html()
     )
+    # Ensure we send it to the custom_print_fn too, if it exists
+    _print_table(table, custom_print_fn_only=True)
 
 
 def _display_table_title(
@@ -229,8 +272,8 @@ def _display_plot() -> None:
         plt.close(fig)  # Don't show it at the bottom of the cell too
         buffer.seek(0)
         #  Encode the image to base64 string, then display it as HTML
-        display(
-            HTML(
+        _display_router(
+            data=HTML(
                 f"""
                 <style>
                 .indent-plot {{
@@ -248,7 +291,8 @@ def _display_plot() -> None:
                         }" />
                 </div>
                 """
-            )
+            ),
+            data_for_print_fn=None,
         )
 
 
@@ -337,7 +381,7 @@ def _display_check(data: Any, name: Union[str, None] = None) -> None:
     """Renders the result of a Pandas Checks method.
 
     Args:
-        data: The data to display.
+        data: The data to display, whether a DataFrame, Series, string, or other printable.
         name: The optional name of the check.
 
     Returns:
@@ -372,9 +416,9 @@ def _display_check(data: Any, name: Union[str, None] = None) -> None:
         if isinstance(data, (pd.DataFrame, pd.Series)):
             # Can't display styled tables or use IPython rendering
             # Print check name and data on separate lines
-            print()  # White space
+            _print_router("")  # White space
             if name:
-                print(_filter_emojis(name))
-            _print_table_terminal(data)
+                _print_router(_filter_emojis(name))
+            _print_table(data)
         else:
             _display_line(f"{name}: {data}" if name else data)
