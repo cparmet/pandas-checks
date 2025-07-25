@@ -261,6 +261,8 @@ def _initialize_format_options(options: Union[List[str], None] = None) -> None:
 def describe_options() -> None:
     """Prints all global options for Pandas Checks, their default values, and current values.
 
+    NOTE: Does not use custom_print_fn. Always prints to stdout.
+
     Returns:
         None
     """
@@ -325,6 +327,51 @@ def disable_checks(enable_asserts: bool = True) -> None:
     set_mode(enable_checks=False, enable_asserts=enable_asserts)
 
 
+def set_custom_print_fn(
+    custom_print_fn: Union[Callable, None], print_to_stdout: Union[bool, None] = None
+) -> None:
+    """Specifies, or resets, a custom print function for Pandas Checks results. Optionally also (re)sets whether check results should be shown on screen.
+
+    Example usage:
+    ```python
+        # To display check results on screen and in the log at LEVEL=INFO:
+        import pandas_checks as pdc
+
+        pdc.set_custom_print_fn(logging.info)
+
+        # To _only_ send check results to the log, not display them on screen:
+        pdc.set_custom_print_fn(custom_print_fn=logging.info, print_to_stdout=False)
+
+        # To reset these settings to their defaults:
+        pdc.set_custom_print_fn(custom_print_fn=None, print_to_stdout=True)
+    ```
+
+    Args:
+        custom_print_fn: A callable function that takes a single argument (the text to print). If None, or not passed, disables custom print.
+        print_to_stdout: Whether to also display check results on screen. If None, does not change the current setting for print_to_stdout (in case the caller only wants to configure custom_print_fn).
+
+    Returns:
+        None
+    """
+    _set_option("custom_print_fn", custom_print_fn)
+    if print_to_stdout is not None:
+        _set_option("print_to_stdout", print_to_stdout)
+
+
+def _is_callable(object: Any) -> bool:
+    """Validator function to check if an object is callable.
+
+    Args:
+        value: The value to check.
+
+    Returns:
+        bool: True if value is callable or None, False otherwise.
+    """
+    if callable(object):
+        return True
+    return False
+
+
 def _initialize_options() -> None:
     """Initializes (or resets) all Pandas Checks options to their default values.
 
@@ -359,5 +406,27 @@ def _initialize_options() -> None:
     """,
         validator=cf.is_instance_factory(bool),
     )
+
+    # Output destination
+    _register_option(
+        name="print_to_stdout",
+        default_value=True,
+        description="""
+    : callable
+    Global setting for Pandas Checks that determines whether you want each check results displayed on screen, i.e. printed to stdout in Terminal or displayed in IPython/Jupyter outputs. See also custom_print_fn.
+    """,
+        validator=cf.is_instance_factory(bool),
+    )
+
+    _register_option(
+        name="custom_print_fn",
+        default_value=None,
+        description="""
+    : callable
+    Global setting for Pandas Checks if you want to (also) send check results to a destination. Example: `custom_print_fn=logging.info` to send Pandas Checks (also) results to the log. Callable must have a signature that accepts str or other printable object, like `print`. It will not receive plots, HTML, or Markdown content. To _only_ send check results to custom_print_fn, not on screen too, also set print_to_stdout=False.
+    """,
+        validator=_is_callable,
+    )
+
     # Register default format options
     _initialize_format_options()
