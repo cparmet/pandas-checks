@@ -18,12 +18,15 @@ from termcolor import colored
 # -----------------------
 
 
-def _display_router(data: Any, data_for_print_fn: Union[str, None] = None) -> None:
+def _display_router(
+    data: Any, data_for_print_fn: Union[str, None] = None, bypass_print_fn: bool = False
+) -> None:
     """Renders content to the output destination(s) as configured globally, including rich content such as plots in IPython/Jupyter environments.
 
     Args:
         data: A displayable object, such as a string, DataFrame, Series, or plot.
-        data_for_print_fn: Optional, simplied version of text to display when data is formatted HTML (so it doesn't look odd when print_fn is logging.info, for example)
+        data_for_print_fn: Optional, simplied version of text to display when data is formatted HTML (so it doesn't look odd when print_fn is logging.info, for example).
+        bypass_print_fn: Optional flag to disable printing to custom_print_fn. Used when we want to display data (such as a plot title) in IPython/Jupyter but not in a logger or other custom_print_fn (since plots aren't logged).
 
     Returns:
         None
@@ -32,7 +35,11 @@ def _display_router(data: Any, data_for_print_fn: Union[str, None] = None) -> No
     if pd.get_option("pdchecks.print_to_stdout"):
         display(data)
 
-    if callable(print_fn := pd.get_option("pdchecks.custom_print_fn")):
+    # Check if we have a custom print function, and the caller wants to use it
+    if (
+        callable(print_fn := pd.get_option("pdchecks.custom_print_fn"))
+        and not bypass_print_fn
+    ):
         # Output "plain" version of data, if it exists, to custom_print_fn (e.g. logger)
         print_fn(data_for_print_fn if data_for_print_fn else data)
 
@@ -84,12 +91,17 @@ def _render_html_with_indent(object_as_html: str) -> None:
             f'<div style="margin-left: {indent}px;">{object_as_html}</div>'
             if indent
             else object_as_html
-        )
+        ),
+        bypass_print_fn=True,
     )
 
 
 def _render_text(
-    text: str, tag: str, lead_in: Union[str, None] = None, colors: Dict = {}
+    text: str,
+    tag: str,
+    lead_in: Union[str, None] = None,
+    colors: Dict = {},
+    bypass_print_fn: bool = False,
 ) -> None:
     """Renders text with optional formatting.
 
@@ -107,6 +119,7 @@ def _render_text(
                 for Jupyter/IPython outputs and to `termcolor` when code is run in terminal.
                 For color options when code is run in terminal, see
                     https://github.com/termcolor/termcolor.
+        bypass_print_fn: Optional flag to decide whether the text should also be sent to the global custom print function, if it exists. See _display_router() for details.
 
     Returns:
         None
@@ -134,12 +147,12 @@ def _render_text(
 
         # If we're not in IPython, display as text
         if pd.core.config_init.is_terminal():
-            _print_router("")  # White space
             lead_in_rendered = (
                 f"{colored(_filter_emojis(lead_in), text_color, _format_background_color(lead_in_background_color))}: "
                 if lead_in
                 else ""
             )
+            _print_router("")  # White space
             _print_router(
                 lead_in_rendered
                 + f"{colored(_filter_emojis(text), text_color, _format_background_color(text_background_color))}"
@@ -148,11 +161,15 @@ def _render_text(
             lead_in_rendered = _lead_in(
                 lead_in, lead_in_text_color, lead_in_background_color
             )
+            data_for_print_fn = (
+                f"{lead_in + ': ' if lead_in else ''}{_filter_emojis(text)}"
+            )
             _display_router(
                 data=Markdown(
                     f"<{tag} style='text-align: left'>{lead_in_rendered + ' ' if lead_in_rendered else ''}<span style='color:{text_color}; background-color:{text_background_color}'>{_filter_emojis(text)}</span></{tag}>"
                 ),
-                data_for_print_fn=f"{lead_in}: {_filter_emojis(text)}",
+                data_for_print_fn=data_for_print_fn,
+                bypass_print_fn=bypass_print_fn,
             )
 
 
@@ -292,7 +309,7 @@ def _display_plot() -> None:
                 </div>
                 """
             ),
-            data_for_print_fn=None,
+            bypass_print_fn=True,
         )
 
 
@@ -310,7 +327,12 @@ def _display_plot_title(
         None
     """
     _render_text(
-        line, tag=pd.get_option("plot_title_tag"), lead_in=lead_in, colors=colors
+        line,
+        tag=pd.get_option("plot_title_tag"),
+        lead_in=lead_in,
+        colors=colors,
+        # Since custom_print_fn won't get plot, don't render plot title there either
+        bypass_print_fn=True,
     )
 
 
