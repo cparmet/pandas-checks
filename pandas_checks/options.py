@@ -332,6 +332,8 @@ def set_custom_print_fn(
 ) -> None:
     """Specifies, or resets, a custom print function for Pandas Checks results. Optionally also (re)sets whether check results should be shown on screen.
 
+    Feature idea from @alexblakes, inspired by scikit-lego's sklego.pandas_utils.log_step. https://github.com/cparmet/pandas-checks/issues/48
+
     Example usage:
     ```python
         # To display check results on screen and in the log at LEVEL=INFO:
@@ -345,6 +347,8 @@ def set_custom_print_fn(
         # To reset these settings to their defaults:
         pdc.set_custom_print_fn(custom_print_fn=None, print_to_stdout=True)
     ```
+
+    > NOTE: Only plain text is sent to custom_print_fn. Plots, HTML, and colored text will not be sent. set_option(precision) also does not apply to custom_print_fn.
 
     Args:
         custom_print_fn: A callable function that takes a single argument (the text to print). If None, or not passed, disables custom print.
