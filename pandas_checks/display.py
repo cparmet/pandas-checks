@@ -44,7 +44,11 @@ def _display_router(
         print_fn(data_for_print_fn if data_for_print_fn else data)
 
 
-def _print_router(text: Union[str, None], custom_print_fn_only: bool = False) -> None:
+def _print_router(
+    text: Union[str, None],
+    custom_print_fn_only: bool = False,
+    bypass_print_fn: bool = False,
+) -> None:
     """Prints given text to the output destination(s) as configured globally.
 
     Args:
@@ -58,7 +62,10 @@ def _print_router(text: Union[str, None], custom_print_fn_only: bool = False) ->
     if pd.get_option("pdchecks.print_to_stdout") and not custom_print_fn_only:
         print(text)
 
-    if callable(print_fn := pd.get_option("pdchecks.custom_print_fn")):
+    if (
+        callable(print_fn := pd.get_option("pdchecks.custom_print_fn"))
+        and not bypass_print_fn
+    ):
         print_fn(text)
 
 
@@ -152,7 +159,7 @@ def _render_text(
                 if lead_in
                 else ""
             )
-            _print_router("")  # White space
+            _print_router("", bypass_print_fn=True)  # White space
             _print_router(
                 lead_in_rendered
                 + f"{colored(_filter_emojis(text), text_color, _format_background_color(text_background_color))}"
@@ -438,7 +445,7 @@ def _display_check(data: Any, name: Union[str, None] = None) -> None:
         if isinstance(data, (pd.DataFrame, pd.Series)):
             # Can't display styled tables or use IPython rendering
             # Print check name and data on separate lines
-            _print_router("")  # White space
+            _print_router("", bypass_print_fn=True)  # White space
             if name:
                 _print_router(_filter_emojis(name))
             _print_table(data)
