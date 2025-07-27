@@ -123,10 +123,9 @@ def test_DataFrameChecks_info(iris, capsys):
         check_name="Test",
         memory_usage=True,
     )
-    # Very long one-line string to avoid mishaps with `black` auto-formatter
     assert (
         capsys.readouterr().out
-        == "\nTest\n<class 'pandas.core.frame.DataFrame'>\nRangeIndex: 150 entries, 0 to 149\nData columns (total 2 columns):\n #   Column       Non-Null Count  Dtype  \n---  ------       --------------  -----  \n 0   petal_width  150 non-null    float64\n 1   species      150 non-null    object \ndtypes: float64(1), object(1)\nmemory usage: 2.5+ KB\n"
+        == "\nTest\n<class 'pandas.core.frame.DataFrame'>\nRangeIndex: 150 entries, 0 to 149\nData columns (total 2 columns):\n #   Column       Non-Null Count  Dtype  \n---  ------       --------------  -----  \n 0   petal_width  150 non-null    float64\n 1   species      150 non-null    object \ndtypes: float64(1), object(1)\nmemory usage: 2.5+ KB\n\n"
     )
 
 
