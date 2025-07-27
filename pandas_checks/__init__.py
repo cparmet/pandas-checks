@@ -12,6 +12,7 @@ __all__ = [
     "get_mode",
     "print_time_elapsed",
     "reset_format",
+    "set_custom_print_fn",
     "set_format",
     "set_mode",
     "start_timer",
@@ -27,6 +28,7 @@ from .options import (
     enable_checks,
     get_mode,
     reset_format,
+    set_custom_print_fn,
     set_format,
     set_mode,
 )
