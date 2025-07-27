@@ -47,6 +47,7 @@ def _display_router(
 def _print_router(
     text: Union[str, None],
     custom_print_fn_only: bool = False,
+    text_for_print_fn: Union[str, None] = None,
     bypass_print_fn: bool = False,
 ) -> None:
     """Prints given text to the output destination(s) as configured globally.
@@ -54,6 +55,8 @@ def _print_router(
     Args:
         text: The text to print.
         custom_print_fn_only: Whether to only call the custom print function if it exists, without attempting to print to standard output. Used when _print_router() is called only to access custom_print_fn.
+        text_for_print_fn: Optional, simplied version of text to display without colors (so it doesn't look odd when print_fn is logging.info, for example).
+        bypass_print_fn: Optional flag to disable printing to custom_print_fn. Used when we want to display text (such as white space lines) in Terminal but not in a logger or other custom_print_fn.
 
     Returns:
         None
@@ -66,7 +69,7 @@ def _print_router(
         callable(print_fn := pd.get_option("pdchecks.custom_print_fn"))
         and not bypass_print_fn
     ):
-        print_fn(text)
+        print_fn(text_for_print_fn if text_for_print_fn else text)
 
 
 def _filter_emojis(text: str) -> str:
@@ -132,6 +135,9 @@ def _render_text(
         None
     """
     if text:
+        # Create plain text version for custom_print_fn
+        text_for_print_fn = f"{lead_in + ': ' if lead_in else ''}{_filter_emojis(text)}"
+
         # Format background_color for term_colors
         text_color = colors.get("text_color", None)
         text_background_color = colors.get("text_background_color", None)
@@ -162,20 +168,18 @@ def _render_text(
             _print_router("", bypass_print_fn=True)  # White space
             _print_router(
                 lead_in_rendered
-                + f"{colored(_filter_emojis(text), text_color, _format_background_color(text_background_color))}"
+                + f"{colored(_filter_emojis(text), text_color, _format_background_color(text_background_color))}",
+                text_for_print_fn=text_for_print_fn,
             )
         else:  # Print stylish!
             lead_in_rendered = _lead_in(
                 lead_in, lead_in_text_color, lead_in_background_color
             )
-            data_for_print_fn = (
-                f"{lead_in + ': ' if lead_in else ''}{_filter_emojis(text)}"
-            )
             _display_router(
                 data=Markdown(
                     f"<{tag} style='text-align: left'>{lead_in_rendered + ' ' if lead_in_rendered else ''}<span style='color:{text_color}; background-color:{text_background_color}'>{_filter_emojis(text)}</span></{tag}>"
                 ),
-                data_for_print_fn=data_for_print_fn,
+                data_for_print_fn=text_for_print_fn,
                 bypass_print_fn=bypass_print_fn,
             )
 
