@@ -21,6 +21,7 @@ Now new methods are accessible to Pandas dataframes as ".check":
 All public .check methods display the result but then return the unchanged DataFrame, so a method chain continues unbroken.
 """
 
+import io
 from datetime import datetime, timedelta
 from typing import Any, Callable, List, Type, Union
 
@@ -33,6 +34,7 @@ from .display import (
     _display_plot,
     _display_plot_title,
     _display_table_title,
+    _print_router,
 )
 from .options import (
     disable_checks,
@@ -1238,7 +1240,14 @@ class DataFrameChecks:
         if get_mode()["enable_checks"]:
             if check_name:
                 _display_table_title(check_name)
-            (_apply_modifications(self._obj, fn, subset).info(**kwargs))
+            df_modified = _apply_modifications(self._obj, fn, subset)
+            # Get the Pandas info() result as a string
+            buffer = io.StringIO()
+            df_modified.info(buf=buffer, **kwargs)
+            info_as_str = buffer.getvalue()
+            # Print it
+            _print_router(info_as_str)
+
         return self._obj
 
     def memory_usage(
