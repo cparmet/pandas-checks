@@ -107,7 +107,7 @@ def test_set_custom_print_fn(iris):
         log_content.strip()
         == """INFO:root:🏛️ Columns: ['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'species']
 INFO:root:📏 Distributions
-INFO:root:           sepal_length  sepal_width  petal_length  petal_width
+           sepal_length  sepal_width  petal_length  petal_width
     count    150.000000   150.000000    150.000000   150.000000
     mean       5.843333     3.057333      3.758000     1.199333
     std        0.828066     0.435866      1.765298     0.762238
