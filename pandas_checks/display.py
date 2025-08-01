@@ -232,13 +232,16 @@ def _print_table(
     Returns:
         None
     """
+    # Indent table
     indent_prefix = pd.get_option("pdchecks.indent_table_terminal")  # In spaces
+    table_as_str = textwrap.indent(
+        text=table.to_string(), prefix=" " * indent_prefix if indent_prefix else ""
+    )
+    # Prepend title
+    if title:
+        table_as_str = f"{_filter_emojis(title)}\n" + table_as_str
     _print_router(
-        (f"{_filter_emojis(title)}\n" if title else "") +
-        # Table with indents
-        textwrap.indent(
-            text=table.to_string(), prefix=" " * indent_prefix if indent_prefix else ""
-        ),
+        table_as_str,
         custom_print_fn_only=custom_print_fn_only,
     )
 
@@ -256,13 +259,17 @@ def _display_table(
         None
     """
     if title:
-        # Display the table title on its own line
-        # Bypasses custom_print_fn
+        # Display the table title on its own line.
+        # Bypasses custom_print_fn by default.
         _display_table_title(title)
 
     # Display on screen as HTML
+    if isinstance(table, pd.Series):
+        table_to_display = pd.DataFrame(table)
+    else:
+        table_to_display = table
     _render_html_with_indent(
-        object_as_html=table.style.set_table_styles(
+        object_as_html=table_to_display.style.set_table_styles(
             [pd.get_option("pdchecks.table_row_hover_style")]
             if pd.get_option("pdchecks.table_row_hover_style")
             else []
@@ -271,6 +278,7 @@ def _display_table(
         .to_html()
     )
     # Ensure we send it to the custom_print_fn too, if it exists
+    # If table is a Series, we do not convert to DataFrame here
     _print_table(table, title=title, custom_print_fn_only=True)
 
 
@@ -454,7 +462,7 @@ def _display_check(data: Any, name: Union[str, None] = None) -> None:
                 data = data.rename(data.name)
             else:
                 data = data.rename("")
-            _display_table(pd.DataFrame(data), title=name)
+            _display_table(data, title=name)
         # Display the result on one line
         else:
             _display_line(f"{name}: {data}" if name else data)
