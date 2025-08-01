@@ -136,7 +136,11 @@ def _render_text(
     """
     if text:
         # Create plain text version for custom_print_fn
-        text_for_print_fn = f"{lead_in + ': ' if lead_in else ''}{_filter_emojis(text)}"
+        text_for_print_fn = (
+            f"{_filter_emojis(lead_in) + ': ' if lead_in else ''}{_filter_emojis(text)}"
+            .rstrip("\n")
+            .rstrip("")
+        )  # fmt: skip
 
         # Format background_color for term_colors
         text_color = colors.get("text_color", None)
@@ -216,7 +220,9 @@ def _warning(
 
 
 def _print_table(
-    table: Union[pd.DataFrame, pd.Series], custom_print_fn_only: bool = False
+    table: Union[pd.DataFrame, pd.Series],
+    title: Union[str, None],
+    custom_print_fn_only: bool = False,
 ) -> None:
     """Prints a Pandas table in a terminal with an optional indent.
 
@@ -228,6 +234,8 @@ def _print_table(
     """
     indent_prefix = pd.get_option("pdchecks.indent_table_terminal")  # In spaces
     _print_router(
+        (f"{_filter_emojis(title)}\n" if title else "") +
+        # Table with indents
         textwrap.indent(
             text=table.to_string(), prefix=" " * indent_prefix if indent_prefix else ""
         ),
@@ -235,15 +243,24 @@ def _print_table(
     )
 
 
-def _display_table(table: Union[pd.DataFrame, pd.Series]) -> None:
+def _display_table(
+    table: Union[pd.DataFrame, pd.Series], title: Union[str, None]
+) -> None:
     """Renders a Pandas DataFrame or Series in an IPython/Jupyter environment with an optional indent.
 
     Args:
         table: The DataFrame or Series to display.
+        title: Optional title for the table.
 
     Returns:
         None
     """
+    if title:
+        # Display the table title on its own line
+        # Bypasses custom_print_fn
+        _display_table_title(title)
+
+    # Display on screen as HTML
     _render_html_with_indent(
         object_as_html=table.style.set_table_styles(
             [pd.get_option("pdchecks.table_row_hover_style")]
@@ -254,7 +271,7 @@ def _display_table(table: Union[pd.DataFrame, pd.Series]) -> None:
         .to_html()
     )
     # Ensure we send it to the custom_print_fn too, if it exists
-    _print_table(table, custom_print_fn_only=True)
+    _print_table(table, title=title, custom_print_fn_only=True)
 
 
 def _display_table_title(
@@ -271,7 +288,11 @@ def _display_table_title(
         None
     """
     _render_text(
-        line, tag=pd.get_option("table_title_tag"), lead_in=lead_in, colors=colors
+        line,
+        tag=pd.get_option("table_title_tag"),
+        lead_in=lead_in,
+        colors=colors,
+        bypass_print_fn=True,
     )
 
 
@@ -424,22 +445,16 @@ def _display_check(data: Any, name: Union[str, None] = None) -> None:
     if not pd.core.config_init.is_terminal():
         # Is it a DF?
         if isinstance(data, pd.DataFrame):
-            if name:
-                _display_table_title(name)
-            _display_table(data)
+            _display_table(data, title=name)
         # Or a Series we should format as a DF?
         elif isinstance(data, pd.Series):
-            if name:
-                _display_table_title(name)
-            _display_table(
-                pd.DataFrame(
-                    # For Series based on some Pandas outputs like memory_usage(),
-                    # don't show a column name of 0
-                    data.rename(
-                        data.name if data.name != 0 and data.name != None else ""
-                    )
-                )
-            )
+            # For Series based on some Pandas outputs like memory_usage(),
+            # don't show a column name of 0
+            if data.name != 0 and data.name is not None:
+                data = data.rename(data.name)
+            else:
+                data = data.rename("")
+            _display_table(pd.DataFrame(data), title=name)
         # Display the result on one line
         else:
             _display_line(f"{name}: {data}" if name else data)
@@ -450,8 +465,6 @@ def _display_check(data: Any, name: Union[str, None] = None) -> None:
             # Can't display styled tables or use IPython rendering
             # Print check name and data on separate lines
             _print_router("", bypass_print_fn=True)  # White space
-            if name:
-                _print_router(_filter_emojis(name))
-            _print_table(data)
+            _print_table(data, title=name)
         else:
             _display_line(f"{name}: {data}" if name else data)
