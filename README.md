@@ -204,15 +204,17 @@ You can change how Pandas Checks works everywhere. For example:
 ```python
 import pandas_checks as pdc
 
+# Send Pandas Checks outputs to a log file and disable printing to screen
+pdc.set_custom_print_fn(custom_print_fn=logging.info, print_to_stdout=False)
+
 # Set output precision and turn off the cute emojis
+# Run `pdc.describe_options()` to see the arguments you can pass to `.set_format()`.
 pdc.set_format(precision=3, use_emojis=False)
 
 # Don't run any of the calls to Pandas Checks, globally. Useful when switching your code to production mode
 pdc.disable_checks()
 ```
-    
-Run `pdc.describe_options()` to see the arguments you can pass to `.set_format()`.
-  
+      
 > 💡 Tip:  
 > By default, `disable_checks()` and `enable_checks()` do not change whether Pandas Checks will run assertion methods (`.check.assert_*`).
 > 

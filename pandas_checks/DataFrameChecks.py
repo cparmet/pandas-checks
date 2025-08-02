@@ -21,6 +21,7 @@ Now new methods are accessible to Pandas dataframes as ".check":
 All public .check methods display the result but then return the unchanged DataFrame, so a method chain continues unbroken.
 """
 
+import io
 from datetime import datetime, timedelta
 from typing import Any, Callable, List, Type, Union
 
@@ -33,6 +34,7 @@ from .display import (
     _display_plot,
     _display_plot_title,
     _display_table_title,
+    _print_router,
 )
 from .options import (
     disable_checks,
@@ -1238,7 +1240,14 @@ class DataFrameChecks:
         if get_mode()["enable_checks"]:
             if check_name:
                 _display_table_title(check_name)
-            (_apply_modifications(self._obj, fn, subset).info(**kwargs))
+            df_modified = _apply_modifications(self._obj, fn, subset)
+            # Get the Pandas info() result as a string
+            buffer = io.StringIO()
+            df_modified.info(buf=buffer, **kwargs)
+            info_as_str = buffer.getvalue()
+            # Print it
+            _print_router(info_as_str)
+
         return self._obj
 
     def memory_usage(
@@ -1482,14 +1491,14 @@ class DataFrameChecks:
 
         if get_mode()["enable_checks"]:
             (
-                _apply_modifications(
-                    self._obj, fn=fn, subset=column
-                ).check.nunique(  # Apply fn, then filter to `column`, pass to SeriesChecks.check.nunique()
+                # Apply fn, then filter to `column`, pass to SeriesChecks.check.nunique()
+                _apply_modifications(self._obj, fn=fn, subset=column)
+                .check.nunique(
                     fn=lambda df: df,  # Identity function
                     check_name=check_name,
                     **kwargs,
                 )
-            )
+            )  # fmt: skip
         return self._obj
 
     def plot(
@@ -1813,13 +1822,14 @@ class DataFrameChecks:
         """
         if get_mode()["enable_checks"]:
             (
-                _apply_modifications(
-                    self._obj, fn=fn, subset=column
-                ).check.unique(  # Apply fn, then filter to `column`  # Use SeriesChecks method
-                    fn=lambda df: df,  # Identify function
+                # Apply fn, then filter to `column`
+                _apply_modifications(self._obj, fn=fn, subset=column)
+                # Use SeriesChecks method
+                .check.unique(
+                    fn=lambda s: s,  # Identify function
                     check_name=check_name,
                 )
-            )
+            )  # fmt: skip
         return self._obj
 
     def value_counts(
@@ -1857,15 +1867,16 @@ class DataFrameChecks:
         """
         if get_mode()["enable_checks"]:
             (
-                _apply_modifications(
-                    self._obj, fn=fn, subset=column
-                ).check.value_counts(  # Apply fn, then filter to `column``  # Use SeriesChecks method
+                # Apply fn, then filter to `column`
+                _apply_modifications(self._obj, fn=fn, subset=column)
+                # Use SeriesChecks method
+                .check.value_counts(
                     max_rows=max_rows,
-                    fn=lambda df: df,  # Identity function
+                    fn=lambda s: s,  # Identity function
                     check_name=check_name,
                     **kwargs,
                 )
-            )
+            )  # fmt: skip
         return self._obj
 
     def write(

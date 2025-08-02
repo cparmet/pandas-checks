@@ -18,6 +18,60 @@ from termcolor import colored
 # -----------------------
 
 
+def _display_router(
+    data: Any, data_for_print_fn: Union[str, None] = None, bypass_print_fn: bool = False
+) -> None:
+    """Renders content to the output destination(s) as configured globally, including rich content such as plots in IPython/Jupyter environments.
+
+    Args:
+        data: A displayable object, such as a string, DataFrame, Series, or plot.
+        data_for_print_fn: Optional, simplied version of text to display when data is formatted HTML (so it doesn't look odd when print_fn is logging.info, for example).
+        bypass_print_fn: Optional flag to disable printing to custom_print_fn. Used when we want to display data (such as a plot title) in IPython/Jupyter but not in a logger or other custom_print_fn (since plots aren't logged).
+
+    Returns:
+        None
+    """
+
+    if pd.get_option("pdchecks.print_to_stdout"):
+        display(data)
+
+    # Check if we have a custom print function, and the caller wants to use it
+    if (
+        callable(print_fn := pd.get_option("pdchecks.custom_print_fn"))
+        and not bypass_print_fn
+    ):
+        # Output "plain" version of data, if it exists, to custom_print_fn (e.g. logger)
+        print_fn(data_for_print_fn if data_for_print_fn else data)
+
+
+def _print_router(
+    text: Union[str, None],
+    custom_print_fn_only: bool = False,
+    text_for_print_fn: Union[str, None] = None,
+    bypass_print_fn: bool = False,
+) -> None:
+    """Prints given text to the output destination(s) as configured globally.
+
+    Args:
+        text: The text to print.
+        custom_print_fn_only: Whether to only call the custom print function if it exists, without attempting to print to standard output. Used when _print_router() is called only to access custom_print_fn.
+        text_for_print_fn: Optional, simplied version of text to display without colors (so it doesn't look odd when print_fn is logging.info, for example).
+        bypass_print_fn: Optional flag to disable printing to custom_print_fn. Used when we want to display text (such as white space lines) in Terminal but not in a logger or other custom_print_fn.
+
+    Returns:
+        None
+    """
+
+    if pd.get_option("pdchecks.print_to_stdout") and not custom_print_fn_only:
+        print(text)
+
+    if (
+        callable(print_fn := pd.get_option("pdchecks.custom_print_fn"))
+        and not bypass_print_fn
+    ):
+        print_fn(text_for_print_fn if text_for_print_fn else text)
+
+
 def _filter_emojis(text: str) -> str:
     """Removes emojis from text if user has globally forbidden them.
 
@@ -42,17 +96,22 @@ def _render_html_with_indent(object_as_html: str) -> None:
         None
     """
     indent = pd.get_option("pdchecks.indent_table_plot_ipython")  # In pixels
-    display(
+    _display_router(
         HTML(
             f'<div style="margin-left: {indent}px;">{object_as_html}</div>'
             if indent
             else object_as_html
-        )
+        ),
+        bypass_print_fn=True,
     )
 
 
 def _render_text(
-    text: str, tag: str, lead_in: Union[str, None] = None, colors: Dict = {}
+    text: str,
+    tag: str,
+    lead_in: Union[str, None] = None,
+    colors: Dict = {},
+    bypass_print_fn: bool = False,
 ) -> None:
     """Renders text with optional formatting.
 
@@ -70,11 +129,19 @@ def _render_text(
                 for Jupyter/IPython outputs and to `termcolor` when code is run in terminal.
                 For color options when code is run in terminal, see
                     https://github.com/termcolor/termcolor.
+        bypass_print_fn: Optional flag to decide whether the text should also be sent to the global custom print function, if it exists. See _display_router() for details.
 
     Returns:
         None
     """
     if text:
+        # Create plain text version for custom_print_fn
+        text_for_print_fn = (
+            f"{_filter_emojis(lead_in) + ': ' if lead_in else ''}{_filter_emojis(text)}"
+            .rstrip("\n")
+            .rstrip("")
+        )  # fmt: skip
+
         # Format background_color for term_colors
         text_color = colors.get("text_color", None)
         text_background_color = colors.get("text_background_color", None)
@@ -97,24 +164,27 @@ def _render_text(
 
         # If we're not in IPython, display as text
         if pd.core.config_init.is_terminal():
-            print()  # White space for terminal display
             lead_in_rendered = (
                 f"{colored(_filter_emojis(lead_in), text_color, _format_background_color(lead_in_background_color))}: "
                 if lead_in
                 else ""
             )
-            print(
+            _print_router("", bypass_print_fn=True)  # White space
+            _print_router(
                 lead_in_rendered
-                + f"{colored(_filter_emojis(text), text_color, _format_background_color(text_background_color))}"
+                + f"{colored(_filter_emojis(text), text_color, _format_background_color(text_background_color))}",
+                text_for_print_fn=text_for_print_fn,
             )
         else:  # Print stylish!
             lead_in_rendered = _lead_in(
                 lead_in, lead_in_text_color, lead_in_background_color
             )
-            display(
-                Markdown(
+            _display_router(
+                data=Markdown(
                     f"<{tag} style='text-align: left'>{lead_in_rendered + ' ' if lead_in_rendered else ''}<span style='color:{text_color}; background-color:{text_background_color}'>{_filter_emojis(text)}</span></{tag}>"
-                )
+                ),
+                data_for_print_fn=text_for_print_fn,
+                bypass_print_fn=bypass_print_fn,
             )
 
 
@@ -149,7 +219,11 @@ def _warning(
 # -----------------------
 
 
-def _print_table_terminal(table: Union[pd.DataFrame, pd.Series]) -> None:
+def _print_table(
+    table: Union[pd.DataFrame, pd.Series],
+    title: Union[str, None],
+    custom_print_fn_only: bool = False,
+) -> None:
     """Prints a Pandas table in a terminal with an optional indent.
 
     Args:
@@ -158,25 +232,44 @@ def _print_table_terminal(table: Union[pd.DataFrame, pd.Series]) -> None:
     Returns:
         None
     """
+    # Indent table
     indent_prefix = pd.get_option("pdchecks.indent_table_terminal")  # In spaces
-    print(
-        textwrap.indent(
-            text=table.to_string(), prefix=" " * indent_prefix if indent_prefix else ""
-        )
+    table_as_str = textwrap.indent(
+        text=table.to_string(), prefix=" " * indent_prefix if indent_prefix else ""
+    )
+    # Prepend title
+    if title:
+        table_as_str = f"{_filter_emojis(title)}\n" + table_as_str
+    _print_router(
+        table_as_str,
+        custom_print_fn_only=custom_print_fn_only,
     )
 
 
-def _display_table(table: Union[pd.DataFrame, pd.Series]) -> None:
+def _display_table(
+    table: Union[pd.DataFrame, pd.Series], title: Union[str, None]
+) -> None:
     """Renders a Pandas DataFrame or Series in an IPython/Jupyter environment with an optional indent.
 
     Args:
         table: The DataFrame or Series to display.
+        title: Optional title for the table.
 
     Returns:
         None
     """
+    if title:
+        # Display the table title on its own line.
+        # Bypasses custom_print_fn by default.
+        _display_table_title(title)
+
+    # Display on screen as HTML
+    if isinstance(table, pd.Series):
+        table_to_display = pd.DataFrame(table)
+    else:
+        table_to_display = table
     _render_html_with_indent(
-        table.style.set_table_styles(
+        object_as_html=table_to_display.style.set_table_styles(
             [pd.get_option("pdchecks.table_row_hover_style")]
             if pd.get_option("pdchecks.table_row_hover_style")
             else []
@@ -184,6 +277,9 @@ def _display_table(table: Union[pd.DataFrame, pd.Series]) -> None:
         .format(precision=pd.get_option("pdchecks.precision"))
         .to_html()
     )
+    # Ensure we send it to the custom_print_fn too, if it exists
+    # If table is a Series, we do not convert to DataFrame here
+    _print_table(table, title=title, custom_print_fn_only=True)
 
 
 def _display_table_title(
@@ -200,7 +296,11 @@ def _display_table_title(
         None
     """
     _render_text(
-        line, tag=pd.get_option("table_title_tag"), lead_in=lead_in, colors=colors
+        line,
+        tag=pd.get_option("table_title_tag"),
+        lead_in=lead_in,
+        colors=colors,
+        bypass_print_fn=True,
     )
 
 
@@ -229,8 +329,8 @@ def _display_plot() -> None:
         plt.close(fig)  # Don't show it at the bottom of the cell too
         buffer.seek(0)
         #  Encode the image to base64 string, then display it as HTML
-        display(
-            HTML(
+        _display_router(
+            data=HTML(
                 f"""
                 <style>
                 .indent-plot {{
@@ -248,7 +348,8 @@ def _display_plot() -> None:
                         }" />
                 </div>
                 """
-            )
+            ),
+            bypass_print_fn=True,
         )
 
 
@@ -266,7 +367,12 @@ def _display_plot_title(
         None
     """
     _render_text(
-        line, tag=pd.get_option("plot_title_tag"), lead_in=lead_in, colors=colors
+        line,
+        tag=pd.get_option("plot_title_tag"),
+        lead_in=lead_in,
+        colors=colors,
+        # Since custom_print_fn won't get plot, don't render plot title there either
+        bypass_print_fn=True,
     )
 
 
@@ -337,7 +443,7 @@ def _display_check(data: Any, name: Union[str, None] = None) -> None:
     """Renders the result of a Pandas Checks method.
 
     Args:
-        data: The data to display.
+        data: The data to display, whether a DataFrame, Series, string, or other printable.
         name: The optional name of the check.
 
     Returns:
@@ -347,22 +453,16 @@ def _display_check(data: Any, name: Union[str, None] = None) -> None:
     if not pd.core.config_init.is_terminal():
         # Is it a DF?
         if isinstance(data, pd.DataFrame):
-            if name:
-                _display_table_title(name)
-            _display_table(data)
+            _display_table(data, title=name)
         # Or a Series we should format as a DF?
         elif isinstance(data, pd.Series):
-            if name:
-                _display_table_title(name)
-            _display_table(
-                pd.DataFrame(
-                    # For Series based on some Pandas outputs like memory_usage(),
-                    # don't show a column name of 0
-                    data.rename(
-                        data.name if data.name != 0 and data.name != None else ""
-                    )
-                )
-            )
+            # For Series based on some Pandas outputs like memory_usage(),
+            # don't show a column name of 0
+            if data.name != 0 and data.name is not None:
+                data = data.rename(data.name)
+            else:
+                data = data.rename("")
+            _display_table(data, title=name)
         # Display the result on one line
         else:
             _display_line(f"{name}: {data}" if name else data)
@@ -372,9 +472,7 @@ def _display_check(data: Any, name: Union[str, None] = None) -> None:
         if isinstance(data, (pd.DataFrame, pd.Series)):
             # Can't display styled tables or use IPython rendering
             # Print check name and data on separate lines
-            print()  # White space
-            if name:
-                print(_filter_emojis(name))
-            _print_table_terminal(data)
+            _print_router("", bypass_print_fn=True)  # White space
+            _print_table(data, title=name)
         else:
             _display_line(f"{name}: {data}" if name else data)
