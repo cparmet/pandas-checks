@@ -366,10 +366,10 @@ def _is_callable(object: Any) -> bool:
     """Validator function to check if an object is callable.
 
     Args:
-        value: The value to check.
+        object: The Python object to check.
 
     Returns:
-        bool: True if value is callable or None, False otherwise.
+        bool: True if object is callable or None, False otherwise.
     """
     if callable(object):
         return True
