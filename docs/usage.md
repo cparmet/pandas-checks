@@ -8,6 +8,10 @@ title: Usage
 First make Pandas Check available in your environment.
   
 ```bash
+# With uv
+uv add pandas-checks
+
+# Or with pip
 pip install pandas-checks
 ```
 

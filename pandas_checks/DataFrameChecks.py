@@ -689,11 +689,14 @@ class DataFrameChecks:
 
         Example:
             ```python
-                # Validate that an expected one-to-one join didn't add rows due to duplicate keys in the right table.
-                (
-                    transactions_df
+                transactions_raw_df = load_transactions()
+
+                transactions_processed_df = process_transactions()
+
+                transactions_final_df = (
+                    transactions_processed_df
                     .merge(how="left", right=products_df, on="product_id")
-                    .check.assert_same_nrows(transactions_df, "Left join changed row count! Check for duplicate `product_id` keys in product_df.")
+                    .check.assert_same_nrows(transactions_raw_df, "Unexpected change in row count of final DF vs raw DF. Check for duplicate `product_id` keys in product_df?")
                 )
             ```
 
@@ -709,6 +712,9 @@ class DataFrameChecks:
 
         Returns:
             The original DataFrame, unchanged.
+
+        Note:
+            For typical validation of merges, such as 1:1 joins, it's easier to use the `validate` argument in Pandas [`merge()`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.merge.html).
         """
 
         self._obj.check.assert_data(
@@ -1171,13 +1177,18 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Displays a histogram for the DataFrame, without modifying the DataFrame itself.
 
-        See Pandas docs for [hist()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.hist.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        You can pass a single `column` (via kwargs) or a `subset` argument, which can display a grid of multiple histograms.
+
+        See Pandas docs for [hist()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.hist.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method via kwargs.
 
         Example:
             ```python
                 (
                     iris
-                    .check.hist(subset=["sepal_length", "sepal_width"])
+                    # Show one histogram
+                    .check.hist(column="sepal_length")
+                    # Show two histogram
+                    .check.hist(subset=["petal_length", "petal_width"])
                 )
             ```
 
@@ -1185,14 +1196,12 @@ class DataFrameChecks:
             fn: An optional lambda function to apply to the DataFrame before running Pandas hist(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string to select a subset of columns before running Pandas hist(). Applied after fn.
             check_name: An optional name for the check, to be printed as preface to the result.
-            **kwargs: Optional, additional arguments that are accepted by Pandas hist() method.
+            **kwargs: Optional, additional arguments that are accepted by Pandas hist() method, such as `column`.
 
         Returns:
             The original DataFrame, unchanged.
 
         Note:
-            If more than one column is passed, displays a grid of histograms.
-
             Only renders in interactive mode (IPython/Jupyter), not in terminal.
         """
         if (
