@@ -689,11 +689,14 @@ class DataFrameChecks:
 
         Example:
             ```python
-                # Validate that an expected one-to-one join didn't add rows due to duplicate keys in the right table.
-                (
-                    transactions_df
+                transactions_raw_df = load_transactions()
+
+                transactions_processed_df = process_transactions()
+
+                transactions_final_df = (
+                    transactions_processed_df
                     .merge(how="left", right=products_df, on="product_id")
-                    .check.assert_same_nrows(transactions_df, "Left join changed row count! Check for duplicate `product_id` keys in product_df.")
+                    .check.assert_same_nrows(transactions_raw_df, "Unexpected change in row count of final DF vs raw DF. Check for duplicate `product_id` keys in product_df?")
                 )
             ```
 
@@ -709,6 +712,9 @@ class DataFrameChecks:
 
         Returns:
             The original DataFrame, unchanged.
+
+        Note:
+            For typical validation of merges, such as 1:1 joins, it's easier to use the `validate` argument in Pandas [`merge()`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.merge.html).
         """
 
         self._obj.check.assert_data(
