@@ -6,15 +6,17 @@ authors = [{name = "Chad Parmet", email= "cparmet@gmail.com"}]
 readme = "README.md"
 license = "BSD-3-Clause"
 keywords = ["pandas", "method chains", "data science", "data engineering"]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "emoji>=2.12.1",
     "ipython>=7.23.1",
     "Jinja2>=3.1.4",
     "matplotlib>=3.5.3",
     "pandas>=1.4,<4.0",
+    "pillow>=12.1.1", # For security vulnerability. Required dropping support for Python 3.9 PR #57
     "termcolor>=2.3.0",
-    "tornado>=6.5.0",
+    "tornado>=6.5.5", # For security vulnerability
+    "urllib3>=2.6.3" # For security vulnerability
 ]
 
 [project.urls]

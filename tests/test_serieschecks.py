@@ -29,8 +29,17 @@ def strip_multiline(s):
     return "\n".join([line.strip() for line in s.splitlines()])
 
 
-def assert_multiline_string_equal(s1, s2):
-    assert strip_multiline(s1) == strip_multiline(s2)
+def assert_multiline_string_equal(s1, s2, s2b=None):
+    """Cleans multi-line string variables before asserting their equality
+
+    s2b = optional alternative, for comparing s1 in [s2, s2b]
+    """
+    if s2b:
+        print(strip_multiline(s1))
+        print(strip_multiline(s2b))
+        assert strip_multiline(s1) in [strip_multiline(s2), strip_multiline(s2b)]
+    else:
+        assert strip_multiline(s1) == strip_multiline(s2)
 
 
 # Run the SeriesCheck methods against every appropriate column in each test dataset
@@ -93,7 +102,12 @@ def test_SeriesChecks_disable_checks(iris, capsys):
 
 def test_SeriesChecks_dtype(iris, capsys):
     iris["species"].check.dtype()
-    assert capsys.readouterr().out == """\n🗂️ Data type: object\n"""
+    assert capsys.readouterr().out in [
+        # Pandas 2
+        """\n🗂️ Data type: object\n""",
+        # Pandas 3
+        """\n🗂️ Data type: str\n""",
+    ]
 
 
 def test_SeriesChecks_function(iris, capsys):
@@ -132,8 +146,20 @@ def test_SeriesChecks_info(iris, capsys):
     )
     assert_multiline_string_equal(
         capsys.readouterr().out,
+        # Pandas 2
         """\nTest
 <class 'pandas.core.series.Series'>
+RangeIndex: 150 entries, 0 to 149
+Series name: petal_width
+Non-Null Count  Dtype
+--------------  -----
+150 non-null    float64
+dtypes: float64(1)
+memory usage: 1.3 KB
+""",
+        # Pandas 3
+        s2b="""\nTest
+<class 'pandas.Series'>
 RangeIndex: 150 entries, 0 to 149
 Series name: petal_width
 Non-Null Count  Dtype
@@ -329,9 +355,15 @@ def test_SeriesChecks_value_counts(iris, capsys):
     )
     assert_multiline_string_equal(
         capsys.readouterr().out,
-        """\nTest
+        # Pandas 2
+        s2="""\nTest
     species
     None          0.333333
+    versicolor    0.333333
+    virginica     0.333333\n""",
+        s2b="""\nTest
+    species
+    NaN           0.333333
     versicolor    0.333333
     virginica     0.333333\n""",
     )
