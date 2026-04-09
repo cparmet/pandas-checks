@@ -103,9 +103,7 @@ def test_set_custom_print_fn(iris):
         os.remove(log_path)
 
     # Assert expected log output is present
-    assert (
-        log_content.strip()
-        == """INFO:root:🏛️ Columns: ['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'species']
+    base_info = """INFO:root:🏛️ Columns: ['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'species']
 INFO:root:📏 Distributions
            sepal_length  sepal_width  petal_length  petal_width
     count    150.000000   150.000000    150.000000   150.000000
@@ -116,7 +114,14 @@ INFO:root:📏 Distributions
     50%        5.800000     3.000000      4.350000     1.300000
     75%        6.400000     3.300000      5.100000     1.800000
     max        7.900000     4.400000      6.900000     2.500000
-INFO:root: ㄨ Assert type failed: expected  float, got float64, float64, float64, float64, object
-
+INFO:root: ㄨ Assert type failed: expected  float, got float64, float64, float64, float64,
 """.strip()
+    assert (
+        log_content.strip()
+        in [
+            # Pandas 2
+            base_info + " object",
+            # Pandas 3
+            base_info + " str"
+        ]
     )  # fmt: skip

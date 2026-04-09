@@ -76,11 +76,14 @@ def test_DataFrameChecks_disable_checks(iris, capsys):
 
 def test_DataFrameChecks_dtypes(iris, capsys):
     iris.check.dtypes(fn=lambda df: df.select_dtypes("object"))
-    assert (
-        capsys.readouterr().out
-        == """\n🗂️ Data types
-    species    object\n"""
-    )
+    assert capsys.readouterr().out in [
+        # Pandas 2
+        """\n🗂️ Data types
+    species    object\n""",
+        # Pandas 3
+        """\n🗂️ Data types
+    species    str\n""",
+    ]
 
 
 def test_DataFrameChecks_function_with_lambda_fn(iris, capsys):
@@ -124,8 +127,18 @@ def test_DataFrameChecks_info(iris, capsys):
         memory_usage=True,
     )
     assert (
-        capsys.readouterr().out
-        == "\nTest\n<class 'pandas.core.frame.DataFrame'>\nRangeIndex: 150 entries, 0 to 149\nData columns (total 2 columns):\n #   Column       Non-Null Count  Dtype  \n---  ------       --------------  -----  \n 0   petal_width  150 non-null    float64\n 1   species      150 non-null    object \ndtypes: float64(1), object(1)\nmemory usage: 2.5+ KB\n\n"
+        # Compare the strings but remove all inner whitespace, it's finnicky
+        capsys.readouterr().out.replace(" ", "")
+        in [
+            # Pandas 2
+            "\nTest\n<class 'pandas.core.frame.DataFrame'>\nRangeIndex: 150 entries, 0 to 149\nData columns (total 2 columns):\n #   Column       Non-Null Count  Dtype  \n---  ------       --------------  -----  \n 0   petal_width  150 non-null     float64\n 1   species      150 non-null    object \ndtypes: float64(1), object(1)\nmemory usage: 2.5+ KB\n\n".replace(
+                " ", ""
+            ),
+            # Pandas 3
+            "\nTest\n<class 'pandas.DataFrame'>\nRangeIndex: 150 entries, 0 to 149\nData columns (total 2 columns):\n #   Column       Non-Null Count  Dtype  \n---  ------       --------------  -----  \n 0   petal_width  150 non-null    float64\n 1   species      150 non-null    str    \ndtypes: float64(1), str(1)\nmemory usage: 4.9 KB\n\n".replace(
+                " ", ""
+            ),
+        ]
     )
 
 
@@ -136,12 +149,16 @@ def test_DataFrameChecks_memory_usage(iris, capsys):
         deep=False,
         index=False,  # Avoids inconsistency where index size is different in Python 3.11 only
     )
-    assert (
-        capsys.readouterr().out
-        == """\nTest
+    assert capsys.readouterr().out in [
+        # Pandas 2
+        """\nTest
     petal_width    1200
-    species        1200\n"""
-    )
+    species        1200\n""",
+        # Pandas 3
+        """\nTest
+    petal_width    1200
+    species        2450\n""",
+    ]
 
 
 def test_DataFrameChecks_ncols(iris, capsys):
@@ -340,14 +357,20 @@ def test_DataFrameChecks_value_counts(iris, capsys):
         dropna=False,
         normalize=True,
     )
-    assert (
-        capsys.readouterr().out
-        == """\nTest
+    assert capsys.readouterr().out in [
+        # Pandas 2
+        """\nTest
     species
     None          0.333333
     versicolor    0.333333
-    virginica     0.333333\n"""
-    )
+    virginica     0.333333\n""",
+        # Pandas 3
+        """\nTest
+    species
+    NaN           0.333333
+    versicolor    0.333333
+    virginica     0.333333\n""",
+    ]
 
 
 @pytest.mark.parametrize(
