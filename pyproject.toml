@@ -13,10 +13,11 @@ dependencies = [
     "Jinja2>=3.1.4",
     "matplotlib>=3.5.3",
     "pandas>=1.4,<4.0",
-    "pillow>=12.1.1", # For security vulnerability. Required dropping support for Python 3.9 PR #57
+    "pillow>=12.2.0", # CVEs. Required dropping support for Python 3.9
+    "pygments>=2.20.0", # CVE
     "termcolor>=2.3.0",
-    "tornado>=6.5.5", # For security vulnerability
-    "urllib3>=2.6.3" # For security vulnerability
+    "tornado>=6.5.5", # CVE
+    "urllib3>=2.6.3" # CVEs
 ]
 
 [project.urls]
@@ -38,7 +39,7 @@ dev = [
 test = [
     "openpyxl>=3.1.4",
     "pyarrow>=16.1.0",
-    "pytest>=8.2.2",
+    "pytest>=9.0.3", # CVE
     "pytest-cases>=3.8.5",
 ]
 
