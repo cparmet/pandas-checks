@@ -1204,15 +1204,16 @@ class DataFrameChecks:
         Note:
             Only renders in interactive mode (IPython/Jupyter), not in terminal.
         """
+        if not check_name:
+            if isinstance(subset, list) and len(subset) == 1:
+                check_name = f"📏 Distribution of '{subset[0]}'"
+            elif isinstance(subset, str):
+                check_name = f"📏 Distribution of '{subset}'"
+            else:
+                check_name = "📏 Distributions"
         # Only display if in IPython/Jupyter, or we'd just print the title
         if get_mode()["enable_checks"] and not pd.core.config_init.is_terminal():
-            _display_plot_title(
-                check_name
-                if check_name
-                else f"📏 Distribution in '{subset}'"
-                if subset and len(subset) == 1
-                else "📏 Distributions"
-            )
+            _display_plot_title(check_name)
             _ = _apply_modifications(self._obj, fn, subset).hist(**kwargs)
             _display_plot()
         return self._obj
