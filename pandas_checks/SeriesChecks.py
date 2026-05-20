@@ -1630,15 +1630,18 @@ class SeriesChecks:
         Returns:
             The original Series, unchanged.
         """
+        if not check_name:
+            if self._obj.name:
+                check_name = f"🧮 Value counts in {self._obj.name}"
+            else:
+                check_name = "🧮 Value counts"
+            if max_rows:
+                check_name = check_name + f", first {max_rows} values"
         _check_data(
             self._obj,
             check_fn=lambda s: s.value_counts(**kwargs).head(max_rows),
             modify_fn=fn,
-            check_name=check_name
-            if check_name
-            else f"🧮 Value counts, first {max_rows} values"
-            if max_rows
-            else "🧮 Value counts",
+            check_name=check_name,
         )
         return self._obj
 
