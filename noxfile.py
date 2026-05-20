@@ -11,7 +11,8 @@ options.default_venv_backend = "uv"
 def test(s: Session) -> None:
     """Run the test suite."""
     s.install(".")  # Install pandas-checks
-    s.run("pytest")
+    # -n auto = parallelizes the tests (_within_ each python version)  https://pytest-xdist.readthedocs.io/en/stable/distribution.html
+    s.run("pytest", "-n", "auto")
 
 
 # def tests(session: Session) -> None:
