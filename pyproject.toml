@@ -17,7 +17,7 @@ dependencies = [
     "pygments>=2.20.0", # CVE
     "termcolor>=2.3.0",
     "tornado>=6.5.5", # CVE
-    "urllib3>=2.6.3" # CVEs
+    "urllib3>=2.6.3", # CVEs
 ]
 
 [project.urls]
@@ -41,6 +41,7 @@ test = [
     "pyarrow>=16.1.0",
     "pytest>=9.0.3", # CVE
     "pytest-cases>=3.8.5",
+    "pytest-xdist>=3.8.0",
 ]
 
 [build-system]
