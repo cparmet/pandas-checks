@@ -1290,7 +1290,7 @@ class SeriesChecks:
             modify_fn=fn,
             check_name=check_name
             if check_name
-            else f"🌟 Unique values in {self._obj.name if self._obj.name else 'series'}",
+            else f"🌟 Unique values in '{self._obj.name if self._obj.name else 'series'}'",
         )
         return self._obj
 
@@ -1597,7 +1597,7 @@ class SeriesChecks:
             modify_fn=fn,
             check_name=check_name
             if check_name
-            else f"🌟 Unique values of {self._obj.name if self._obj.name else 'series'}",
+            else f"🌟 Unique values of '{self._obj.name if self._obj.name else 'series'}'",
         )
         return self._obj
 
@@ -1632,7 +1632,7 @@ class SeriesChecks:
         """
         if not check_name:
             if self._obj.name:
-                check_name = f"🧮 Value counts in {self._obj.name}"
+                check_name = f"🧮 Value counts in '{self._obj.name}'"
             else:
                 check_name = "🧮 Value counts"
             if max_rows:

@@ -1367,7 +1367,7 @@ class DataFrameChecks:
             subset=subset,
             check_name=check_name
             if check_name
-            else f"👯‍♂️ Rows with duplication in {subset}"
+            else f"👯‍♂️ Rows with duplication in '{subset}'"
             if subset
             else "👯‍♂️ Duplicated rows",
         )
