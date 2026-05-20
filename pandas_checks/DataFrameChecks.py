@@ -1209,6 +1209,9 @@ class DataFrameChecks:
                 check_name = f"📏 Distribution of '{subset[0]}'"
             elif isinstance(subset, str):
                 check_name = f"📏 Distribution of '{subset}'"
+            elif "column" in kwargs:
+                col_name = kwargs["column"]
+                check_name = f"📏 Distribution of '{col_name}'"
             else:
                 check_name = "📏 Distributions"
         # Only display if in IPython/Jupyter, or we'd just print the title
