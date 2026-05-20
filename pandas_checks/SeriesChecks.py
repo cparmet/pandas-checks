@@ -1284,13 +1284,16 @@ class SeriesChecks:
         Returns:
             The original Series, unchanged.
         """
+        if not check_name:
+            if self._obj.name:
+                check_name = f"🌟 Unique values in '{self._obj.name}'"
+            else:
+                check_name = "🌟 Unique values"
         _check_data(
             self._obj,
             check_fn=lambda s: s.nunique(**kwargs),
             modify_fn=fn,
-            check_name=check_name
-            if check_name
-            else f"🌟 Unique values in '{self._obj.name if self._obj.name else 'series'}'",
+            check_name=check_name,
         )
         return self._obj
 
@@ -1591,13 +1594,17 @@ class SeriesChecks:
         Returns:
             The original Series, unchanged.
         """
+        if not check_name:
+            if self._obj.name:
+                check_name = f"🌟 Unique values of '{self._obj.name}'"
+            else:
+                check_name = "🌟 Unique values"
+
         _check_data(
             self._obj,
             check_fn=lambda s: s.unique().tolist(),
             modify_fn=fn,
-            check_name=check_name
-            if check_name
-            else f"🌟 Unique values of '{self._obj.name if self._obj.name else 'series'}'",
+            check_name=check_name,
         )
         return self._obj
 
