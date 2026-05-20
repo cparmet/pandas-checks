@@ -1204,13 +1204,12 @@ class DataFrameChecks:
         Note:
             Only renders in interactive mode (IPython/Jupyter), not in terminal.
         """
-        if (
-            get_mode()["enable_checks"] and not pd.core.config_init.is_terminal()
-        ):  # Only display if in IPython/Jupyter, or we'd just print the title
+        # Only display if in IPython/Jupyter, or we'd just print the title
+        if get_mode()["enable_checks"] and not pd.core.config_init.is_terminal():
             _display_plot_title(
                 check_name
                 if check_name
-                else "📏 Distribution"
+                else f"📏 Distribution in '{subset}'"
                 if subset and len(subset) == 1
                 else "📏 Distributions"
             )
