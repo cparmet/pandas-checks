@@ -206,10 +206,10 @@ def method_nrows():
 
 def method_nunique():
     return lambda df, args: df.check.nunique(
-        # For multiindex dataframes like brain_networks.csv, "first_num_col" returns a tuple that breaks nunique(). We'll just take the first column item in that case, since this test is only used to ensure that .check.nunique() doesn't mutate the original DF.
+        # For multiindex dataframes like brain_networks.csv, "first_num_col" returns a tuple that breaks nunique(). We'll just take all the columns in that case, since this test is only used to ensure that .check.nunique() doesn't mutate the original DF.
         columns=args["first_num_col"]
         if not isinstance(args["first_num_col"], tuple)
-        else args["first_num_col"][0],
+        else None,
         fn=lambda df: df.dropna(),
         check_name="Test",
         dropna=False,

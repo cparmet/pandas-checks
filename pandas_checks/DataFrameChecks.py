@@ -1474,7 +1474,7 @@ class DataFrameChecks:
 
     def nunique(
         self,
-        columns: Union[str, list, None] = None,
+        columns: Union[str, int, list, None] = None,
         fn: Callable = lambda df: df,
         check_name: Union[str, None] = None,
         **kwargs: Any,
@@ -1502,40 +1502,29 @@ class DataFrameChecks:
         """
 
         if get_mode()["enable_checks"]:
-            if not isinstance(columns, str | list | None):
+            if not isinstance(columns, str | int | list | None):
                 raise AttributeError(
-                    f"check.nunique() received unexpected dtype {type(columns)} for `columns`. Expected str, list, or None."
+                    f"check.nunique() received unexpected dtype {type(columns)} for `columns`. Expected str, int, list, or None."
                 )
 
-            # Standardize columns into a list
-            if isinstance(columns, str):
+            columns_clean: list | None
+            if isinstance(columns, str | int):
                 columns_clean = [columns]
-            elif columns is None:
-                columns_clean = []
             else:
-                # Converts tuples and sets to lists too
-                columns_clean = list(columns)
+                # Includes columns=None
+                columns_clean = columns
 
-            if len(columns_clean) == 1:
-                (
-                    # Apply fn, then filter to single column, pass to SeriesChecks.check.nunique()
-                    _apply_modifications(self._obj, fn=fn, subset=columns_clean[0])
-                    .check.nunique(
-                        fn=lambda df: df,  # Identity function
-                        check_name=check_name,
-                        **kwargs,
-                    )
-                )  # fmt: skip
-
-            else:
-                # Calculate the number of unique combinations of values in multiple columns
-                if not check_name:
-                    check_name = f"Unique rows in {columns_clean}"
-                (
-                    _apply_modifications(self._obj, fn=fn)
-                    .drop_duplicates(columns_clean if len(columns_clean)>0 else None)
-                    .check.nrows(check_name=check_name)
-                )  # fmt: skip
+            if not check_name:
+                check_name = (
+                    f"Unique rows in {columns_clean}"
+                    if columns_clean is not None
+                    else "Unique rows"
+                )
+            (
+                _apply_modifications(self._obj, fn=fn)
+                .drop_duplicates(columns_clean)
+                .check.nrows(check_name=check_name)
+            )  # fmt: skip
         return self._obj
 
     def plot(
