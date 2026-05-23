@@ -200,7 +200,14 @@ def test_DataFrameChecks_nrows(iris, capsys):
     assert capsys.readouterr().out == "\nTest: 150\n"
 
 
-def test_DataFrameChecks_nunique(iris, capsys):
+def test_DataFrameChecks_nunique_one_column(iris, capsys):
+    iris.check.nunique(
+        fn=lambda df: df, check_name="Test", column="species", dropna=False
+    )
+    assert capsys.readouterr().out == "\nTest: 3\n"
+
+
+def test_DataFrameChecks_nunique_subset_one_column(iris, capsys):
     iris.check.nunique(
         fn=lambda df: df, check_name="Test", subset="species", dropna=False
     )

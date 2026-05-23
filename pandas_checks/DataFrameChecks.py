@@ -1474,6 +1474,7 @@ class DataFrameChecks:
 
     def nunique(
         self,
+        column: Union[str, None] = None,
         subset: Union[str, List, None] = None,
         across_columns: bool = False,
         fn: Callable = lambda df: df,
@@ -1483,6 +1484,7 @@ class DataFrameChecks:
         """Displays the number of unique values in a Series or unique combinations of rows in a DataFrame, without modifying the DataFrame itself.
 
         Note:
+            * Must pass either column or subset
             * When across_columns=False, we use the standard Pandas nunique() methods. In those methods, dropna=True by default. You can change this by passing dropna=False
                 - See Pandas docs for [nunique() DataFrame](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.nunique.html) or [nunique() Series](https://pandas.pydata.org/docs/reference/api/pandas.Series.nunique.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
@@ -1490,7 +1492,7 @@ class DataFrameChecks:
             ```python
                 (
                     iris
-                    .check.nunique(subset="sepal_width") # Unique values of sepal_width (standard Pandas Series.nunique())
+                    .check.nunique(column="sepal_width") # Unique values of sepal_width (standard Pandas Series.nunique())
                     .check.nunique(subset=["petal_width, "sepal_width"]) # Unique values in each column separately (standard Pandas DataFrame.nunique())
                     .check.nunique(subset=["petal_width, "sepal_width"], across_columns=True) # Unique combinations of values
 
@@ -1498,6 +1500,7 @@ class DataFrameChecks:
             ```
 
         Args:
+            column: The optional name of a column to count uniques in. Applied after fn.
             subset: The optional name of a column or columns to count uniques in. If None, will include all columns. Applied after fn.
             across_columns: When dataframe has multiple columns (after applying subset), whether we should
                 - count the unique values in each column separately (False), the standard Pandas DataFrame nunique()
@@ -1511,6 +1514,15 @@ class DataFrameChecks:
         """
 
         if get_mode()["enable_checks"]:
+            if column is not None and subset is not None:
+                raise AttributeError(
+                    ".check.nunique() accepts either a column or subset but not both"
+                )
+
+            # Coalesce subset and column
+            if column:
+                subset = column
+
             data_modified = _apply_modifications(self._obj, fn=fn, subset=subset)
 
             if not check_name:
@@ -1535,7 +1547,7 @@ class DataFrameChecks:
                 # Count the number of unique rows considering values in multiple columns
                 if "dropna" in kwargs:
                     raise AttributeError(
-                        "check.nunique() does not support dropna when across_columns=True"
+                        "DataFrame check.nunique() does not support dropna when across_columns=True"
                     )
                 (
                     data_modified
