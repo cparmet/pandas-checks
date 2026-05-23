@@ -1504,7 +1504,7 @@ class DataFrameChecks:
         if get_mode()["enable_checks"]:
             # Ensure columns_clean is a list
             columns_clean = (
-                [columns] if (isinstance(columns, str) or not columns) else columns
+                [columns] if (isinstance(columns, str) or columns is None) else columns
             )
             if len(columns_clean) == 0:
                 # When columns=None, consider all columns
