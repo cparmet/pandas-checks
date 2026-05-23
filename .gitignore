@@ -9,6 +9,7 @@ __pycache__
 archive/*
 dev.ipynb
 dev_script.py
+dev_logtest.py
 
 dist/*
 site/*
