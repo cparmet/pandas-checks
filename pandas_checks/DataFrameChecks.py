@@ -1502,6 +1502,10 @@ class DataFrameChecks:
         """
 
         if get_mode()["enable_checks"]:
+            if not isinstance(columns, str | list | None):
+                raise AttributeError(
+                    f"check.nunique() received unexpected dtype {type(columns)} for `columns`. Expected str, list, or None."
+                )
             # Ensure columns_clean is a list
             columns_clean = (
                 [columns] if (isinstance(columns, str) or columns is None) else columns
