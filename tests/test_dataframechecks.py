@@ -202,7 +202,20 @@ def test_DataFrameChecks_nrows(iris, capsys):
 
 def test_DataFrameChecks_nunique(iris, capsys):
     iris.check.nunique(
-        fn=lambda df: df.assign(C=55), check_name="Test", column="species", dropna=False
+        fn=lambda df: df.assign(C=55),
+        check_name="Test",
+        columns="species",
+        dropna=False,
+    )
+    assert capsys.readouterr().out == "\nTest: 3\n"
+
+
+def test_DataFrameChecks_nunique_multiple_columns(iris, capsys):
+    iris.check.nunique(
+        fn=lambda df: df.assign(C=55),
+        check_name="Test",
+        columns=["C", "species"],
+        dropna=False,
     )
     assert capsys.readouterr().out == "\nTest: 3\n"
 

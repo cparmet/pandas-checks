@@ -1474,12 +1474,12 @@ class DataFrameChecks:
 
     def nunique(
         self,
-        column: str,
+        columns: Union[str, list, None] = None,
         fn: Callable = lambda df: df,
         check_name: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.DataFrame:
-        """Displays the number of unique rows in a single column, without modifying the DataFrame itself.
+        """Displays the number of unique rows, considering a single column or uniqueness across multiple columns, without modifying the DataFrame itself.
 
         See Pandas docs for [nunique()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.nunique.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
 
@@ -1487,12 +1487,12 @@ class DataFrameChecks:
             ```python
                 (
                     iris
-                    .check.nunique(column="sepal_width")
+                    .check.nunique(columns="sepal_width")
                 )
             ```
 
         Args:
-            column: The name of a column to count uniques in. Applied after fn.
+            columns: The name of a column, or a list of columns, to consider when counting the number of unique rows. Pass `None` to consider all columns. Applied after fn.
             fn: An optional lambda function to apply to the DataFrame before running Pandas nunique(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             check_name: An optional name for the check, to be printed as preface to the result.
             **kwargs: Optional, additional arguments that are accepted by Pandas nunique() method.
@@ -1502,15 +1502,33 @@ class DataFrameChecks:
         """
 
         if get_mode()["enable_checks"]:
-            (
-                # Apply fn, then filter to `column`, pass to SeriesChecks.check.nunique()
-                _apply_modifications(self._obj, fn=fn, subset=column)
-                .check.nunique(
-                    fn=lambda df: df,  # Identity function
-                    check_name=check_name,
-                    **kwargs,
-                )
-            )  # fmt: skip
+            # Ensure columns_clean is a list
+            columns_clean = (
+                [columns] if (isinstance(columns, str) or not columns) else columns
+            )
+            if len(columns_clean) == 0:
+                # When columns=None, consider all columns
+                columns_clean = self._obj.columns.tolist()
+            if len(columns_clean) == 1:
+                (
+                    # Apply fn, then filter to single column, pass to SeriesChecks.check.nunique()
+                    _apply_modifications(self._obj, fn=fn, subset=columns_clean[0])
+                    .check.nunique(
+                        fn=lambda df: df,  # Identity function
+                        check_name=check_name,
+                        **kwargs,
+                    )
+                )  # fmt: skip
+
+            else:
+                # Calculate the number of unique combinations of values in multiple columns
+                if not check_name:
+                    check_name = f"Unique rows in {columns_clean}"
+                (
+                    _apply_modifications(self._obj, fn=fn)
+                    .drop_duplicates(columns_clean)
+                    .check.nrows(check_name=check_name)
+                )  # fmt: skip
         return self._obj
 
     def plot(

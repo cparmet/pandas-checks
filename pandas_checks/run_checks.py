@@ -20,6 +20,7 @@ def _apply_modifications(
 
     Returns:
         Modified and optionally subsetted data object.  If all arguments are defaults, data is returned unchanged.
+        If subset is a string and data is a DataFrame, will return a Series. If subset is a list, even if one item, will still return a DataFrame
     """
     if not callable(fn):
         raise TypeError(
