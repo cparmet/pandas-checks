@@ -1506,13 +1506,16 @@ class DataFrameChecks:
                 raise AttributeError(
                     f"check.nunique() received unexpected dtype {type(columns)} for `columns`. Expected str, list, or None."
                 )
-            # Ensure columns_clean is a list
-            columns_clean = (
-                [columns] if (isinstance(columns, str) or columns is None) else columns
-            )
-            if len(columns_clean) == 0:
-                # When columns=None, consider all columns
-                columns_clean = self._obj.columns.tolist()
+
+            # Standardize columns into a list
+            if isinstance(columns, str):
+                columns_clean = [columns]
+            elif columns is None:
+                columns_clean = []
+            else:
+                # Converts tuples and sets to lists too
+                columns_clean = list(columns)
+
             if len(columns_clean) == 1:
                 (
                     # Apply fn, then filter to single column, pass to SeriesChecks.check.nunique()
@@ -1530,7 +1533,7 @@ class DataFrameChecks:
                     check_name = f"Unique rows in {columns_clean}"
                 (
                     _apply_modifications(self._obj, fn=fn)
-                    .drop_duplicates(columns_clean)
+                    .drop_duplicates(columns_clean if len(columns_clean)>0 else None)
                     .check.nrows(check_name=check_name)
                 )  # fmt: skip
         return self._obj

@@ -2,6 +2,7 @@
 that they don't change the actual dataframe
 in the method chain """
 
+
 import pandas_checks as pdc
 
 
@@ -205,7 +206,10 @@ def method_nrows():
 
 def method_nunique():
     return lambda df, args: df.check.nunique(
-        columns=args["first_num_col"],
+        # For multiindex dataframes like brain_networks.csv, "first_num_col" returns a tuple that breaks nunique(). We'll just take the first column item in that case, since this test is only used to ensure that .check.nunique() doesn't mutate the original DF.
+        columns=args["first_num_col"]
+        if not isinstance(args["first_num_col"], tuple)
+        else args["first_num_col"][0],
         fn=lambda df: df.dropna(),
         check_name="Test",
         dropna=False,

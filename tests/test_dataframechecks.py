@@ -220,6 +220,16 @@ def test_DataFrameChecks_nunique_multiple_columns(iris, capsys):
     assert capsys.readouterr().out == "\nTest: 3\n"
 
 
+def test_DataFrameChecks_nunique_columns_is_None(iris, capsys):
+    iris.check.nunique(
+        fn=lambda df: df.assign(C=55),
+        check_name="Test",
+        columns=None,
+        dropna=False,
+    )
+    assert capsys.readouterr().out == "\nTest: 149\n"
+
+
 def test_DataFrameChecks_plot_no_terminal_display(iris, capsys):
     iris.check.plot(subset=["sepal_width", "petal_length"])
     assert capsys.readouterr().out == ""
