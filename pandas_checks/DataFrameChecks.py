@@ -1484,7 +1484,6 @@ class DataFrameChecks:
         """Displays the number of unique values in a Series or unique combinations of rows in a DataFrame, without modifying the DataFrame itself.
 
         Note:
-            * Must pass either column or subset
             * When across_columns=False, we use the standard Pandas nunique() methods. In those methods, dropna=True by default. You can change this by passing dropna=False
                 - See Pandas docs for [nunique() DataFrame](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.nunique.html) or [nunique() Series](https://pandas.pydata.org/docs/reference/api/pandas.Series.nunique.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
@@ -1501,7 +1500,7 @@ class DataFrameChecks:
 
         Args:
             column: The optional name of a column to count uniques in. Applied after fn.
-            subset: The optional name of a column or columns to count uniques in. If None, will include all columns. Applied after fn.
+            subset: The optional name of a column or columns to count uniques in. If None, and column is None, will include all columns. Applied after fn.
             across_columns: When dataframe has multiple columns (after applying subset), whether we should
                 - count the unique values in each column separately (False), the standard Pandas DataFrame nunique()
                 - count the unique combinations of rows across those columns (True) or
