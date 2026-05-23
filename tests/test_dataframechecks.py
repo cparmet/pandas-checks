@@ -202,9 +202,19 @@ def test_DataFrameChecks_nrows(iris, capsys):
 
 def test_DataFrameChecks_nunique(iris, capsys):
     iris.check.nunique(
-        fn=lambda df: df.assign(C=55), check_name="Test", column="species", dropna=False
+        fn=lambda df: df, check_name="Test", subset="species", dropna=False
     )
     assert capsys.readouterr().out == "\nTest: 3\n"
+
+
+def test_DataFrameChecks_nunique_across_columns(iris, capsys):
+    iris.check.nunique(
+        fn=lambda df: df.assign(C=55),
+        check_name="Test",
+        subset=["species", "petal_width"],
+        across_columns=True,
+    )
+    assert capsys.readouterr().out == "\nTest: 27\n"
 
 
 def test_DataFrameChecks_plot_no_terminal_display(iris, capsys):
