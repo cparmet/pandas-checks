@@ -883,7 +883,7 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas describe(). Example: `lambda s: s.dropna()`.
-            msg: An optional name for the check to preface the result with.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas describe() method.
 
         Returns:
@@ -936,7 +936,7 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas dtype. Example: `lambda s: s.dropna()`.
-            msg: An optional name for the check to preface the result with.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original Series, unchanged.
@@ -990,7 +990,7 @@ class SeriesChecks:
 
         Args:
             fn: The lambda function to apply to the Series. Example: `lambda s: s.dropna()`.
-            msg: An optional name for the check to preface the result with.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original Series, unchanged.
@@ -1013,7 +1013,7 @@ class SeriesChecks:
             ```
 
         Args:
-            msg: An optional name for the check. Will be used as a preface the printed result.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original Series, unchanged.
@@ -1046,7 +1046,7 @@ class SeriesChecks:
         Args:
             n: The number of rows to display.
             fn: An optional lambda function to apply to the Series before running Pandas head(). Example: `lambda s: s.dropna()`.
-            msg: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original Series, unchanged.
@@ -1078,7 +1078,7 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas head(). Example: `lambda s: s.dropna()`.
-            msg: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas hist() method.
 
         Returns:
@@ -1114,7 +1114,7 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas info(). Example: `lambda s: s.dropna()`.
-            msg: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas info() method.
 
         Returns:
@@ -1147,7 +1147,7 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas memory_usage(). Example: `lambda s: s.dropna()`.
-            msg: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas memory_usage() method.
 
         Returns:
@@ -1183,7 +1183,7 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before counting the number of duplicates. Example: `lambda s: s.dropna()`.
-            msg: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas duplicated() method.
 
         Returns:
@@ -1215,7 +1215,7 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before counting rows with nulls. Example: `lambda s: s.dropna()`.
-            msg: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original Series, unchanged.
@@ -1244,7 +1244,7 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before counting the number of rows. Example: `lambda s: s.dropna()`.
-            msg: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original Series, unchanged.
@@ -1276,7 +1276,7 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas nunique(). Example: `lambda s: s.dropna()`.
-            msg: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas nunique() method.
 
         Returns:
@@ -1361,7 +1361,7 @@ class SeriesChecks:
         Args:
             object: Object to print. Can be anything printable: str, int, list, another DataFrame, etc. If None, print the Series's head (with `max_rows` rows).
             fn: An optional lambda function to apply to the Series before printing `object`. Example: `lambda s: s.dropna()`.
-            msg: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
             max_rows: Maximum number of rows to print if object=None.
 
         Returns:
@@ -1517,7 +1517,7 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas `shape`. Example: `lambda s: s.dropna()`.
-            msg: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original Series, unchanged.
@@ -1555,7 +1555,7 @@ class SeriesChecks:
         Args:
             n: Number of rows to show.
             fn: An optional lambda function to apply to the Series before running Pandas tail(). Example: `lambda s: s.dropna()`.
-            msg: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original Series, unchanged.
@@ -1587,7 +1587,7 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas unique(). Example: `lambda s: s.dropna()`.
-            msg: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original Series, unchanged.
@@ -1629,7 +1629,7 @@ class SeriesChecks:
         Args:
             max_rows: Maximum number of rows to show in the value counts.
             fn: An optional lambda function to apply to the Series before running Pandas value_counts(). Example: `lambda s: s.dropna()`.
-            msg: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas value_counts() method.
 
         Returns:
