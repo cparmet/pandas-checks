@@ -162,7 +162,7 @@ def test_DataFrameChecks_memory_usage(iris, capsys):
 
 
 def test_DataFrameChecks_ncols(iris, capsys):
-    iris.check.ncols(fn=lambda df: df.assign(C=55), msg="Test", subset=["C", "species"])
+    iris.check.ncols(msg="Test", fn=lambda df: df.assign(C=55), subset=["C", "species"])
     assert capsys.readouterr().out == "\nTest: 2\n"
 
 
@@ -188,7 +188,7 @@ def test_DataFrameChecks_nnulls(iris, capsys):
 
 
 def test_DataFrameChecks_nrows(iris, capsys):
-    iris.check.nrows(fn=lambda df: df.assign(C=55), msg="Test", subset=["C", "species"])
+    iris.check.nrows(msg="Test", fn=lambda df: df.assign(C=55), subset=["C", "species"])
     assert capsys.readouterr().out == "\nTest: 150\n"
 
 
@@ -326,7 +326,7 @@ def test_DataFrameChecks_set_mode(iris, capsys):
 
 
 def test_DataFrameChecks_shape(iris, capsys):
-    iris.check.shape(fn=lambda df: df.assign(C=55), msg="Test", subset=["C", "species"])
+    iris.check.shape(msg="Test", fn=lambda df: df.assign(C=55), subset=["C", "species"])
     assert capsys.readouterr().out == "\nTest: (150, 2)\n"
 
 

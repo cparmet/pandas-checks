@@ -126,7 +126,7 @@ def method_assert_unique():
 
 
 def method_columns():
-    return lambda df, _: df.check.columns(fn=lambda df: df.dropna(), msg="Test")
+    return lambda df, _: df.check.columns(msg="Test", fn=lambda df: df.dropna())
 
 
 def method_describe():
@@ -180,7 +180,7 @@ def method_memory_usage():
 
 
 def method_ncols():
-    return lambda df, _: df.check.ncols(fn=lambda df: df.dropna(), msg="Test")
+    return lambda df, _: df.check.ncols(msg="Test", fn=lambda df: df.dropna())
 
 
 def method_ndups():
@@ -196,7 +196,7 @@ def method_nnulls():
 
 
 def method_nrows():
-    return lambda df, _: df.check.nrows(fn=lambda df: df.dropna(), msg="Test")
+    return lambda df, _: df.check.nrows(msg="Test", fn=lambda df: df.dropna())
 
 
 def method_nunique():
@@ -240,7 +240,7 @@ def method_set_mode():
 
 
 def method_shape():
-    return lambda df, _: df.check.shape(fn=lambda df: df.dropna(), msg="Test")
+    return lambda df, _: df.check.shape(msg="Test", fn=lambda df: df.dropna())
 
 
 def method_tail():
