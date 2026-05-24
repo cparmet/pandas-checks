@@ -1335,8 +1335,8 @@ class DataFrameChecks:
 
     def ndups(
         self,
-        fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
+        fn: Callable = lambda df: df,
         msg: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.DataFrame:
@@ -1354,8 +1354,8 @@ class DataFrameChecks:
             ```
 
         Args:
-            fn: An optional lambda function to apply to the DataFrame before counting the number of duplicates. Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string to select a subset of columns before counting duplicate rows. Applied after fn.
+            fn: An optional lambda function to apply to the DataFrame before counting the number of duplicates. Example: `lambda df: df.shape[0]>10`. Applied before subset.
             msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas duplicated() method.
 

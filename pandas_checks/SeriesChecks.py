@@ -1191,7 +1191,7 @@ class SeriesChecks:
         """
         (
             pd.DataFrame(_apply_modifications(self._obj, fn))
-            .check.ndups(fn, msg=msg, **kwargs)
+            .check.ndups(fn=fn, msg=msg, **kwargs)
         )  # fmt: skip
         return self._obj
 

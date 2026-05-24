@@ -167,16 +167,16 @@ def test_DataFrameChecks_ncols(iris, capsys):
 
 
 def test_DataFrameChecks_ndups(iris, capsys):
-    iris.check.ndups(fn=lambda df: df.assign(C=55), msg="Test", subset=["C", "species"])
+    iris.check.ndups(subset=["C", "species"], fn=lambda df: df.assign(C=55), msg="Test")
     assert capsys.readouterr().out == "\nTest: 147\n"
 
 
 def test_DataFrameChecks_ndups_keep(iris, capsys):
     """Test that a kwarg is getting passed to Pandas's memory_usage()"""
     iris.check.ndups(
+        subset=["C", "species"],
         fn=lambda df: df.assign(C=55),
         msg="Test",
-        subset=["C", "species"],
         keep=False,
     )
     assert capsys.readouterr().out == "\nTest: 150\n"
