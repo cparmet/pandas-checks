@@ -1302,9 +1302,9 @@ class DataFrameChecks:
 
     def ncols(
         self,
+        msg: Union[str, None] = "🏛️ Columns",
         fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
-        msg: Union[str, None] = "🏛️ Columns",
     ) -> pd.DataFrame:
         """Displays the number of columns in a DataFrame, without modifying the DataFrame itself.
 
@@ -1317,9 +1317,9 @@ class DataFrameChecks:
             ```
 
         Args:
+            msg: Optionally customize the text displayed before the result of the check.
             fn: An optional lambda function to apply to the DataFrame before counting the number of columns. Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string to select a subset of columns before counting the number of columns. Applied after fn.
-            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original DataFrame, unchanged.
@@ -1437,9 +1437,9 @@ class DataFrameChecks:
 
     def nrows(
         self,
+        msg: Union[str, None] = "☰ Rows",
         fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
-        msg: Union[str, None] = "☰ Rows",
     ) -> pd.DataFrame:
         """Displays the number of rows in a DataFrame, without modifying the DataFrame itself.
 
@@ -1452,9 +1452,9 @@ class DataFrameChecks:
             ```
 
         Args:
+            msg: Optionally customize the text displayed before the result of the check.
             fn: An optional lambda function to apply to the DataFrame before counting the number of rows. Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string name of one column to limit which columns are considered when counting rows. Applied after fn.
-            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original DataFrame, unchanged.
@@ -1771,9 +1771,9 @@ class DataFrameChecks:
 
     def shape(
         self,
+        msg: Union[str, None] = "📐 Shape",
         fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
-        msg: Union[str, None] = "📐 Shape",
     ) -> pd.DataFrame:
         """Displays the Dataframe's dimensions, without modifying the DataFrame itself.
 
@@ -1782,14 +1782,14 @@ class DataFrameChecks:
                 (
                     iris
                     .check.shape()
-                    .check.shape(fn=lambda df: df.query("sepal_length<5"), msg="Shape of DataFrame subgroup with sepal_length<5")
+                    .check.shape(msg="Shape of DataFrame subgroup with sepal_length<5", fn=lambda df: df.query("sepal_length<5"))
                 )
             ```
 
         Args:
+            msg: Optionally customize the text displayed before the result of the check.
             fn: An optional lambda function to apply to the DataFrame before running Pandas `shape`. Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string name of one column to limit which columns are considered when printing the shape. Applied after fn.
-            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original DataFrame, unchanged.

@@ -242,7 +242,7 @@ def method_nnulls():
 
 
 def method_nrows():
-    return lambda s, _: s.check.nrows(fn=lambda s: s.dropna(), msg="Test"), False
+    return lambda s, _: s.check.nrows(msg="Test", fn=lambda s: s.dropna()), False
 
 
 def method_nunique():
@@ -292,7 +292,7 @@ def method_set_mode():
 
 
 def method_shape():
-    return lambda s, _: s.check.shape(fn=lambda s: s.dropna(), msg="Test"), False
+    return lambda s, _: s.check.shape(msg="Test", fn=lambda s: s.dropna()), False
 
 
 def method_tail():

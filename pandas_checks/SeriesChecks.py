@@ -1228,8 +1228,8 @@ class SeriesChecks:
 
     def nrows(
         self,
-        fn: Callable = lambda s: s,
         msg: Union[str, None] = "☰ Rows",
+        fn: Callable = lambda s: s,
     ) -> pd.Series:
         """Displays the number of rows in a Series, without modifying the Series itself.
 
@@ -1243,8 +1243,8 @@ class SeriesChecks:
             ```
 
         Args:
-            fn: An optional lambda function to apply to the Series before counting the number of rows. Example: `lambda s: s.dropna()`.
             msg: Optionally customize the text displayed before the result of the check.
+            fn: An optional lambda function to apply to the Series before counting the number of rows. Example: `lambda s: s.dropna()`.
 
         Returns:
             The original Series, unchanged.
@@ -1500,8 +1500,8 @@ class SeriesChecks:
 
     def shape(
         self,
-        fn: Callable = lambda s: s,
         msg: Union[str, None] = "📐 Shape",
+        fn: Callable = lambda s: s,
     ) -> pd.Series:
         """Displays the Series's dimensions, without modifying the Series itself.
 
@@ -1511,13 +1511,13 @@ class SeriesChecks:
                 iris
                 ["sepal_width"]
                 .check.shape()
-                .check.shape(fn=lambda s: s[s<5]), msg="Shape of sepal_width series with values <5")
+                .check.shape(msg="Shape of sepal_width series with values <5", fn=lambda s: s[s<5]))
             )
             ```
 
         Args:
-            fn: An optional lambda function to apply to the Series before running Pandas `shape`. Example: `lambda s: s.dropna()`.
             msg: Optionally customize the text displayed before the result of the check.
+            fn: An optional lambda function to apply to the Series before running Pandas `shape`. Example: `lambda s: s.dropna()`.
 
         Returns:
             The original Series, unchanged.

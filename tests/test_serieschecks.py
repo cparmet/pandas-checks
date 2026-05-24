@@ -208,7 +208,7 @@ def test_SeriesChecks_nnulls(iris, capsys):
 
 
 def test_SeriesChecks_nrows(iris, capsys):
-    iris["species"].check.nrows(fn=lambda s: s[s == "versicolor"], msg="Test")
+    iris["species"].check.nrows(msg="Test", fn=lambda s: s[s == "versicolor"])
     assert capsys.readouterr().out == "\nTest: 50\n"
 
 
@@ -320,7 +320,7 @@ def test_SeriesChecks_set_mode(iris, capsys):
 
 def test_SeriesChecks_shape(iris, capsys):
     iris["sepal_width"].check.shape(
-        fn=lambda s: pd.concat([s, s], ignore_index=True, axis=0), msg="Test"
+        msg="Test", fn=lambda s: pd.concat([s, s], ignore_index=True, axis=0)
     )
     assert capsys.readouterr().out == "\nTest: (300,)\n"
 
