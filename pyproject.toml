@@ -9,15 +9,18 @@ keywords = ["pandas", "method chains", "data science", "data engineering"]
 requires-python = ">=3.10"
 dependencies = [
     "emoji>=2.12.1",
+    # "idna>=3.15",
     "ipython>=7.23.1",
     "Jinja2>=3.1.4",
     "matplotlib>=3.5.3",
     "pandas>=1.4,<4.0",
     "pillow>=12.2.0", # CVEs. Required dropping support for Python 3.9
     "pygments>=2.20.0", # CVE
+    # "pymdown-extensions>=10.21.3",
+    "requests>=2.33.0",
     "termcolor>=2.3.0",
     "tornado>=6.5.5", # CVE
-    "urllib3>=2.6.3", # CVEs
+    "urllib3>=2.7.0", # CVEs
 ]
 
 [project.urls]
