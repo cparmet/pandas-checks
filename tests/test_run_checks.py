@@ -42,9 +42,9 @@ def test_check_data_enable_checks(capsys):
     check_fn = lambda x: x.dtypes
     modify_fn = lambda x: x
     subset = None
-    check_name = "Test Check"
+    msg = "Test Check"
     pdc.enable_checks()
-    _check_data(df, check_fn, modify_fn, subset, check_name)
+    _check_data(df, check_fn, modify_fn, subset, msg)
     assert "Test Check" in capsys.readouterr().out  # Partial check
 
 
@@ -53,8 +53,8 @@ def test_check_data_disable_checks(capsys):
     check_fn = lambda x: x.dtypes
     modify_fn = lambda x: x
     subset = None
-    check_name = "Test Check"
+    msg = "Test Check"
     pdc.disable_checks()
-    _check_data(df, check_fn, modify_fn, subset, check_name)
+    _check_data(df, check_fn, modify_fn, subset, msg)
     assert capsys.readouterr().out == ""
     pdc.enable_checks()  # Reset

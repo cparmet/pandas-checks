@@ -471,7 +471,7 @@ def _display_check(data: Any, name: Union[str, None] = None) -> None:
     else:
         if isinstance(data, (pd.DataFrame, pd.Series)):
             # Can't display styled tables or use IPython rendering
-            # Print check name and data on separate lines
+            # Print msg and data on separate lines
             _print_router("", bypass_print_fn=True)  # White space
             _print_table(data, title=name)
         else:

@@ -162,7 +162,7 @@ def method_assert_unique():
 
 def method_describe():
     return (
-        lambda s, _: s.check.describe(fn=lambda s: s.dropna(), check_name="Test"),
+        lambda s, _: s.check.describe(fn=lambda s: s.dropna(), msg="Test"),
         False,
     )
 
@@ -172,7 +172,7 @@ def method_disable_checks():
 
 
 def method_dtype():
-    return lambda s, _: s.check.dtype(fn=lambda s: s.dropna(), check_name="Test"), False
+    return lambda s, _: s.check.dtype(fn=lambda s: s.dropna(), msg="Test"), False
 
 
 def method_enable_checks():
@@ -181,18 +181,18 @@ def method_enable_checks():
 
 def method_function():
     return (
-        lambda s, _: s.check.function(lambda s: s.shape[0] * 2, check_name="Test"),
+        lambda s, _: s.check.function(lambda s: s.shape[0] * 2, msg="Test"),
         False,
     )
 
 
 def method_get_mode():
-    return lambda s, _: s.check.get_mode(check_name="Test"), False
+    return lambda s, _: s.check.get_mode(msg="Test"), False
 
 
 def method_head():
     return (
-        lambda s, _: s.check.head(n=7, fn=lambda s: s.dropna(), check_name="Test"),
+        lambda s, _: s.check.head(n=7, fn=lambda s: s.dropna(), msg="Test"),
         False,
     )
 
@@ -200,7 +200,7 @@ def method_head():
 def method_hist():
     return (
         lambda s, _: s.check.hist(
-            fn=lambda s: s.dropna(), check_name="Test", grid=True, bins=5, legend=False
+            fn=lambda s: s.dropna(), msg="Test", grid=True, bins=5, legend=False
         ),
         False,
     )
@@ -210,7 +210,7 @@ def method_info():
     return (
         lambda s, _: s.check.info(
             fn=lambda s: s.dropna(),
-            check_name="Test",
+            msg="Test",
             verbose=True,
             show_counts=True,
         ),
@@ -221,7 +221,7 @@ def method_info():
 def method_memory_usage():
     return (
         lambda s, _: s.check.memory_usage(
-            fn=lambda s: s.dropna(), check_name="Test", index=True, deep=True
+            fn=lambda s: s.dropna(), msg="Test", index=True, deep=True
         ),
         False,
     )
@@ -229,29 +229,25 @@ def method_memory_usage():
 
 def method_ndups():
     return (
-        lambda s, _: s.check.ndups(
-            fn=lambda s: s.dropna(), check_name="Test", keep="last"
-        ),
+        lambda s, _: s.check.ndups(fn=lambda s: s.dropna(), msg="Test", keep="last"),
         False,
     )
 
 
 def method_nnulls():
     return (
-        lambda s, _: s.check.nnulls(fn=lambda s: s.dropna(), check_name="Test"),
+        lambda s, _: s.check.nnulls(fn=lambda s: s.dropna(), msg="Test"),
         False,
     )
 
 
 def method_nrows():
-    return lambda s, _: s.check.nrows(fn=lambda s: s.dropna(), check_name="Test"), False
+    return lambda s, _: s.check.nrows(fn=lambda s: s.dropna(), msg="Test"), False
 
 
 def method_nunique():
     return (
-        lambda s, _: s.check.nunique(
-            fn=lambda s: s.dropna(), check_name="Test", dropna=False
-        ),
+        lambda s, _: s.check.nunique(fn=lambda s: s.dropna(), msg="Test", dropna=False),
         False,
     )
 
@@ -260,7 +256,7 @@ def method_plot():
     return (
         lambda s, _: s.check.plot(
             fn=lambda s: s.dropna(),
-            check_name="Test",
+            msg="Test",
             title="Override",
         ),
         False,
@@ -268,7 +264,7 @@ def method_plot():
 
 
 def method_print():
-    return lambda s, _: s.check.print(fn=lambda s: s.dropna(), check_name="Test"), False
+    return lambda s, _: s.check.print(fn=lambda s: s.dropna(), msg="Test"), False
 
 
 def method_print_time_elapsed():
@@ -296,16 +292,16 @@ def method_set_mode():
 
 
 def method_shape():
-    return lambda s, _: s.check.shape(fn=lambda s: s.dropna(), check_name="Test"), False
+    return lambda s, _: s.check.shape(fn=lambda s: s.dropna(), msg="Test"), False
 
 
 def method_tail():
-    return lambda s, _: s.check.tail(fn=lambda s: s.dropna(), check_name="Test"), False
+    return lambda s, _: s.check.tail(fn=lambda s: s.dropna(), msg="Test"), False
 
 
 def method_unique():
     return (
-        lambda s, _: s.check.unique(fn=lambda s: s.dropna(), check_name="Test"),
+        lambda s, _: s.check.unique(fn=lambda s: s.dropna(), msg="Test"),
         False,
     )
 
@@ -313,7 +309,7 @@ def method_unique():
 def method_value_counts():
     return (
         lambda s, _: s.check.value_counts(
-            fn=lambda s: s.dropna(), check_name="Test", dropna=False, normalize=True
+            fn=lambda s: s.dropna(), msg="Test", dropna=False, normalize=True
         ),
         False,
     )
