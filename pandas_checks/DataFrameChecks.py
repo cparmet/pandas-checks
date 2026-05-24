@@ -1168,8 +1168,8 @@ class DataFrameChecks:
 
     def hist(
         self,
-        fn: Callable = lambda df: df,
         subset: Union[str, List, None] = [],
+        fn: Callable = lambda df: df,
         msg: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.DataFrame:
@@ -1184,17 +1184,17 @@ class DataFrameChecks:
                 (
                     iris
                     # Show one histogram
-                    .check.hist(column="sepal_length")
-                    # Show two histogram
-                    .check.hist(subset=["petal_length", "petal_width"])
+                    .check.hist("sepal_length")
+                    # Show two histograms
+                    .check.hist(["petal_length", "petal_width"])
                 )
             ```
 
         Args:
-            fn: An optional lambda function to apply to the DataFrame before running Pandas hist(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string to select a subset of columns before running Pandas hist(). Applied after fn.
+            fn: An optional lambda function to apply to the DataFrame before running Pandas hist(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             msg: Optionally customize the text displayed before the result of the check.
-            **kwargs: Optional, additional arguments that are accepted by Pandas hist() method, such as `column`.
+            **kwargs: Optional, additional arguments that are accepted by Pandas hist() method.
 
         Returns:
             The original DataFrame, unchanged.
@@ -1215,7 +1215,7 @@ class DataFrameChecks:
         # Only display if in IPython/Jupyter, or we'd just print the title
         if get_mode()["enable_checks"] and not pd.core.config_init.is_terminal():
             _display_plot_title(msg)
-            _ = _apply_modifications(self._obj, fn, subset).hist(**kwargs)
+            _ = _apply_modifications(self._obj, fn=fn, subset=subset).hist(**kwargs)
             _display_plot()
         return self._obj
 
@@ -1533,7 +1533,6 @@ class DataFrameChecks:
                         msg = "🌟 Unique rows across all columns"
                     else:
                         msg = "🌟 Unique values"
-
 
             if not across_columns:
                 # Run standard Pandas nunique()

@@ -1089,7 +1089,7 @@ class SeriesChecks:
         """
         (
             pd.DataFrame(_apply_modifications(self._obj, fn))
-            .check.hist(msg=msg, subset=[], **kwargs)
+            .check.hist(subset=[], msg=msg, **kwargs)
         )  # fmt: skip
         return self._obj
 

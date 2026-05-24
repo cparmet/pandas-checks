@@ -64,7 +64,7 @@ You can add some `.check` steps.
     .check.assert_positive(subset=["petal_length", "sepal_length"])
 
     # Plot the distribution of a column after cleaning
-    .check.hist(column='petal_length') 
+    .check.hist('petal_length') 
 
     .query("species=='setosa'")
     
