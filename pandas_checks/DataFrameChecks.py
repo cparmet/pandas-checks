@@ -1528,10 +1528,16 @@ class DataFrameChecks:
                 if subset:
                     if isinstance(subset, str):
                         check_name = f"🌟 Unique values in '{subset}'"
+                    elif across_columns:
+                        check_name = f"🌟 Unique rows across {subset}"
                     else:
                         check_name = f"🌟 Unique values in {subset}"
                 else:
-                    check_name = "🌟 Unique values"
+                    if across_columns:
+                        check_name = "🌟 Unique rows across all columns"
+                    else:
+                        check_name = "🌟 Unique values"
+
 
             if not across_columns:
                 # Run standard Pandas nunique()
