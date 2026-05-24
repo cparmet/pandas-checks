@@ -1330,7 +1330,7 @@ class SeriesChecks:
         """
         (
             pd.DataFrame(_apply_modifications(self._obj, fn))
-            .check.plot(fn, msg=msg, **kwargs)
+            .check.plot(fn=fn, msg=msg, **kwargs)
         )  # fmt: skip
         return self._obj
 

@@ -1558,8 +1558,8 @@ class DataFrameChecks:
 
     def plot(
         self,
-        fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
+        fn: Callable = lambda df: df,
         msg: Union[str, None] = "",
         **kwargs: Any,
     ) -> pd.DataFrame:
@@ -1576,8 +1576,8 @@ class DataFrameChecks:
             ```
 
         Args:
-            fn: An optional lambda function to apply to the DataFrame before running Pandas plot(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string name of one column to limit which columns are plotted. Applied after fn.
+            fn: An optional lambda function to apply to the DataFrame before running Pandas plot(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             msg: An optional title for the plot.
             **kwargs: Optional, additional arguments that are accepted by Pandas plot() method.
 
