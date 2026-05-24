@@ -932,9 +932,9 @@ class DataFrameChecks:
 
     def columns(
         self,
+        msg: Union[str, None] = "🏛️ Columns",
         fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
-        msg: Union[str, None] = "🏛️ Columns",
     ) -> pd.DataFrame:
         """Prints the column names of a DataFrame, without modifying the DataFrame itself.
 
@@ -947,9 +947,9 @@ class DataFrameChecks:
             ```
 
         Args:
+            msg: Optionally customize the text displayed before the result of the check.
             fn: An optional lambda function to apply to the DataFrame before printing columns. Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string to select a subset of columns before printing their names. Applied after fn.
-            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original DataFrame, unchanged.
