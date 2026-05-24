@@ -870,7 +870,7 @@ class SeriesChecks:
     ) -> pd.Series:
         """Displays descriptive statistics about a Series, without modifying the Series itself.
 
-        See Pandas docs for [describe()](https://pandas.pydata.org/docs/reference/api/pandas.Series.describe.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [describe()](https://pandas.pydata.org/docs/reference/api/pandas.Series.describe.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1065,7 +1065,7 @@ class SeriesChecks:
     ) -> pd.Series:
         """Displays a histogram for the Series's distribution, without modifying the Series itself.
 
-        See Pandas docs for [hist()](https://pandas.pydata.org/docs/reference/api/pandas.Series.hist.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [hist()](https://pandas.pydata.org/docs/reference/api/pandas.Series.hist.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1101,7 +1101,7 @@ class SeriesChecks:
     ) -> pd.Series:
         """Displays summary information about a Series, without modifying the Series itself.
 
-        See Pandas docs for [info()](https://pandas.pydata.org/docs/reference/api/pandas.Series.info.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [info()](https://pandas.pydata.org/docs/reference/api/pandas.Series.info.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1134,7 +1134,7 @@ class SeriesChecks:
     ) -> pd.Series:
         """Displays the memory footprint of a Series, without modifying the Series itself.
 
-        See Pandas docs for [memory_usage()](https://pandas.pydata.org/docs/reference/api/pandas.Series.memory_usage.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [memory_usage()](https://pandas.pydata.org/docs/reference/api/pandas.Series.memory_usage.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1170,7 +1170,7 @@ class SeriesChecks:
     ) -> pd.Series:
         """Displays the number of duplicated rows in the Series, without modifying the Series itself.
 
-        See Pandas docs for [duplicated()](https://pandas.pydata.org/docs/reference/api/pandas.Series.duplicated.html) for additional usage information, including more configuration options (the `keep` argument) you can pass to this Pandas Checks method.
+        See Pandas docs for [duplicated()](https://pandas.pydata.org/docs/reference/api/pandas.Series.duplicated.html) for additional usage information, including more options (the `keep` argument) you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1263,7 +1263,7 @@ class SeriesChecks:
     ) -> pd.Series:
         """Displays the number of unique rows in a Series, without modifying the Series itself.
 
-        See Pandas docs for [nunique()](https://pandas.pydata.org/docs/reference/api/pandas.Series.nunique.html) for additional usage information, including more configuration options (the `dropna` argument) you can pass to this Pandas Checks method.
+        See Pandas docs for [nunique()](https://pandas.pydata.org/docs/reference/api/pandas.Series.nunique.html) for additional usage information, including more options (the `dropna` argument) you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1303,7 +1303,7 @@ class SeriesChecks:
     ) -> pd.Series:
         """Displays a plot of the Series, without modifying the Series itself.
 
-        See Pandas docs for [plot()](https://pandas.pydata.org/docs/reference/api/pandas.Series.plot.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [plot()](https://pandas.pydata.org/docs/reference/api/pandas.Series.plot.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1615,7 +1615,7 @@ class SeriesChecks:
     ) -> pd.Series:
         """Displays the value counts for a Series, without modifying the Series itself.
 
-        See Pandas docs for [value_counts()](https://pandas.pydata.org/docs/reference/api/pandas.Series.value_counts.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [value_counts()](https://pandas.pydata.org/docs/reference/api/pandas.Series.value_counts.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1668,7 +1668,7 @@ class SeriesChecks:
             - .tsv # Tab-separated data file
             - .xlsx
 
-        This functions uses the corresponding Pandas export function such as to_csv() and to_feather(). See [Pandas docs for those corresponding export functions](https://pandas.pydata.org/docs/reference/io.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        This functions uses the corresponding Pandas export function such as to_csv() and to_feather(). See [Pandas docs for those corresponding export functions](https://pandas.pydata.org/docs/reference/io.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Note:
             Exporting to some formats such as Excel, Feather, and Parquet may require you to install additional packages.

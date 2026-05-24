@@ -972,7 +972,7 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Displays descriptive statistics about a DataFrame without modifying the DataFrame itself.
 
-        See Pandas docs for [describe()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.describe.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [describe()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.describe.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1177,7 +1177,7 @@ class DataFrameChecks:
 
         You can pass a single `column` (via kwargs) or a `subset` argument, which can display a grid of multiple histograms.
 
-        See Pandas docs for [hist()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.hist.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method via kwargs.
+        See Pandas docs for [hist()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.hist.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1228,7 +1228,7 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Displays summary information about a DataFrame, without modifying the DataFrame itself.
 
-        See Pandas docs for [info()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.info.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [info()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.info.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1269,7 +1269,7 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Displays the memory footprint of a DataFrame, without modifying the DataFrame itself.
 
-        See Pandas docs for [memory_usage()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.memory_usage.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [memory_usage()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.memory_usage.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1342,7 +1342,7 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Displays the number of duplicated rows in a DataFrame, without modifying the DataFrame itself.
 
-        See Pandas docs for [duplicated()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.duplicated.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [duplicated()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.duplicated.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1565,7 +1565,7 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Displays a plot of the DataFrame, without modifying the DataFrame itself.
 
-        See Pandas docs for [plot()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.plot.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [plot()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.plot.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1814,7 +1814,7 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Displays the last n rows of the DataFrame, without modifying the DataFrame itself.
 
-        See Pandas docs for [tail()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.tail.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [tail()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.tail.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1850,7 +1850,7 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Displays the unique values in a column, without modifying the DataFrame itself.
 
-        See Pandas docs for [unique()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.unique.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [unique()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.unique.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1895,7 +1895,7 @@ class DataFrameChecks:
     ) -> pd.DataFrame:
         """Displays the value counts for a column, without modifying the DataFrame itself.
 
-        See Pandas docs for [value_counts()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.value_counts.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [value_counts()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.value_counts.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1951,7 +1951,7 @@ class DataFrameChecks:
             - .tsv # Tab-separated data file
             - .xlsx
 
-        This functions uses the corresponding Pandas export function, such as `to_csv()` and `to_feather()`. See [Pandas docs for those corresponding export functions](https://pandas.pydata.org/docs/reference/io.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        This functions uses the corresponding Pandas export function, such as `to_csv()` and `to_feather()`. See [Pandas docs for those corresponding export functions](https://pandas.pydata.org/docs/reference/io.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
