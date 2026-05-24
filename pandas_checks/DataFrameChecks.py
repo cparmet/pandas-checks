@@ -1474,43 +1474,91 @@ class DataFrameChecks:
 
     def nunique(
         self,
-        column: str,
+        column: Union[str, None] = None,
+        subset: Union[str, List, None] = None,
+        across_columns: bool = False,
         fn: Callable = lambda df: df,
         check_name: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.DataFrame:
-        """Displays the number of unique rows in a single column, without modifying the DataFrame itself.
+        """Displays the number of unique values in a Series or unique combinations of rows in a DataFrame, without modifying the DataFrame itself.
 
-        See Pandas docs for [nunique()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.nunique.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        Note:
+            * When across_columns=False, we use the standard Pandas nunique() methods. In those methods, dropna=True by default. You can change this by passing dropna=False
+                - See Pandas docs for [nunique() DataFrame](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.nunique.html) or [nunique() Series](https://pandas.pydata.org/docs/reference/api/pandas.Series.nunique.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
                 (
                     iris
-                    .check.nunique(column="sepal_width")
+                    .check.nunique(column="sepal_width") # Unique values of sepal_width (standard Pandas Series.nunique())
+                    .check.nunique(subset=["petal_width, "sepal_width"]) # Unique values in each column separately (standard Pandas DataFrame.nunique())
+                    .check.nunique(subset=["petal_width, "sepal_width"], across_columns=True) # Unique combinations of values
+
                 )
             ```
 
         Args:
-            column: The name of a column to count uniques in. Applied after fn.
+            column: The optional name of a column to count uniques in. Applied after fn.
+            subset: The optional name of a column or columns to count uniques in. If None, and column is None, will include all columns. Applied after fn.
+            across_columns: When dataframe has multiple columns (after applying subset), whether we should
+                - count the unique values in each column separately (False), the standard Pandas DataFrame nunique()
+                - count the unique combinations of rows across those columns (True) or
             fn: An optional lambda function to apply to the DataFrame before running Pandas nunique(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             check_name: An optional name for the check, to be printed as preface to the result.
-            **kwargs: Optional, additional arguments that are accepted by Pandas nunique() method.
+            **kwargs: Optional, additional arguments that are accepted by Pandas nunique() method(s)
 
         Returns:
             The original DataFrame, unchanged.
         """
 
         if get_mode()["enable_checks"]:
-            (
-                # Apply fn, then filter to `column`, pass to SeriesChecks.check.nunique()
-                _apply_modifications(self._obj, fn=fn, subset=column)
-                .check.nunique(
-                    fn=lambda df: df,  # Identity function
-                    check_name=check_name,
-                    **kwargs,
+            if column is not None and subset is not None:
+                raise AttributeError(
+                    ".check.nunique() accepts either a column or subset but not both"
                 )
-            )  # fmt: skip
+
+            # Coalesce subset and column
+            if column:
+                subset = column
+
+            data_modified = _apply_modifications(self._obj, fn=fn, subset=subset)
+
+            if not check_name:
+                if subset:
+                    if isinstance(subset, str):
+                        check_name = f"🌟 Unique values in '{subset}'"
+                    elif across_columns:
+                        check_name = f"🌟 Unique rows across {subset}"
+                    else:
+                        check_name = f"🌟 Unique values in {subset}"
+                else:
+                    if across_columns:
+                        check_name = "🌟 Unique rows across all columns"
+                    else:
+                        check_name = "🌟 Unique values"
+
+
+            if not across_columns:
+                # Run standard Pandas nunique()
+                # Note: This may run DataFrame.nunique() or Series.nunique(), depending if subset is a column or multiple columns
+                _check_data(
+                    data_modified,
+                    check_fn=lambda data: data.nunique(**kwargs),
+                    modify_fn=fn,
+                    check_name=check_name,
+                )  # fmt: skip
+            else:
+                # Count the number of unique rows considering values in multiple columns
+                if "dropna" in kwargs:
+                    raise AttributeError(
+                        "DataFrame check.nunique() does not support dropna when across_columns=True"
+                    )
+                (
+                    data_modified
+                    .drop_duplicates()
+                    .check.nrows(check_name=check_name)
+                )  # fmt: skip
         return self._obj
 
     def plot(

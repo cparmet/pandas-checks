@@ -205,7 +205,7 @@ def method_nrows():
 
 def method_nunique():
     return lambda df, args: df.check.nunique(
-        column=args["first_num_col"],
+        subset=args["first_num_col"],
         fn=lambda df: df.dropna(),
         check_name="Test",
         dropna=False,
