@@ -1470,8 +1470,8 @@ class DataFrameChecks:
 
     def nunique(
         self,
-        column: Union[str, None] = None,
         subset: Union[str, List, None] = None,
+        column: Union[str, None] = None,
         across_columns: bool = False,
         fn: Callable = lambda df: df,
         msg: Union[str, None] = None,
@@ -1495,8 +1495,8 @@ class DataFrameChecks:
             ```
 
         Args:
-            column: The optional name of a column to count uniques in. Applied after fn.
             subset: The optional name of a column or columns to count uniques in. If None, and column is None, will include all columns. Applied after fn.
+            column: The optional name of a column to count uniques in. Applied after fn. Kept for backwards compatibility.
             across_columns: When dataframe has multiple columns (after applying subset), whether we should
                 - count the unique values in each column separately (False), the standard Pandas DataFrame nunique()
                 - count the unique combinations of rows across those columns (True) or
