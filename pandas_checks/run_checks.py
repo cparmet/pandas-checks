@@ -25,7 +25,7 @@ def _apply_modifications(
         raise TypeError(
             f"Expected lambda function for argument `fn` (callable type), but received type {type(fn)}"
         )
-    return fn(data)[subset] if subset else fn(data)
+    return fn(data)[subset] if subset is not None else fn(data)
 
 
 def _check_data(
