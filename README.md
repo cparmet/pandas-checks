@@ -14,7 +14,7 @@ iris_processed = (
     iris
     .dropna()
     .check.assert_positive(subset=["petal_length", "sepal_length"]) # 🐼🩺 Validate assumptions
-    .check.hist(column='petal_length') # 🐼🩺 Plot the distribution of a column after cleaning
+    .check.hist('petal_length') # 🐼🩺 Plot the distribution of a column after cleaning
 
     .query("species=='setosa'")
     .check.head(3)  # 🐼🩺 Display the first few rows after more cleaning

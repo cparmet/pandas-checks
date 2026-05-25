@@ -47,7 +47,7 @@ def test_DataFrameChecks_describe(iris, capsys):
     iris.check.describe(
         fn=lambda df: (df * 2),
         subset=["petal_width", "species"],
-        check_name="Test",
+        msg="Test",
         include="all",
     )
     assert (
@@ -87,17 +87,17 @@ def test_DataFrameChecks_dtypes(iris, capsys):
 
 
 def test_DataFrameChecks_function_with_lambda_fn(iris, capsys):
-    iris.check.function(fn=lambda df: len(df.columns), check_name="Test")
+    iris.check.function(fn=lambda df: len(df.columns), msg="Test")
     assert capsys.readouterr().out == """\nTest: 5\n"""
 
 
 def test_DataFrameChecks_function_with_str_fn(iris, capsys):
-    iris.check.function(fn=lambda df: len(df.columns), check_name="Test")
+    iris.check.function(fn=lambda df: len(df.columns), msg="Test")
     assert capsys.readouterr().out == """\nTest: 5\n"""
 
 
 def test_DataFrameChecks_get_mode(iris, capsys):
-    iris.check.get_mode(check_name="Test")
+    iris.check.get_mode(msg="Test")
     assert (
         capsys.readouterr().out
         == """\nTest: {'enable_checks': True, 'enable_asserts': True}\n"""
@@ -105,7 +105,7 @@ def test_DataFrameChecks_get_mode(iris, capsys):
 
 
 def test_DataFrameChecks_head(iris, capsys):
-    iris.check.head(n=1, fn=lambda df: (df * 2), check_name="Test")
+    iris.check.head(n=1, fn=lambda df: (df * 2), msg="Test")
     assert (
         capsys.readouterr().out
         == """\nTest
@@ -123,7 +123,7 @@ def test_DataFrameChecks_info(iris, capsys):
     iris.check.info(
         fn=lambda df: (df * 2),
         subset=["petal_width", "species"],
-        check_name="Test",
+        msg="Test",
         memory_usage=True,
     )
     assert (
@@ -145,7 +145,7 @@ def test_DataFrameChecks_info(iris, capsys):
 def test_DataFrameChecks_memory_usage(iris, capsys):
     iris.check.memory_usage(
         fn=lambda df: df[["petal_width", "species"]].dropna(),
-        check_name="Test",
+        msg="Test",
         deep=False,
         index=False,  # Avoids inconsistency where index size is different in Python 3.11 only
     )
@@ -162,62 +162,50 @@ def test_DataFrameChecks_memory_usage(iris, capsys):
 
 
 def test_DataFrameChecks_ncols(iris, capsys):
-    iris.check.ncols(
-        fn=lambda df: df.assign(C=55), check_name="Test", subset=["C", "species"]
-    )
+    iris.check.ncols(msg="Test", fn=lambda df: df.assign(C=55), subset=["C", "species"])
     assert capsys.readouterr().out == "\nTest: 2\n"
 
 
 def test_DataFrameChecks_ndups(iris, capsys):
-    iris.check.ndups(
-        fn=lambda df: df.assign(C=55), check_name="Test", subset=["C", "species"]
-    )
+    iris.check.ndups(subset=["C", "species"], fn=lambda df: df.assign(C=55), msg="Test")
     assert capsys.readouterr().out == "\nTest: 147\n"
 
 
 def test_DataFrameChecks_ndups_keep(iris, capsys):
     """Test that a kwarg is getting passed to Pandas's memory_usage()"""
     iris.check.ndups(
-        fn=lambda df: df.assign(C=55),
-        check_name="Test",
         subset=["C", "species"],
+        fn=lambda df: df.assign(C=55),
+        msg="Test",
         keep=False,
     )
     assert capsys.readouterr().out == "\nTest: 150\n"
 
 
 def test_DataFrameChecks_nnulls(iris, capsys):
-    iris.check.nnulls(
-        fn=lambda df: df.assign(C=np.nan), check_name="Test", by_column=False
-    )
+    iris.check.nnulls(fn=lambda df: df.assign(C=np.nan), msg="Test", by_column=False)
     assert capsys.readouterr().out == "\nTest: 150\n"
 
 
 def test_DataFrameChecks_nrows(iris, capsys):
-    iris.check.nrows(
-        fn=lambda df: df.assign(C=55), check_name="Test", subset=["C", "species"]
-    )
+    iris.check.nrows(msg="Test", fn=lambda df: df.assign(C=55), subset=["C", "species"])
     assert capsys.readouterr().out == "\nTest: 150\n"
 
 
 def test_DataFrameChecks_nunique_one_column(iris, capsys):
-    iris.check.nunique(
-        fn=lambda df: df, check_name="Test", column="species", dropna=False
-    )
+    iris.check.nunique(fn=lambda df: df, msg="Test", column="species", dropna=False)
     assert capsys.readouterr().out == "\nTest: 3\n"
 
 
 def test_DataFrameChecks_nunique_subset_one_column(iris, capsys):
-    iris.check.nunique(
-        fn=lambda df: df, check_name="Test", subset="species", dropna=False
-    )
+    iris.check.nunique(fn=lambda df: df, msg="Test", subset="species", dropna=False)
     assert capsys.readouterr().out == "\nTest: 3\n"
 
 
 def test_DataFrameChecks_nunique_across_columns(iris, capsys):
     iris.check.nunique(
         fn=lambda df: df.assign(C=55),
-        check_name="Test",
+        msg="Test",
         subset=["species", "petal_width"],
         across_columns=True,
     )
@@ -244,7 +232,7 @@ def test_DataFrameChecks_print_df(iris, capsys):
             "petal_width",
             "species",
         ],
-        check_name="Test",
+        msg="Test",
         max_rows=1,
     )
     assert (
@@ -290,7 +278,7 @@ def test_DataFrameChecks_reset_format(iris, capsys):
                 "petal_width",
                 "species",
             ],
-            check_name="🧦 Sock",
+            msg="🧦 Sock",
             max_rows=1,
         )
     )
@@ -314,7 +302,7 @@ def test_DataFrameChecks_set_format(iris, capsys):
                 "petal_width",
                 "species",
             ],
-            check_name="🧦 Sock",
+            msg="🧦 Sock",
             max_rows=1,
         )
         .check.reset_format()
@@ -338,14 +326,12 @@ def test_DataFrameChecks_set_mode(iris, capsys):
 
 
 def test_DataFrameChecks_shape(iris, capsys):
-    iris.check.shape(
-        fn=lambda df: df.assign(C=55), check_name="Test", subset=["C", "species"]
-    )
+    iris.check.shape(msg="Test", fn=lambda df: df.assign(C=55), subset=["C", "species"])
     assert capsys.readouterr().out == "\nTest: (150, 2)\n"
 
 
 def test_DataFrameChecks_tail(iris, capsys):
-    iris.check.tail(n=1, fn=lambda df: (df * 2), check_name="Test")
+    iris.check.tail(n=1, fn=lambda df: (df * 2), msg="Test")
     assert (
         capsys.readouterr().out
         == """\nTest
@@ -358,7 +344,7 @@ def test_DataFrameChecks_unique(iris, capsys):
     iris.check.unique(
         column="species",
         fn=lambda df: df.assign(species_upper=df.species.str.upper()),
-        check_name="🛼 Unique",
+        msg="🛼 Unique",
     )
     assert (
         capsys.readouterr().out == "\n🛼 Unique: ['setosa', 'versicolor', 'virginica']\n"
@@ -370,7 +356,7 @@ def test_DataFrameChecks_value_counts(iris, capsys):
     iris.check.value_counts(
         column="species",
         fn=lambda df: df.replace("setosa", None),
-        check_name="Test",
+        msg="Test",
         dropna=False,
         normalize=True,
     )

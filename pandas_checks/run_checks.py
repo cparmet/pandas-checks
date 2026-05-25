@@ -33,7 +33,7 @@ def _check_data(
     check_fn: Callable = lambda df: df,
     modify_fn: Callable = lambda df: df,
     subset: Union[str, List, None] = None,
-    check_name: Union[str, None] = None,
+    msg: Union[str, None] = None,
 ) -> None:
     """Runs a selected check on a data object
 
@@ -42,7 +42,7 @@ def _check_data(
         check_fn: Function to apply to data for checking. For example if we're running .check.value_counts(), this function would appply the Pandas value_counts() method
         modify_fn: Optional function to modify data _before_ checking
         subset: Optional list of columns or name of column to subset data before running check_fn
-        check_name: Name to use when displaying check result
+        msg: Name to use when displaying check result
 
     Returns:
         None
@@ -58,6 +58,6 @@ def _check_data(
                     # before checking it.
                     _apply_modifications(data, fn=modify_fn, subset=subset)
                 ),
-                name=check_name if check_name else str(subset) if subset else None,
+                name=msg if msg else str(subset) if subset else None,
             )
         )

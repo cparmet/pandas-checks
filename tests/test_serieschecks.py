@@ -75,7 +75,7 @@ def test_SeriesChecks_describe(iris, capsys):
     (
         iris["petal_width"].check.describe(
             fn=lambda s: (s * 2),
-            check_name="Test",
+            msg="Test",
             include="all",
         )
     )
@@ -111,12 +111,12 @@ def test_SeriesChecks_dtype(iris, capsys):
 
 
 def test_SeriesChecks_function(iris, capsys):
-    iris["species"].check.function(fn=lambda s: s.shape[0], check_name="Test")
+    iris["species"].check.function(fn=lambda s: s.shape[0], msg="Test")
     assert capsys.readouterr().out == """\nTest: 150\n"""
 
 
 def test_SeriesChecks_get_mode(iris, capsys):
-    iris.check.get_mode(check_name="Test")
+    iris.check.get_mode(msg="Test")
     assert (
         capsys.readouterr().out
         == """\nTest: {'enable_checks': True, 'enable_asserts': True}\n"""
@@ -124,7 +124,7 @@ def test_SeriesChecks_get_mode(iris, capsys):
 
 
 def test_SeriesChecks_head(iris, capsys):
-    iris["sepal_length"].check.head(n=1, fn=lambda s: (s * 2), check_name="Test")
+    iris["sepal_length"].check.head(n=1, fn=lambda s: (s * 2), msg="Test")
     assert_multiline_string_equal(
         capsys.readouterr().out,
         """\nTest
@@ -141,7 +141,7 @@ def test_SeriesChecks_hist_no_terminal_display(iris, capsys):
 def test_SeriesChecks_info(iris, capsys):
     iris["petal_width"].check.info(
         fn=lambda s: (s * 2),
-        check_name="Test",
+        msg="Test",
         memory_usage=True,
     )
     assert_multiline_string_equal(
@@ -174,7 +174,7 @@ memory usage: 1.3 KB
 def test_SeriesChecks_memory_usage(iris, capsys):
     (
         iris["petal_width"].check.memory_usage(
-            fn=lambda s: s.dropna(), check_name="Test", deep=False, index=False
+            fn=lambda s: s.dropna(), msg="Test", deep=False, index=False
         )
     )
     assert_multiline_string_equal(
@@ -185,7 +185,7 @@ def test_SeriesChecks_memory_usage(iris, capsys):
 
 
 def test_SeriesChecks_ndups(iris, capsys):
-    iris["species"].check.ndups(fn=lambda s: s.dropna(), check_name="Test")
+    iris["species"].check.ndups(fn=lambda s: s.dropna(), msg="Test")
     assert capsys.readouterr().out == "\nTest: 147\n"
 
 
@@ -193,7 +193,7 @@ def test_SeriesChecks_ndups_keep(iris, capsys):
     """Test that a kwarg is getting passed to Pandas's memory_usage()"""
     iris["species"].check.ndups(
         fn=lambda s: s.dropna(),
-        check_name="Test",
+        msg="Test",
         keep=False,
     )
     assert capsys.readouterr().out == "\nTest: 150\n"
@@ -202,19 +202,19 @@ def test_SeriesChecks_ndups_keep(iris, capsys):
 def test_SeriesChecks_nnulls(iris, capsys):
     iris["species"].check.nnulls(
         fn=lambda s: s.replace("versicolor", np.nan),
-        check_name="Test",
+        msg="Test",
     )
     assert capsys.readouterr().out == "\nTest: 50\n"
 
 
 def test_SeriesChecks_nrows(iris, capsys):
-    iris["species"].check.nrows(fn=lambda s: s[s == "versicolor"], check_name="Test")
+    iris["species"].check.nrows(msg="Test", fn=lambda s: s[s == "versicolor"])
     assert capsys.readouterr().out == "\nTest: 50\n"
 
 
 def test_SeriesChecks_nunique(iris, capsys):
     iris["species"].check.nunique(
-        fn=lambda s: s[s != "versicolor"], check_name="Test", dropna=False
+        fn=lambda s: s[s != "versicolor"], msg="Test", dropna=False
     )
     assert capsys.readouterr().out == "\nTest: 2\n"
 
@@ -232,7 +232,7 @@ def test_SeriesChecks_print_str(iris, capsys):
 def test_SeriesChecks_print_series(iris, capsys):
     iris["sepal_length"].check.print(
         fn=lambda s: s * 2,
-        check_name="Test",
+        msg="Test",
         max_rows=1,
     )
     assert_multiline_string_equal(
@@ -276,7 +276,7 @@ def test_SeriesChecks_reset_format(iris, capsys):
         .check.reset_format()
         .check.print(
             fn=lambda s: s * 2,
-            check_name="🧦 Sock",
+            msg="🧦 Sock",
             max_rows=1,
         )
     )
@@ -294,7 +294,7 @@ def test_SeriesChecks_set_format(iris, capsys):
         .check.set_format(precision=10, use_emojis=False)
         .check.print(
             fn=lambda s: s * 2,
-            check_name="🧦 Sock",
+            msg="🧦 Sock",
             max_rows=1,
         )
         .check.reset_format()
@@ -320,13 +320,13 @@ def test_SeriesChecks_set_mode(iris, capsys):
 
 def test_SeriesChecks_shape(iris, capsys):
     iris["sepal_width"].check.shape(
-        fn=lambda s: pd.concat([s, s], ignore_index=True, axis=0), check_name="Test"
+        msg="Test", fn=lambda s: pd.concat([s, s], ignore_index=True, axis=0)
     )
     assert capsys.readouterr().out == "\nTest: (300,)\n"
 
 
 def test_SeriesChecks_tail(iris, capsys):
-    (iris["sepal_length"].check.tail(n=1, fn=lambda s: s * 2, check_name="Test"))
+    (iris["sepal_length"].check.tail(n=1, fn=lambda s: s * 2, msg="Test"))
     assert_multiline_string_equal(
         capsys.readouterr().out,
         """\nTest
@@ -338,7 +338,7 @@ def test_SeriesChecks_tail(iris, capsys):
 def test_SeriesChecks_unique(iris, capsys):
     iris["species"].check.unique(
         fn=lambda s: s.str.upper(),
-        check_name="🛼 Unique",
+        msg="🛼 Unique",
     )
     assert (
         capsys.readouterr().out == "\n🛼 Unique: ['SETOSA', 'VERSICOLOR', 'VIRGINICA']\n"
@@ -349,7 +349,7 @@ def test_SeriesChecks_value_counts(iris, capsys):
     """Test that kwargs are getting passed to Pandas's value_counts()"""
     iris["species"].check.value_counts(
         fn=lambda s: s.replace("setosa", None),
-        check_name="Test",
+        msg="Test",
         dropna=False,
         normalize=True,
     )

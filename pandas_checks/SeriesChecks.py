@@ -865,12 +865,12 @@ class SeriesChecks:
     def describe(
         self,
         fn: Callable = lambda s: s,
-        check_name: Union[str, None] = "📏 Distribution",
+        msg: Union[str, None] = "📏 Distribution",
         **kwargs: Any,
     ) -> pd.Series:
         """Displays descriptive statistics about a Series, without modifying the Series itself.
 
-        See Pandas docs for [describe()](https://pandas.pydata.org/docs/reference/api/pandas.Series.describe.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [describe()](https://pandas.pydata.org/docs/reference/api/pandas.Series.describe.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -883,7 +883,7 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas describe(). Example: `lambda s: s.dropna()`.
-            check_name: An optional name for the check to preface the result with.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas describe() method.
 
         Returns:
@@ -891,7 +891,7 @@ class SeriesChecks:
         """
         (
             pd.DataFrame(_apply_modifications(self._obj, fn))
-            .check.describe(check_name=check_name, **kwargs)
+            .check.describe(msg=msg, **kwargs)
         )  # fmt: skip
         return self._obj
 
@@ -921,7 +921,7 @@ class SeriesChecks:
     def dtype(
         self,
         fn: Callable = lambda s: s,
-        check_name: Union[str, None] = "🗂️ Data type",
+        msg: Union[str, None] = "🗂️ Data type",
     ) -> pd.Series:
         """Displays the data type of a Series, without modifying the Series itself.
 
@@ -936,7 +936,7 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas dtype. Example: `lambda s: s.dropna()`.
-            check_name: An optional name for the check to preface the result with.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original Series, unchanged.
@@ -945,7 +945,7 @@ class SeriesChecks:
             self._obj,
             check_fn=lambda s: s.dtype,
             modify_fn=fn,
-            check_name=check_name,
+            msg=msg,
         )
         return self._obj
 
@@ -975,7 +975,7 @@ class SeriesChecks:
     def function(
         self,
         fn: Callable = lambda s: s,
-        check_name: Union[str, None] = None,
+        msg: Union[str, None] = None,
     ) -> pd.Series:
         """Applies an arbitrary function on a Series and shows the result, without modifying the Series itself.
 
@@ -983,24 +983,22 @@ class SeriesChecks:
             ```python
             (
                 iris
-                .check.function(fn=lambda s: s.shape[0]>10, check_name='Has at least 10 rows?')
+                .check.function(fn=lambda s: s.shape[0]>10, msg='Has at least 10 rows?')
             )
             # Will return "True"
             ```
 
         Args:
             fn: The lambda function to apply to the Series. Example: `lambda s: s.dropna()`.
-            check_name: An optional name for the check to preface the result with.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original Series, unchanged.
         """
-        _check_data(self._obj, modify_fn=fn, check_name=check_name)
+        _check_data(self._obj, modify_fn=fn, msg=msg)
         return self._obj
 
-    def get_mode(
-        self, check_name: Union[str, None] = "⚙️ Pandas Checks mode"
-    ) -> pd.Series:
+    def get_mode(self, msg: Union[str, None] = "⚙️ Pandas Checks mode") -> pd.Series:
         """Displays the current values of Pandas Checks global options enable_checks and enable_asserts. Does not modify the Series itself.
 
         Example:
@@ -1015,14 +1013,14 @@ class SeriesChecks:
             ```
 
         Args:
-            check_name: An optional name for the check. Will be used as a preface the printed result.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original Series, unchanged.
         """
         (
             pd.DataFrame(self._obj)
-            .check.get_mode(check_name=check_name)
+            .check.get_mode(msg=msg)
         )  # fmt: skip
         return self._obj
 
@@ -1030,7 +1028,7 @@ class SeriesChecks:
         self,
         n: int = 5,
         fn: Callable = lambda s: s,
-        check_name: Union[str, None] = None,
+        msg: Union[str, None] = None,
     ) -> pd.Series:
         """Displays the first n rows of a Series, without modifying the Series itself.
 
@@ -1048,26 +1046,26 @@ class SeriesChecks:
         Args:
             n: The number of rows to display.
             fn: An optional lambda function to apply to the Series before running Pandas head(). Example: `lambda s: s.dropna()`.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original Series, unchanged.
         """
         (
             pd.DataFrame(_apply_modifications(self._obj, fn))
-            .check.head(n=n, check_name=check_name)
+            .check.head(n=n, msg=msg)
         )  # fmt: skip
         return self._obj
 
     def hist(
         self,
         fn: Callable = lambda s: s,
-        check_name: Union[str, None] = None,
+        msg: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.Series:
         """Displays a histogram for the Series's distribution, without modifying the Series itself.
 
-        See Pandas docs for [hist()](https://pandas.pydata.org/docs/reference/api/pandas.Series.hist.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [hist()](https://pandas.pydata.org/docs/reference/api/pandas.Series.hist.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1080,7 +1078,7 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas head(). Example: `lambda s: s.dropna()`.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas hist() method.
 
         Returns:
@@ -1091,19 +1089,19 @@ class SeriesChecks:
         """
         (
             pd.DataFrame(_apply_modifications(self._obj, fn))
-            .check.hist(check_name=check_name, subset=[], **kwargs)
+            .check.hist(subset=[], msg=msg, **kwargs)
         )  # fmt: skip
         return self._obj
 
     def info(
         self,
         fn: Callable = lambda s: s,
-        check_name: Union[str, None] = "ℹ️ Series info",
+        msg: Union[str, None] = "ℹ️ Series info",
         **kwargs: Any,
     ) -> pd.Series:
         """Displays summary information about a Series, without modifying the Series itself.
 
-        See Pandas docs for [info()](https://pandas.pydata.org/docs/reference/api/pandas.Series.info.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [info()](https://pandas.pydata.org/docs/reference/api/pandas.Series.info.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1116,27 +1114,27 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas info(). Example: `lambda s: s.dropna()`.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas info() method.
 
         Returns:
             The original Series, unchanged.
         """
         if get_mode()["enable_checks"]:
-            if check_name:
-                _display_table_title(check_name)
+            if msg:
+                _display_table_title(msg)
             _apply_modifications(self._obj, fn).info(**kwargs)
         return self._obj
 
     def memory_usage(
         self,
         fn: Callable = lambda s: s,
-        check_name: Union[str, None] = "💾 Memory usage",
+        msg: Union[str, None] = "💾 Memory usage",
         **kwargs: Any,
     ) -> pd.Series:
         """Displays the memory footprint of a Series, without modifying the Series itself.
 
-        See Pandas docs for [memory_usage()](https://pandas.pydata.org/docs/reference/api/pandas.Series.memory_usage.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [memory_usage()](https://pandas.pydata.org/docs/reference/api/pandas.Series.memory_usage.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1149,7 +1147,7 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas memory_usage(). Example: `lambda s: s.dropna()`.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas memory_usage() method.
 
         Returns:
@@ -1160,19 +1158,19 @@ class SeriesChecks:
         """
         (
             pd.DataFrame(_apply_modifications(self._obj, fn))
-            .check.memory_usage(check_name=check_name, **kwargs)
+            .check.memory_usage(msg=msg, **kwargs)
         )  # fmt: skip
         return self._obj
 
     def ndups(
         self,
         fn: Callable = lambda s: s,
-        check_name: Union[str, None] = None,
+        msg: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.Series:
         """Displays the number of duplicated rows in the Series, without modifying the Series itself.
 
-        See Pandas docs for [duplicated()](https://pandas.pydata.org/docs/reference/api/pandas.Series.duplicated.html) for additional usage information, including more configuration options (the `keep` argument) you can pass to this Pandas Checks method.
+        See Pandas docs for [duplicated()](https://pandas.pydata.org/docs/reference/api/pandas.Series.duplicated.html) for additional usage information, including more options (the `keep` argument) you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1185,7 +1183,7 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before counting the number of duplicates. Example: `lambda s: s.dropna()`.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas duplicated() method.
 
         Returns:
@@ -1193,14 +1191,14 @@ class SeriesChecks:
         """
         (
             pd.DataFrame(_apply_modifications(self._obj, fn))
-            .check.ndups(fn, check_name=check_name, **kwargs)
+            .check.ndups(fn=fn, msg=msg, **kwargs)
         )  # fmt: skip
         return self._obj
 
     def nnulls(
         self,
         fn: Callable = lambda s: s,
-        check_name: Union[str, None] = "👻 Rows with NaNs",
+        msg: Union[str, None] = "👻 Rows with NaNs",
     ) -> pd.Series:
         """Displays the number of rows with null values in the Series, without modifying the Series itself.
 
@@ -1217,21 +1215,21 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before counting rows with nulls. Example: `lambda s: s.dropna()`.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original Series, unchanged.
         """
         (
             pd.DataFrame(_apply_modifications(self._obj, fn))
-            .check.nnulls(by_column=False, check_name=check_name)
+            .check.nnulls(by_column=False, msg=msg)
         )  # fmt: skip
         return self._obj
 
     def nrows(
         self,
+        msg: Union[str, None] = "☰ Rows",
         fn: Callable = lambda s: s,
-        check_name: Union[str, None] = "☰ Rows",
     ) -> pd.Series:
         """Displays the number of rows in a Series, without modifying the Series itself.
 
@@ -1245,27 +1243,27 @@ class SeriesChecks:
             ```
 
         Args:
+            msg: Optionally customize the text displayed before the result of the check.
             fn: An optional lambda function to apply to the Series before counting the number of rows. Example: `lambda s: s.dropna()`.
-            check_name: An optional name for the check, to be printed as preface to the result.
 
         Returns:
             The original Series, unchanged.
         """
         (
             pd.DataFrame(_apply_modifications(self._obj, fn))
-            .check.nrows(check_name=check_name)
+            .check.nrows(msg=msg)
         )  # fmt: skip
         return self._obj
 
     def nunique(
         self,
         fn: Callable = lambda s: s,
-        check_name: Union[str, None] = None,
+        msg: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.Series:
         """Displays the number of unique rows in a Series, without modifying the Series itself.
 
-        See Pandas docs for [nunique()](https://pandas.pydata.org/docs/reference/api/pandas.Series.nunique.html) for additional usage information, including more configuration options (the `dropna` argument) you can pass to this Pandas Checks method.
+        See Pandas docs for [nunique()](https://pandas.pydata.org/docs/reference/api/pandas.Series.nunique.html) for additional usage information, including more options (the `dropna` argument) you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1278,34 +1276,34 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas nunique(). Example: `lambda s: s.dropna()`.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas nunique() method.
 
         Returns:
             The original Series, unchanged.
         """
-        if not check_name:
+        if not msg:
             if self._obj.name:
-                check_name = f"🌟 Unique values in '{self._obj.name}'"
+                msg = f"🌟 Unique values in '{self._obj.name}'"
             else:
-                check_name = "🌟 Unique values"
+                msg = "🌟 Unique values"
         _check_data(
             self._obj,
             check_fn=lambda s: s.nunique(**kwargs),
             modify_fn=fn,
-            check_name=check_name,
+            msg=msg,
         )
         return self._obj
 
     def plot(
         self,
         fn: Callable = lambda s: s,
-        check_name: Union[str, None] = "",
+        msg: Union[str, None] = "",
         **kwargs: Any,
     ) -> pd.Series:
         """Displays a plot of the Series, without modifying the Series itself.
 
-        See Pandas docs for [plot()](https://pandas.pydata.org/docs/reference/api/pandas.Series.plot.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [plot()](https://pandas.pydata.org/docs/reference/api/pandas.Series.plot.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1319,7 +1317,7 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas plot(). Example: `lambda s: s.dropna()`.
-            check_name: An optional title for the plot.
+            msg: An optional title for the plot.
             **kwargs: Optional, additional arguments that are accepted by Pandas plot() method.
 
         Returns:
@@ -1328,11 +1326,11 @@ class SeriesChecks:
         Note:
             Plots are only displayed when code is run in IPython/Jupyter, not in terminal.
 
-            If you pass a 'title' kwarg, it becomes the plot title, overriding check_name
+            If you pass a 'title' kwarg, it becomes the plot title, overriding msg
         """
         (
             pd.DataFrame(_apply_modifications(self._obj, fn))
-            .check.plot(fn, check_name=check_name, **kwargs)
+            .check.plot(fn=fn, msg=msg, **kwargs)
         )  # fmt: skip
         return self._obj
 
@@ -1340,7 +1338,7 @@ class SeriesChecks:
         self,
         object: Any = None,  # Anything printable: str, int, list, DataFrame, etc
         fn: Callable = lambda s: s,
-        check_name: Union[str, None] = None,
+        msg: Union[str, None] = None,
         max_rows: int = 10,
     ) -> pd.Series:
         """Displays text, another object, or (by default) the current DataFrame's head. Does not modify the Series itself.
@@ -1356,14 +1354,14 @@ class SeriesChecks:
                 ...
 
                 # Inspect a Series, such as the interim result of data processing
-                .check.print(fn=lambda s: s[s<0], check_name="Negative values of sepal_width") # Will print those values if they exist
+                .check.print(fn=lambda s: s[s<0], msg="Negative values of sepal_width") # Will print those values if they exist
             )
             ```
 
         Args:
             object: Object to print. Can be anything printable: str, int, list, another DataFrame, etc. If None, print the Series's head (with `max_rows` rows).
             fn: An optional lambda function to apply to the Series before printing `object`. Example: `lambda s: s.dropna()`.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
             max_rows: Maximum number of rows to print if object=None.
 
         Returns:
@@ -1371,7 +1369,7 @@ class SeriesChecks:
         """
         (
             pd.DataFrame(_apply_modifications(self._obj, fn))
-            .check.print(object=object, check_name=check_name, max_rows=max_rows)
+            .check.print(object=object, msg=msg, max_rows=max_rows)
         )  # fmt: skip
         return self._obj
 
@@ -1502,8 +1500,8 @@ class SeriesChecks:
 
     def shape(
         self,
+        msg: Union[str, None] = "📐 Shape",
         fn: Callable = lambda s: s,
-        check_name: Union[str, None] = "📐 Shape",
     ) -> pd.Series:
         """Displays the Series's dimensions, without modifying the Series itself.
 
@@ -1513,13 +1511,13 @@ class SeriesChecks:
                 iris
                 ["sepal_width"]
                 .check.shape()
-                .check.shape(fn=lambda s: s[s<5]), check_name="Shape of sepal_width series with values <5")
+                .check.shape(msg="Shape of sepal_width series with values <5", fn=lambda s: s[s<5]))
             )
             ```
 
         Args:
+            msg: Optionally customize the text displayed before the result of the check.
             fn: An optional lambda function to apply to the Series before running Pandas `shape`. Example: `lambda s: s.dropna()`.
-            check_name: An optional name for the check, to be printed as preface to the result.
 
         Returns:
             The original Series, unchanged.
@@ -1532,7 +1530,7 @@ class SeriesChecks:
             self._obj,
             check_fn=lambda s: s.shape,
             modify_fn=fn,
-            check_name=check_name,
+            msg=msg,
         )
         return self._obj
 
@@ -1540,7 +1538,7 @@ class SeriesChecks:
         self,
         n: int = 5,
         fn: Callable = lambda s: s,
-        check_name: Union[str, None] = None,
+        msg: Union[str, None] = None,
     ) -> pd.Series:
         """Displays the last n rows of the Series, without modifying the Series itself.
 
@@ -1557,21 +1555,21 @@ class SeriesChecks:
         Args:
             n: Number of rows to show.
             fn: An optional lambda function to apply to the Series before running Pandas tail(). Example: `lambda s: s.dropna()`.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original Series, unchanged.
         """
         (
             pd.DataFrame(_apply_modifications(self._obj, fn))
-            .check.tail(n=n, check_name=check_name)
+            .check.tail(n=n, msg=msg)
         )  # fmt: skip
         return self._obj
 
     def unique(
         self,
         fn: Callable = lambda s: s,
-        check_name: Union[str, None] = None,
+        msg: Union[str, None] = None,
     ) -> pd.Series:
         """Displays the unique values in a Series, without modifying the Series itself.
 
@@ -1589,22 +1587,22 @@ class SeriesChecks:
 
         Args:
             fn: An optional lambda function to apply to the Series before running Pandas unique(). Example: `lambda s: s.dropna()`.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original Series, unchanged.
         """
-        if not check_name:
+        if not msg:
             if self._obj.name:
-                check_name = f"🌟 Unique values of '{self._obj.name}'"
+                msg = f"🌟 Unique values of '{self._obj.name}'"
             else:
-                check_name = "🌟 Unique values"
+                msg = "🌟 Unique values"
 
         _check_data(
             self._obj,
             check_fn=lambda s: s.unique().tolist(),
             modify_fn=fn,
-            check_name=check_name,
+            msg=msg,
         )
         return self._obj
 
@@ -1612,12 +1610,12 @@ class SeriesChecks:
         self,
         fn: Callable = lambda s: s,
         max_rows: int = 10,
-        check_name: Union[str, None] = None,
+        msg: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.Series:
         """Displays the value counts for a Series, without modifying the Series itself.
 
-        See Pandas docs for [value_counts()](https://pandas.pydata.org/docs/reference/api/pandas.Series.value_counts.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [value_counts()](https://pandas.pydata.org/docs/reference/api/pandas.Series.value_counts.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1631,24 +1629,24 @@ class SeriesChecks:
         Args:
             max_rows: Maximum number of rows to show in the value counts.
             fn: An optional lambda function to apply to the Series before running Pandas value_counts(). Example: `lambda s: s.dropna()`.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas value_counts() method.
 
         Returns:
             The original Series, unchanged.
         """
-        if not check_name:
+        if not msg:
             if self._obj.name:
-                check_name = f"🧮 Value counts in '{self._obj.name}'"
+                msg = f"🧮 Value counts in '{self._obj.name}'"
             else:
-                check_name = "🧮 Value counts"
+                msg = "🧮 Value counts"
             if max_rows:
-                check_name = check_name + f", first {max_rows} values"
+                msg = msg + f", first {max_rows} values"
         _check_data(
             self._obj,
             check_fn=lambda s: s.value_counts(**kwargs).head(max_rows),
             modify_fn=fn,
-            check_name=check_name,
+            msg=msg,
         )
         return self._obj
 
@@ -1670,7 +1668,7 @@ class SeriesChecks:
             - .tsv # Tab-separated data file
             - .xlsx
 
-        This functions uses the corresponding Pandas export function such as to_csv() and to_feather(). See [Pandas docs for those corresponding export functions](https://pandas.pydata.org/docs/reference/io.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        This functions uses the corresponding Pandas export function such as to_csv() and to_feather(). See [Pandas docs for those corresponding export functions](https://pandas.pydata.org/docs/reference/io.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Note:
             Exporting to some formats such as Excel, Feather, and Parquet may require you to install additional packages.

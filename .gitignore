@@ -6,6 +6,7 @@ __pycache__
 *.parquet
 *.feather
 *.pkl
+*.log
 archive/*
 dev.ipynb
 dev_script.py

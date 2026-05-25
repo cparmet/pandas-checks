@@ -932,9 +932,9 @@ class DataFrameChecks:
 
     def columns(
         self,
+        msg: Union[str, None] = "🏛️ Columns",
         fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
-        check_name: Union[str, None] = "🏛️ Columns",
     ) -> pd.DataFrame:
         """Prints the column names of a DataFrame, without modifying the DataFrame itself.
 
@@ -947,9 +947,9 @@ class DataFrameChecks:
             ```
 
         Args:
+            msg: Optionally customize the text displayed before the result of the check.
             fn: An optional lambda function to apply to the DataFrame before printing columns. Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string to select a subset of columns before printing their names. Applied after fn.
-            check_name: An optional name for the check to preface the result with.
 
         Returns:
             The original DataFrame, unchanged.
@@ -959,7 +959,7 @@ class DataFrameChecks:
             check_fn=lambda df: df.columns.tolist(),
             modify_fn=fn,
             subset=subset,
-            check_name=check_name,
+            msg=msg,
         )
         return self._obj
 
@@ -967,12 +967,12 @@ class DataFrameChecks:
         self,
         fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
-        check_name: Union[str, None] = "📏 Distributions",
+        msg: Union[str, None] = "📏 Distributions",
         **kwargs: Any,
     ) -> pd.DataFrame:
         """Displays descriptive statistics about a DataFrame without modifying the DataFrame itself.
 
-        See Pandas docs for [describe()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.describe.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [describe()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.describe.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -985,7 +985,7 @@ class DataFrameChecks:
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas describe(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string to select a subset of columns before running Pandas describe(). Applied after fn.
-            check_name: An optional name for the check to preface the result with.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas describe() method.
 
         Returns:
@@ -996,7 +996,7 @@ class DataFrameChecks:
             check_fn=lambda df: df.describe(**kwargs),
             modify_fn=fn,
             subset=subset,
-            check_name=check_name,
+            msg=msg,
         )
         return self._obj
 
@@ -1026,7 +1026,7 @@ class DataFrameChecks:
         self,
         fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
-        check_name: Union[str, None] = "🗂️ Data types",
+        msg: Union[str, None] = "🗂️ Data types",
     ) -> pd.DataFrame:
         """Displays the data types of a DataFrame's columns without modifying the DataFrame itself.
 
@@ -1041,7 +1041,7 @@ class DataFrameChecks:
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas dtypes. Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string to select a subset of columns before running Pandas .dtypes. Applied after fn.
-            check_name: An optional name for the check to preface the result with.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original DataFrame, unchanged.
@@ -1051,7 +1051,7 @@ class DataFrameChecks:
             check_fn=lambda df: df.dtypes,
             modify_fn=fn,
             subset=subset,
-            check_name=check_name,
+            msg=msg,
         )
         return self._obj
 
@@ -1082,7 +1082,7 @@ class DataFrameChecks:
         self,
         fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
-        check_name: Union[str, None] = None,
+        msg: Union[str, None] = None,
     ) -> pd.DataFrame:
         """Applies an arbitrary function on a DataFrame and shows the result, without modifying the DataFrame itself.
 
@@ -1090,7 +1090,7 @@ class DataFrameChecks:
             ```python
                 (
                     iris
-                    .check.function(fn=lambda df: df.shape[0]>10, check_name='Has at least 10 rows?')
+                    .check.function(fn=lambda df: df.shape[0]>10, msg='Has at least 10 rows?')
                 )
                 # Will return either 'True' or 'False'
             ```
@@ -1098,17 +1098,15 @@ class DataFrameChecks:
         Args:
             fn: A lambda function to apply to the DataFrame. Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string to select a subset of columns before running Pandas describe(). Applied after fn.
-            check_name: An optional name for the check to preface the result with.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original DataFrame, unchanged.
         """
-        _check_data(self._obj, modify_fn=fn, subset=subset, check_name=check_name)
+        _check_data(self._obj, modify_fn=fn, subset=subset, msg=msg)
         return self._obj
 
-    def get_mode(
-        self, check_name: Union[str, None] = "🐼🩺 Pandas Checks mode"
-    ) -> pd.DataFrame:
+    def get_mode(self, msg: Union[str, None] = "🐼🩺 Pandas Checks mode") -> pd.DataFrame:
         """Displays the current values of Pandas Checks global options enable_checks and enable_asserts. Does not modify the DataFrame itself.
 
         Example:
@@ -1123,12 +1121,12 @@ class DataFrameChecks:
             ```
 
         Args:
-            check_name: An optional name for the check. Will be used as a preface the printed result.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original DataFrame, unchanged.
         """
-        _display_line(lead_in=check_name, line=str(get_mode()))
+        _display_line(lead_in=msg, line=str(get_mode()))
         return self._obj
 
     def head(
@@ -1136,7 +1134,7 @@ class DataFrameChecks:
         n: int = 5,
         fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
-        check_name: Union[str, None] = None,
+        msg: Union[str, None] = None,
     ) -> pd.DataFrame:
         """Displays the first n rows of a DataFrame, without modifying the DataFrame itself.
 
@@ -1154,7 +1152,7 @@ class DataFrameChecks:
             n: The number of rows to display.
             fn: An optional lambda function to apply to the DataFrame before running Pandas head(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string to select a subset of columns before running Pandas head(). Applied after fn.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original DataFrame, unchanged.
@@ -1164,39 +1162,39 @@ class DataFrameChecks:
             check_fn=lambda df: df.head(n),
             modify_fn=fn,
             subset=subset,
-            check_name=check_name if check_name else f"⬆️ First {n} rows",
+            msg=msg if msg else f"⬆️ First {n} rows",
         )
         return self._obj
 
     def hist(
         self,
-        fn: Callable = lambda df: df,
         subset: Union[str, List, None] = [],
-        check_name: Union[str, None] = None,
+        fn: Callable = lambda df: df,
+        msg: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.DataFrame:
         """Displays a histogram for the DataFrame, without modifying the DataFrame itself.
 
         You can pass a single `column` (via kwargs) or a `subset` argument, which can display a grid of multiple histograms.
 
-        See Pandas docs for [hist()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.hist.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method via kwargs.
+        See Pandas docs for [hist()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.hist.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
                 (
                     iris
                     # Show one histogram
-                    .check.hist(column="sepal_length")
-                    # Show two histogram
-                    .check.hist(subset=["petal_length", "petal_width"])
+                    .check.hist("sepal_length")
+                    # Show two histograms
+                    .check.hist(["petal_length", "petal_width"])
                 )
             ```
 
         Args:
-            fn: An optional lambda function to apply to the DataFrame before running Pandas hist(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string to select a subset of columns before running Pandas hist(). Applied after fn.
-            check_name: An optional name for the check, to be printed as preface to the result.
-            **kwargs: Optional, additional arguments that are accepted by Pandas hist() method, such as `column`.
+            fn: An optional lambda function to apply to the DataFrame before running Pandas hist(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
+            msg: Optionally customize the text displayed before the result of the check.
+            **kwargs: Optional, additional arguments that are accepted by Pandas hist() method.
 
         Returns:
             The original DataFrame, unchanged.
@@ -1204,20 +1202,20 @@ class DataFrameChecks:
         Note:
             Only renders in interactive mode (IPython/Jupyter), not in terminal.
         """
-        if not check_name:
+        if not msg:
             if isinstance(subset, list) and len(subset) == 1:
-                check_name = f"📏 Distribution of '{subset[0]}'"
+                msg = f"📏 Distribution of '{subset[0]}'"
             elif isinstance(subset, str):
-                check_name = f"📏 Distribution of '{subset}'"
+                msg = f"📏 Distribution of '{subset}'"
             elif "column" in kwargs:
                 col_name = kwargs["column"]
-                check_name = f"📏 Distribution of '{col_name}'"
+                msg = f"📏 Distribution of '{col_name}'"
             else:
-                check_name = "📏 Distributions"
+                msg = "📏 Distributions"
         # Only display if in IPython/Jupyter, or we'd just print the title
         if get_mode()["enable_checks"] and not pd.core.config_init.is_terminal():
-            _display_plot_title(check_name)
-            _ = _apply_modifications(self._obj, fn, subset).hist(**kwargs)
+            _display_plot_title(msg)
+            _ = _apply_modifications(self._obj, fn=fn, subset=subset).hist(**kwargs)
             _display_plot()
         return self._obj
 
@@ -1225,12 +1223,12 @@ class DataFrameChecks:
         self,
         fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
-        check_name: Union[str, None] = "ℹ️ Info",
+        msg: Union[str, None] = "ℹ️ Info",
         **kwargs: Any,
     ) -> pd.DataFrame:
         """Displays summary information about a DataFrame, without modifying the DataFrame itself.
 
-        See Pandas docs for [info()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.info.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [info()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.info.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1243,15 +1241,15 @@ class DataFrameChecks:
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas info(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string to select a subset of columns before running Pandas info(). Applied after fn.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas info() method.
 
         Returns:
             The original DataFrame, unchanged.
         """
         if get_mode()["enable_checks"]:
-            if check_name:
-                _display_table_title(check_name)
+            if msg:
+                _display_table_title(msg)
             df_modified = _apply_modifications(self._obj, fn, subset)
             # Get the Pandas info() result as a string
             buffer = io.StringIO()
@@ -1266,12 +1264,12 @@ class DataFrameChecks:
         self,
         fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
-        check_name: Union[str, None] = "💾 Memory usage",
+        msg: Union[str, None] = "💾 Memory usage",
         **kwargs: Any,
     ) -> pd.DataFrame:
         """Displays the memory footprint of a DataFrame, without modifying the DataFrame itself.
 
-        See Pandas docs for [memory_usage()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.memory_usage.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [memory_usage()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.memory_usage.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1284,7 +1282,7 @@ class DataFrameChecks:
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas memory_usage(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string to select a subset of columns before running Pandas memory_usage(). Applied after fn.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas info() method.
 
         Returns:
@@ -1298,15 +1296,15 @@ class DataFrameChecks:
             check_fn=lambda df: df.memory_usage(**kwargs),
             modify_fn=fn,
             subset=subset,
-            check_name=check_name,
+            msg=msg,
         )
         return self._obj
 
     def ncols(
         self,
+        msg: Union[str, None] = "🏛️ Columns",
         fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
-        check_name: Union[str, None] = "🏛️ Columns",
     ) -> pd.DataFrame:
         """Displays the number of columns in a DataFrame, without modifying the DataFrame itself.
 
@@ -1319,9 +1317,9 @@ class DataFrameChecks:
             ```
 
         Args:
+            msg: Optionally customize the text displayed before the result of the check.
             fn: An optional lambda function to apply to the DataFrame before counting the number of columns. Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string to select a subset of columns before counting the number of columns. Applied after fn.
-            check_name: An optional name for the check, to be printed as preface to the result.
 
         Returns:
             The original DataFrame, unchanged.
@@ -1331,20 +1329,20 @@ class DataFrameChecks:
             check_fn=lambda df: df.shape[1],
             modify_fn=fn,
             subset=subset,
-            check_name=check_name,
+            msg=msg,
         )
         return self._obj
 
     def ndups(
         self,
-        fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
-        check_name: Union[str, None] = None,
+        fn: Callable = lambda df: df,
+        msg: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.DataFrame:
         """Displays the number of duplicated rows in a DataFrame, without modifying the DataFrame itself.
 
-        See Pandas docs for [duplicated()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.duplicated.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [duplicated()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.duplicated.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1356,9 +1354,9 @@ class DataFrameChecks:
             ```
 
         Args:
-            fn: An optional lambda function to apply to the DataFrame before counting the number of duplicates. Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string to select a subset of columns before counting duplicate rows. Applied after fn.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            fn: An optional lambda function to apply to the DataFrame before counting the number of duplicates. Example: `lambda df: df.shape[0]>10`. Applied before subset.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas duplicated() method.
 
         Returns:
@@ -1369,8 +1367,8 @@ class DataFrameChecks:
             check_fn=lambda df: df.duplicated(**kwargs).sum(),
             modify_fn=fn,
             subset=subset,
-            check_name=check_name
-            if check_name
+            msg=msg
+            if msg
             else f"👯‍♂️ Rows with duplication in '{subset}'"
             if subset
             else "👯‍♂️ Duplicated rows",
@@ -1382,7 +1380,7 @@ class DataFrameChecks:
         fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
         by_column: bool = True,
-        check_name: Union[str, None] = "👻 Rows with NaNs",
+        msg: Union[str, None] = "👻 Rows with NaNs",
     ) -> pd.DataFrame:
         """Displays the number of rows with null values in a DataFrame, without modifying the DataFrame itself.
 
@@ -1407,7 +1405,7 @@ class DataFrameChecks:
             fn: An optional lambda function to apply to the DataFrame before counting the number of rows with a null. Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string to select a subset of columns before counting nulls.
             by_column: If True, count null values with each column separately. If False, count rows with a null value in any column. Applied after fn.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original DataFrame, unchanged.
@@ -1427,23 +1425,21 @@ class DataFrameChecks:
         ):  # Report result as a pandas object
             _check_data(
                 na_counts,
-                check_name=f"👻 Rows with NaNs in {subset}"
-                if subset and not check_name
-                else check_name,
+                msg=f"👻 Rows with NaNs in {subset}" if subset and not msg else msg,
             )
         else:  # Report on one line
             _display_line(
                 (f"👻 Rows with NaNs in {subset}: {na_counts} out of {data.shape[0]}")
-                if subset and not check_name
-                else f"{check_name}: {na_counts}"
+                if subset and not msg
+                else f"{msg}: {na_counts}"
             )
         return self._obj
 
     def nrows(
         self,
+        msg: Union[str, None] = "☰ Rows",
         fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
-        check_name: Union[str, None] = "☰ Rows",
     ) -> pd.DataFrame:
         """Displays the number of rows in a DataFrame, without modifying the DataFrame itself.
 
@@ -1456,9 +1452,9 @@ class DataFrameChecks:
             ```
 
         Args:
+            msg: Optionally customize the text displayed before the result of the check.
             fn: An optional lambda function to apply to the DataFrame before counting the number of rows. Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string name of one column to limit which columns are considered when counting rows. Applied after fn.
-            check_name: An optional name for the check, to be printed as preface to the result.
 
         Returns:
             The original DataFrame, unchanged.
@@ -1468,7 +1464,7 @@ class DataFrameChecks:
             check_fn=lambda df: df.shape[0],
             modify_fn=fn,
             subset=subset,
-            check_name=check_name,
+            msg=msg,
         )
         return self._obj
 
@@ -1478,7 +1474,7 @@ class DataFrameChecks:
         subset: Union[str, List, None] = None,
         across_columns: bool = False,
         fn: Callable = lambda df: df,
-        check_name: Union[str, None] = None,
+        msg: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.DataFrame:
         """Displays the number of unique values in a Series or unique combinations of rows in a DataFrame, without modifying the DataFrame itself.
@@ -1505,7 +1501,7 @@ class DataFrameChecks:
                 - count the unique values in each column separately (False), the standard Pandas DataFrame nunique()
                 - count the unique combinations of rows across those columns (True) or
             fn: An optional lambda function to apply to the DataFrame before running Pandas nunique(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas nunique() method(s)
 
         Returns:
@@ -1524,20 +1520,19 @@ class DataFrameChecks:
 
             data_modified = _apply_modifications(self._obj, fn=fn, subset=subset)
 
-            if not check_name:
+            if not msg:
                 if subset:
                     if isinstance(subset, str):
-                        check_name = f"🌟 Unique values in '{subset}'"
+                        msg = f"🌟 Unique values in '{subset}'"
                     elif across_columns:
-                        check_name = f"🌟 Unique rows across {subset}"
+                        msg = f"🌟 Unique rows across {subset}"
                     else:
-                        check_name = f"🌟 Unique values in {subset}"
+                        msg = f"🌟 Unique values in {subset}"
                 else:
                     if across_columns:
-                        check_name = "🌟 Unique rows across all columns"
+                        msg = "🌟 Unique rows across all columns"
                     else:
-                        check_name = "🌟 Unique values"
-
+                        msg = "🌟 Unique values"
 
             if not across_columns:
                 # Run standard Pandas nunique()
@@ -1546,7 +1541,7 @@ class DataFrameChecks:
                     data_modified,
                     check_fn=lambda data: data.nunique(**kwargs),
                     modify_fn=fn,
-                    check_name=check_name,
+                    msg=msg,
                 )  # fmt: skip
             else:
                 # Count the number of unique rows considering values in multiple columns
@@ -1557,20 +1552,20 @@ class DataFrameChecks:
                 (
                     data_modified
                     .drop_duplicates()
-                    .check.nrows(check_name=check_name)
+                    .check.nrows(msg=msg)
                 )  # fmt: skip
         return self._obj
 
     def plot(
         self,
-        fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
-        check_name: Union[str, None] = "",
+        fn: Callable = lambda df: df,
+        msg: Union[str, None] = "",
         **kwargs: Any,
     ) -> pd.DataFrame:
         """Displays a plot of the DataFrame, without modifying the DataFrame itself.
 
-        See Pandas docs for [plot()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.plot.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [plot()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.plot.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1581,9 +1576,9 @@ class DataFrameChecks:
             ```
 
         Args:
-            fn: An optional lambda function to apply to the DataFrame before running Pandas plot(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string name of one column to limit which columns are plotted. Applied after fn.
-            check_name: An optional title for the plot.
+            fn: An optional lambda function to apply to the DataFrame before running Pandas plot(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
+            msg: An optional title for the plot.
             **kwargs: Optional, additional arguments that are accepted by Pandas plot() method.
 
         Returns:
@@ -1592,14 +1587,12 @@ class DataFrameChecks:
         Note:
             Plots are only displayed when code is run in IPython/Jupyter, not in terminal.
 
-            If you pass a 'title' kwarg, it becomes the plot title, overriding check_name
+            If you pass a 'title' kwarg, it becomes the plot title, overriding msg
         """
 
         # Only display plot if in IPython/Jupyter. Or we'd just print its title.
         if get_mode()["enable_checks"] and not pd.core.config_init.is_terminal():
-            _display_plot_title(
-                check_name if "title" not in kwargs else kwargs["title"]
-            )
+            _display_plot_title(msg if "title" not in kwargs else kwargs["title"])
             _ = _apply_modifications(self._obj, fn, subset).plot(**kwargs)
             _display_plot()
         return self._obj
@@ -1609,7 +1602,7 @@ class DataFrameChecks:
         object: Any = None,
         fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
-        check_name: Union[str, None] = None,
+        msg: Union[str, None] = None,
         max_rows: int = 10,
     ) -> pd.DataFrame:
         """Displays text, another object, or (by default) the current DataFrame's head. Does not modify the DataFrame itself.
@@ -1627,7 +1620,7 @@ class DataFrameChecks:
                 (
                     iris
                     ...
-                    .check.print(fn=lambda df: df.query("sepal_width<0"), check_name="Rows with negative sepal_width")
+                    .check.print(fn=lambda df: df.query("sepal_width<0"), msg="Rows with negative sepal_width")
                 )
             ```
 
@@ -1635,7 +1628,7 @@ class DataFrameChecks:
             object: Object to print. Can be anything printable: str, int, list, another DataFrame, etc. If None, print the DataFrame's head (with `max_rows` rows).
             fn: An optional lambda function to apply to the DataFrame before printing `object`. Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string name of one column to limit which columns are printed. Applied after fn.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
             max_rows: Maximum number of rows to print if object=None.
 
         Returns:
@@ -1646,7 +1639,7 @@ class DataFrameChecks:
             check_fn=lambda data: data if object else data.head(max_rows),
             modify_fn=fn,
             subset=subset,
-            check_name=check_name,
+            msg=msg,
         )
         return self._obj
 
@@ -1777,9 +1770,9 @@ class DataFrameChecks:
 
     def shape(
         self,
+        msg: Union[str, None] = "📐 Shape",
         fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
-        check_name: Union[str, None] = "📐 Shape",
     ) -> pd.DataFrame:
         """Displays the Dataframe's dimensions, without modifying the DataFrame itself.
 
@@ -1788,14 +1781,14 @@ class DataFrameChecks:
                 (
                     iris
                     .check.shape()
-                    .check.shape(fn=lambda df: df.query("sepal_length<5"), check_name="Shape of DataFrame subgroup with sepal_length<5")
+                    .check.shape(msg="Shape of DataFrame subgroup with sepal_length<5", fn=lambda df: df.query("sepal_length<5"))
                 )
             ```
 
         Args:
+            msg: Optionally customize the text displayed before the result of the check.
             fn: An optional lambda function to apply to the DataFrame before running Pandas `shape`. Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string name of one column to limit which columns are considered when printing the shape. Applied after fn.
-            check_name: An optional name for the check, to be printed as preface to the result.
 
         Returns:
             The original DataFrame, unchanged.
@@ -1808,7 +1801,7 @@ class DataFrameChecks:
             check_fn=lambda df: df.shape,
             modify_fn=fn,
             subset=subset,
-            check_name=check_name,
+            msg=msg,
         )
         return self._obj
 
@@ -1817,11 +1810,11 @@ class DataFrameChecks:
         n: int = 5,
         fn: Callable = lambda df: df,
         subset: Union[str, List, None] = None,
-        check_name: Union[str, None] = None,
+        msg: Union[str, None] = None,
     ) -> pd.DataFrame:
         """Displays the last n rows of the DataFrame, without modifying the DataFrame itself.
 
-        See Pandas docs for [tail()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.tail.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [tail()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.tail.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1835,7 +1828,7 @@ class DataFrameChecks:
             n: Number of rows to show.
             fn: An optional lambda function to apply to the DataFrame before running Pandas tail(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             subset: An optional list of column names or a string name of one column to limit which columns are displayed. Applied after fn.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original DataFrame, unchanged.
@@ -1845,7 +1838,7 @@ class DataFrameChecks:
             check_fn=lambda df: df.tail(n),
             modify_fn=fn,
             subset=subset,
-            check_name=check_name if check_name else f"⬇️ Last {n} rows",
+            msg=msg if msg else f"⬇️ Last {n} rows",
         )
         return self._obj
 
@@ -1853,11 +1846,11 @@ class DataFrameChecks:
         self,
         column: str,
         fn: Callable = lambda df: df,
-        check_name: Union[str, None] = None,
+        msg: Union[str, None] = None,
     ) -> pd.DataFrame:
         """Displays the unique values in a column, without modifying the DataFrame itself.
 
-        See Pandas docs for [unique()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.unique.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [unique()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.unique.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1871,7 +1864,7 @@ class DataFrameChecks:
         Args:
             column: Column to check for unique values.
             fn: An optional lambda function to apply to the DataFrame before calling Pandas unique(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
             The original DataFrame, unchanged.
@@ -1887,7 +1880,7 @@ class DataFrameChecks:
                 # Use SeriesChecks method
                 .check.unique(
                     fn=lambda s: s,  # Identify function
-                    check_name=check_name,
+                    msg=msg,
                 )
             )  # fmt: skip
         return self._obj
@@ -1897,12 +1890,12 @@ class DataFrameChecks:
         column: str,
         fn: Callable = lambda df: df,
         max_rows: int = 10,
-        check_name: Union[str, None] = None,
+        msg: Union[str, None] = None,
         **kwargs: Any,
     ) -> pd.DataFrame:
         """Displays the value counts for a column, without modifying the DataFrame itself.
 
-        See Pandas docs for [value_counts()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.value_counts.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        See Pandas docs for [value_counts()](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.value_counts.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python
@@ -1916,7 +1909,7 @@ class DataFrameChecks:
             column: Column to check for value counts.
             max_rows: Maximum number of rows to show in the value counts.
             fn: An optional lambda function to apply to the DataFrame before running Pandas value_counts(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            check_name: An optional name for the check, to be printed as preface to the result.
+            msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas value_counts() method.
 
         Returns:
@@ -1933,7 +1926,7 @@ class DataFrameChecks:
                 .check.value_counts(
                     max_rows=max_rows,
                     fn=lambda s: s,  # Identity function
-                    check_name=check_name,
+                    msg=msg,
                     **kwargs,
                 )
             )  # fmt: skip
@@ -1958,7 +1951,7 @@ class DataFrameChecks:
             - .tsv # Tab-separated data file
             - .xlsx
 
-        This functions uses the corresponding Pandas export function, such as `to_csv()` and `to_feather()`. See [Pandas docs for those corresponding export functions](https://pandas.pydata.org/docs/reference/io.html) for additional usage information, including more configuration options you can pass to this Pandas Checks method.
+        This functions uses the corresponding Pandas export function, such as `to_csv()` and `to_feather()`. See [Pandas docs for those corresponding export functions](https://pandas.pydata.org/docs/reference/io.html) for additional usage information, including more options you can pass to this Pandas Checks method.
 
         Example:
             ```python

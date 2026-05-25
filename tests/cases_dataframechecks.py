@@ -126,11 +126,11 @@ def method_assert_unique():
 
 
 def method_columns():
-    return lambda df, _: df.check.columns(fn=lambda df: df.dropna(), check_name="Test")
+    return lambda df, _: df.check.columns(msg="Test", fn=lambda df: df.dropna())
 
 
 def method_describe():
-    return lambda df, _: df.check.describe(fn=lambda df: df.dropna(), check_name="Test")
+    return lambda df, _: df.check.describe(fn=lambda df: df.dropna(), msg="Test")
 
 
 def method_disable_checks():
@@ -138,7 +138,7 @@ def method_disable_checks():
 
 
 def method_dtypes():
-    return lambda df, _: df.check.dtypes(fn=lambda df: df.dropna(), check_name="Test")
+    return lambda df, _: df.check.dtypes(fn=lambda df: df.dropna(), msg="Test")
 
 
 def method_enable_checks():
@@ -146,31 +146,27 @@ def method_enable_checks():
 
 
 def method_function():
-    return lambda df, _: df.check.function(
-        lambda df: df.assign(new_col=4), check_name="Test"
-    )
+    return lambda df, _: df.check.function(lambda df: df.assign(new_col=4), msg="Test")
 
 
 def method_get_mode():
-    return lambda df, _: df.check.get_mode(check_name="Test")
+    return lambda df, _: df.check.get_mode(msg="Test")
 
 
 def method_head():
-    return lambda df, _: df.check.head(
-        n=10, fn=lambda df: df.dropna(), check_name="Test"
-    )
+    return lambda df, _: df.check.head(n=10, fn=lambda df: df.dropna(), msg="Test")
 
 
 def method_hist():
     return lambda df, _: df.check.hist(
-        fn=lambda df: df.dropna(), check_name="Test", grid=False, bins=100, legend=True
+        fn=lambda df: df.dropna(), msg="Test", grid=False, bins=100, legend=True
     )
 
 
 def method_info():
     return lambda df, _: df.check.info(
         fn=lambda df: df.dropna(),
-        check_name="Test",
+        msg="Test",
         verbose=True,
         max_cols=1,
         show_counts=False,
@@ -179,35 +175,35 @@ def method_info():
 
 def method_memory_usage():
     return lambda df, _: df.check.memory_usage(
-        fn=lambda df: df.dropna(), check_name="Test", index=False, deep=True
+        fn=lambda df: df.dropna(), msg="Test", index=False, deep=True
     )
 
 
 def method_ncols():
-    return lambda df, _: df.check.ncols(fn=lambda df: df.dropna(), check_name="Test")
+    return lambda df, _: df.check.ncols(msg="Test", fn=lambda df: df.dropna())
 
 
 def method_ndups():
     return lambda df, _: df.check.ndups(
-        fn=lambda df: df.dropna(), check_name="Test", keep=False
+        fn=lambda df: df.dropna(), msg="Test", keep=False
     )
 
 
 def method_nnulls():
     return lambda df, _: df.check.nnulls(
-        fn=lambda df: df.dropna(), by_column=False, check_name="Test"
+        fn=lambda df: df.dropna(), by_column=False, msg="Test"
     )
 
 
 def method_nrows():
-    return lambda df, _: df.check.nrows(fn=lambda df: df.dropna(), check_name="Test")
+    return lambda df, _: df.check.nrows(msg="Test", fn=lambda df: df.dropna())
 
 
 def method_nunique():
     return lambda df, args: df.check.nunique(
         subset=args["first_num_col"],
         fn=lambda df: df.dropna(),
-        check_name="Test",
+        msg="Test",
         dropna=False,
     )
 
@@ -215,14 +211,14 @@ def method_nunique():
 def method_plot():
     return lambda df, _: df.check.plot(
         fn=lambda df: df.dropna(),
-        check_name="Test",
+        msg="Test",
         subplots=True,
         title="Override",
     )
 
 
 def method_print():
-    return lambda df, _: df.check.print(fn=lambda df: df.dropna(), check_name="Test")
+    return lambda df, _: df.check.print(fn=lambda df: df.dropna(), msg="Test")
 
 
 def method_print_time_elapsed():
@@ -244,18 +240,16 @@ def method_set_mode():
 
 
 def method_shape():
-    return lambda df, _: df.check.shape(fn=lambda df: df.dropna(), check_name="Test")
+    return lambda df, _: df.check.shape(msg="Test", fn=lambda df: df.dropna())
 
 
 def method_tail():
-    return lambda df, _: df.check.tail(
-        n=20, fn=lambda df: df.dropna(), check_name="Test"
-    )
+    return lambda df, _: df.check.tail(n=20, fn=lambda df: df.dropna(), msg="Test")
 
 
 def method_unique():
     return lambda df, args: df.check.unique(
-        column=args["first_num_col"], fn=lambda df: df.dropna(), check_name="Test"
+        column=args["first_num_col"], fn=lambda df: df.dropna(), msg="Test"
     )
 
 
@@ -264,7 +258,7 @@ def method_value_counts():
         column=args["first_num_col"],
         max_rows=3,
         fn=lambda df: df.dropna(),
-        check_name="Test",
+        msg="Test",
         dropna=False,
         normalize=True,
     )

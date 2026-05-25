@@ -64,7 +64,7 @@ You can add some `.check` steps.
     .check.assert_positive(subset=["petal_length", "sepal_length"])
 
     # Plot the distribution of a column after cleaning
-    .check.hist(column='petal_length') 
+    .check.hist('petal_length') 
 
     .query("species=='setosa'")
     
@@ -166,14 +166,14 @@ You can use Pandas Checks methods like the regular Pandas methods. They accept t
 * `.check.plot(kind="scatter", x="sepal_width", y="sepal_length")`
 
 Also, most Pandas Checks methods accept 3 additional arguments:
-1. `check_name`: text to display before the result of the check
+1. `msg`: text to display before the result of the check
 2. `fn`: a lambda function that modifies the data displayed by the check
 3. `subset`: limit a check to certain columns
 
 ```python
 (
     iris
-    .check.value_counts(column='species', check_name="Varieties after data cleaning")
+    .check.value_counts(column='species', msg="Varieties after data cleaning")
     .assign(species=lambda df: df["species"].str.upper()) # Do your regular Pandas data processing, like upper-casing the values in one column
     .check.head(n=2, fn=lambda df: df["petal_width"]*2) # Modify the data that gets displayed in the check only
     .check.describe(subset=['sepal_width', 'sepal_length'])  # Only apply the check to certain columns
