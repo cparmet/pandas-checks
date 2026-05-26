@@ -852,7 +852,7 @@ class DataFrameChecks:
             The original DataFrame, unchanged.
         """
 
-        if subset is not None:
+        if subset is None:
             subset = self._obj.columns.tolist()
         elif isinstance(subset, str):
             subset = [subset]
