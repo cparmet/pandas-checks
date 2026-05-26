@@ -1121,7 +1121,7 @@ class SeriesChecks:
             The original Series, unchanged.
         """
         if get_mode()["enable_checks"]:
-            if msg:
+            if msg is not None:
                 _display_table_title(msg)
             _apply_modifications(self._obj, fn).info(**kwargs)
         return self._obj

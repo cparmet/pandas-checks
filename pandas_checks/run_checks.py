@@ -59,6 +59,10 @@ def _check_data(
                     # before checking it.
                     _apply_modifications(data, fn=modify_fn, subset=subset)
                 ),
-                name=msg if msg else str(subset) if subset else None,
+                name=msg
+                if msg is not None
+                else str(subset)
+                if subset is not None
+                else None,
             )
         )

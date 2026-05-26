@@ -158,7 +158,7 @@ class DataFrameChecks:
             raise TypeError(
                 f"Expected condition to be a lambda function (callable type) but received type {type(condition)}"
             )
-        data = self._obj[subset] if subset else self._obj
+        data = self._obj[subset] if subset is not None else self._obj
         result = condition(data)
         condition_str = _lambda_to_string(condition)
 
@@ -509,7 +509,7 @@ class DataFrameChecks:
 
         if assert_no_nulls:
             if _has_nulls(
-                data=self._obj[subset] if subset else self._obj,
+                data=self._obj[subset] if subset is not None else self._obj,
                 fail_message=fail_message,
                 raise_exception=raise_exception,
                 exception_to_raise=exception_to_raise,
@@ -654,7 +654,7 @@ class DataFrameChecks:
         """
         if assert_no_nulls:
             if _has_nulls(
-                data=self._obj[subset] if subset else self._obj,
+                data=self._obj[subset] if subset is not None else self._obj,
                 fail_message=fail_message,
                 raise_exception=raise_exception,
                 exception_to_raise=exception_to_raise,
@@ -852,7 +852,7 @@ class DataFrameChecks:
             The original DataFrame, unchanged.
         """
 
-        if not subset:
+        if subset is not None:
             subset = self._obj.columns.tolist()
         elif isinstance(subset, str):
             subset = [subset]
@@ -1370,7 +1370,7 @@ class DataFrameChecks:
             msg=msg
             if msg
             else f"👯‍♂️ Rows with duplication in '{subset}'"
-            if subset
+            if subset is not None
             else "👯‍♂️ Duplicated rows",
         )
         return self._obj
@@ -1420,17 +1420,19 @@ class DataFrameChecks:
             if not by_column
             else pd.Series(data.isna().sum())
         )
-        if isinstance(
-            na_counts, (pd.DataFrame, pd.Series)
-        ):  # Report result as a pandas object
+        if isinstance(na_counts, (pd.DataFrame, pd.Series)):
+            # Report result as a pandas object
             _check_data(
                 na_counts,
-                msg=f"👻 Rows with NaNs in {subset}" if subset and not msg else msg,
+                msg=f"👻 Rows with NaNs in {subset}"
+                if subset is not None and not msg
+                else msg,
             )
-        else:  # Report on one line
+        else:
+            # Report on one line
             _display_line(
                 (f"👻 Rows with NaNs in {subset}: {na_counts} out of {data.shape[0]}")
-                if subset and not msg
+                if subset is not None and not msg
                 else f"{msg}: {na_counts}"
             )
         return self._obj
@@ -1521,7 +1523,7 @@ class DataFrameChecks:
             data_modified = _apply_modifications(self._obj, fn=fn, subset=subset)
 
             if not msg:
-                if subset:
+                if subset is not None:
                     if isinstance(subset, str):
                         msg = f"🌟 Unique values in '{subset}'"
                     elif across_columns:
@@ -1838,7 +1840,7 @@ class DataFrameChecks:
             check_fn=lambda df: df.tail(n),
             modify_fn=fn,
             subset=subset,
-            msg=msg if msg else f"⬇️ Last {n} rows",
+            msg=msg if msg is not None else f"⬇️ Last {n} rows",
         )
         return self._obj
 
