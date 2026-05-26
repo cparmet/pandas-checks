@@ -2,6 +2,8 @@
 
 from typing import Any, Callable, Union
 
+import pandas as pd
+
 from .display import _display_check
 from .options import get_mode
 from .utils import SubsetTypes
@@ -26,6 +28,14 @@ def _apply_modifications(
         raise TypeError(
             f"Expected lambda function for argument `fn` (callable type), but received type {type(fn)}"
         )
+
+    if isinstance(subset, list | tuple | set | pd.Index):
+        # Reminder: We don't use Sequence because that would include str, and "" is a valid column name for `subset`
+        if len(subset) == 0:
+            raise ValueError(
+                f"Pandas Checks received empty sequence for subset: {subset}"
+            )
+
     return fn(data)[subset] if subset is not None else fn(data)
 
 
@@ -49,6 +59,7 @@ def _check_data(
         None
     """
     if get_mode()["enable_checks"]:
+
         (
             # 3. Report the result
             _display_check(
