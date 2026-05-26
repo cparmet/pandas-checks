@@ -856,9 +856,8 @@ class DataFrameChecks:
             subset = self._obj.columns.tolist()
         elif isinstance(subset, str):
             subset = [subset]
-        elif isinstance(
-            subset, tuple
-        ):  # Single multiindex, like in brain_networks.csv test case
+        elif isinstance(subset, tuple):
+            # Single multiindex, like in brain_networks.csv test case
             subset = [subset]
 
         found_dtypes = ", ".join([t.name for t in self._obj[subset].dtypes.values])

@@ -29,7 +29,7 @@ def _apply_modifications(
             f"Expected lambda function for argument `fn` (callable type), but received type {type(fn)}"
         )
 
-    if isinstance(subset, list | tuple | set | pd.Index):
+    if isinstance(subset, list | pd.Index):
         # Reminder: We don't use Sequence because that would include str, and "" is a valid column name for `subset`
         if len(subset) == 0:
             raise ValueError(
