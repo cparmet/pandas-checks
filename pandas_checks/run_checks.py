@@ -17,7 +17,7 @@ def _apply_modifications(
     Args:
         data: May be any Pandas DataFrame, Series, string, or other variable
         fn: An optional lambda function to modify `data`
-        subset: Columns to subset after applying modifications
+        subset: Optional column name or names to filter the data to. Applied after fn.
 
     Returns:
         Modified and optionally subsetted data object.  If all arguments are defaults, data is returned unchanged.
@@ -42,7 +42,7 @@ def _check_data(
         data: A Pandas DataFrame, Series, string, or other variable
         check_fn: Function to apply to data for checking. For example if we're running .check.value_counts(), this function would appply the Pandas value_counts() method
         modify_fn: Optional function to modify data _before_ checking
-        subset: Optional list of columns or name of column to subset data before running check_fn
+        subset: Optional column name or names to select before running check_fn
         msg: Name to use when displaying check result
 
     Returns:

@@ -497,7 +497,7 @@ class DataFrameChecks:
         Args:
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
-            subset: Optional, which column or columns to check the condition against.`
+            subset: Optional, which column or columns to check the condition against.
             assert_no_nulls: Whether to also enforce that data has no nulls.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
@@ -949,7 +949,7 @@ class DataFrameChecks:
         Args:
             msg: Optionally customize the text displayed before the result of the check.
             fn: An optional lambda function to apply to the DataFrame before printing columns. Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string to select a subset of columns before printing their names. Applied after fn.
+            subset: Optional column name or names to select before printing their names. Applied after fn.
 
         Returns:
             The original DataFrame, unchanged.
@@ -984,7 +984,7 @@ class DataFrameChecks:
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas describe(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string to select a subset of columns before running Pandas describe(). Applied after fn.
+            subset: Optional column name or names to select before running Pandas describe(). Applied after fn.
             msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas describe() method.
 
@@ -1040,7 +1040,7 @@ class DataFrameChecks:
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas dtypes. Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string to select a subset of columns before running Pandas .dtypes. Applied after fn.
+            subset: Optional column name or names to select before running Pandas .dtypes. Applied after fn.
             msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
@@ -1097,7 +1097,7 @@ class DataFrameChecks:
 
         Args:
             fn: A lambda function to apply to the DataFrame. Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string to select a subset of columns before running Pandas describe(). Applied after fn.
+            subset: Optional column name or names to select before running Pandas describe(). Applied after fn.
             msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
@@ -1151,7 +1151,7 @@ class DataFrameChecks:
         Args:
             n: The number of rows to display.
             fn: An optional lambda function to apply to the DataFrame before running Pandas head(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string to select a subset of columns before running Pandas head(). Applied after fn.
+            subset: Optional column name or names to select before running Pandas head(). Applied after fn.
             msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
@@ -1191,7 +1191,7 @@ class DataFrameChecks:
             ```
 
         Args:
-            subset: An optional list of column names or a string to select a subset of columns before running Pandas hist(). Applied after fn.
+            subset: Optional column name or names to select before running Pandas hist(). Applied after fn.
             fn: An optional lambda function to apply to the DataFrame before running Pandas hist(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas hist() method.
@@ -1240,7 +1240,7 @@ class DataFrameChecks:
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas info(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string to select a subset of columns before running Pandas info(). Applied after fn.
+            subset: Optional column name or names to select before running Pandas info(). Applied after fn.
             msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas info() method.
 
@@ -1281,7 +1281,7 @@ class DataFrameChecks:
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas memory_usage(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string to select a subset of columns before running Pandas memory_usage(). Applied after fn.
+            subset: Optional column name or names to select before running Pandas memory_usage(). Applied after fn.
             msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas info() method.
 
@@ -1319,7 +1319,7 @@ class DataFrameChecks:
         Args:
             msg: Optionally customize the text displayed before the result of the check.
             fn: An optional lambda function to apply to the DataFrame before counting the number of columns. Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string to select a subset of columns before counting the number of columns. Applied after fn.
+            subset: Optional column name or names to select before counting the number of columns. Applied after fn.
 
         Returns:
             The original DataFrame, unchanged.
@@ -1354,7 +1354,7 @@ class DataFrameChecks:
             ```
 
         Args:
-            subset: An optional list of column names or a string to select a subset of columns before counting duplicate rows. Applied after fn.
+            subset: Optional column name or names to select before counting duplicate rows. Applied after fn.
             fn: An optional lambda function to apply to the DataFrame before counting the number of duplicates. Example: `lambda df: df.shape[0]>10`. Applied before subset.
             msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas duplicated() method.
@@ -1403,7 +1403,7 @@ class DataFrameChecks:
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before counting the number of rows with a null. Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string to select a subset of columns before counting nulls.
+            subset: Optional column name or names to select before counting nulls.
             by_column: If True, count null values with each column separately. If False, count rows with a null value in any column. Applied after fn.
             msg: Optionally customize the text displayed before the result of the check.
 
@@ -1454,7 +1454,7 @@ class DataFrameChecks:
         Args:
             msg: Optionally customize the text displayed before the result of the check.
             fn: An optional lambda function to apply to the DataFrame before counting the number of rows. Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string name of one column to limit which columns are considered when counting rows. Applied after fn.
+            subset: Optional column name or names to select before counting rows. Applied after fn.
 
         Returns:
             The original DataFrame, unchanged.
@@ -1495,7 +1495,7 @@ class DataFrameChecks:
             ```
 
         Args:
-            subset: The optional name of a column or columns to count uniques in. If None, and column is None, will include all columns. Applied after fn.
+            subset: Optional column name or names to select before counting uniques. If None, and column is None, will include all columns. Applied after fn.
             column: The optional name of a column to count uniques in. Applied after fn. Kept for backwards compatibility.
             across_columns: When dataframe has multiple columns (after applying subset), whether we should
                 - count the unique values in each column separately (False), the standard Pandas DataFrame nunique()
@@ -1576,7 +1576,7 @@ class DataFrameChecks:
             ```
 
         Args:
-            subset: An optional list of column names or a string name of one column to limit which columns are plotted. Applied after fn.
+            subset: Optional column name or names to select before plotting. Applied after fn.
             fn: An optional lambda function to apply to the DataFrame before running Pandas plot(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             msg: An optional title for the plot.
             **kwargs: Optional, additional arguments that are accepted by Pandas plot() method.
@@ -1627,7 +1627,7 @@ class DataFrameChecks:
         Args:
             object: Object to print. Can be anything printable: str, int, list, another DataFrame, etc. If None, print the DataFrame's head (with `max_rows` rows).
             fn: An optional lambda function to apply to the DataFrame before printing `object`. Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string name of one column to limit which columns are printed. Applied after fn.
+            subset: Optional column name or names to limit which data are printed. Applied after fn.
             msg: Optionally customize the text displayed before the result of the check.
             max_rows: Maximum number of rows to print if object=None.
 
@@ -1788,7 +1788,7 @@ class DataFrameChecks:
         Args:
             msg: Optionally customize the text displayed before the result of the check.
             fn: An optional lambda function to apply to the DataFrame before running Pandas `shape`. Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string name of one column to limit which columns are considered when printing the shape. Applied after fn.
+            subset: Optional column name or names to limit which columns are considered when printing the shape. Applied after fn.
 
         Returns:
             The original DataFrame, unchanged.
@@ -1827,7 +1827,7 @@ class DataFrameChecks:
         Args:
             n: Number of rows to show.
             fn: An optional lambda function to apply to the DataFrame before running Pandas tail(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string name of one column to limit which columns are displayed. Applied after fn.
+            subset: Optional column name or names to select before displaying tail. Applied after fn.
             msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
@@ -1973,7 +1973,7 @@ class DataFrameChecks:
             path: Path to write the file to.
             format: Optional file format to force for the export. If None, format is inferred from the file's extension in `path`.
             fn: An optional lambda function to apply to the DataFrame before exporting. Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string name of one column to limit which columns are exported. Applied after fn.
+            subset: Optional column name or names to select before exporting data. Applied after fn.
             verbose: Whether to print a message when the file is written.
             **kwargs: Optional, additional keyword arguments to pass to the Pandas export function (e.g. `.to_csv()`).
 
