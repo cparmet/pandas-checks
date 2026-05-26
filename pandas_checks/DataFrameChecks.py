@@ -1168,7 +1168,7 @@ class DataFrameChecks:
 
     def hist(
         self,
-        subset: SubsetTypes = [],
+        subset: SubsetTypes = None,
         fn: Callable = lambda df: df,
         msg: Union[str, None] = None,
         **kwargs: Any,
@@ -1517,7 +1517,7 @@ class DataFrameChecks:
                 )
 
             # Coalesce subset and column
-            if column:
+            if column is not None:
                 subset = column
 
             data_modified = _apply_modifications(self._obj, fn=fn, subset=subset)
