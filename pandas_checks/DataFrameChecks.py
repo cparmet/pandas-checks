@@ -46,7 +46,7 @@ from .options import (
 )
 from .run_checks import _apply_modifications, _check_data
 from .timer import print_time_elapsed
-from .utils import _has_nulls, _is_type, _lambda_to_string
+from .utils import SubsetTypes, _has_nulls, _is_type, _lambda_to_string
 
 
 @pd.api.extensions.register_dataframe_accessor("check")
@@ -58,7 +58,7 @@ class DataFrameChecks:
         self,
         fail_message: str = " ㄨ Assert all nulls failed ",
         pass_message: str = " ✔️ Assert all nulls passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
@@ -106,7 +106,7 @@ class DataFrameChecks:
         condition: Callable,
         fail_message: str = " ㄨ Assertion failed ",
         pass_message: str = " ✔️ Assertion passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         message_shows_condition: bool = True,
@@ -227,7 +227,7 @@ class DataFrameChecks:
         self,
         fail_message: Union[str, None] = None,
         pass_message: str = " ✔️ Assert datetime passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
@@ -271,7 +271,7 @@ class DataFrameChecks:
         self,
         fail_message: Union[str, None] = None,
         pass_message: str = " ✔️ Assert float passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
@@ -318,7 +318,7 @@ class DataFrameChecks:
         fail_message: str = " ㄨ Assert minimum failed ",
         pass_message: str = " ✔️ Assert minimum passed ",
         or_equal_to: bool = False,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
@@ -375,7 +375,7 @@ class DataFrameChecks:
         self,
         fail_message: Union[str, None] = None,
         pass_message: str = " ✔️ Assert integeer passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
@@ -421,7 +421,7 @@ class DataFrameChecks:
         fail_message: str = " ㄨ Assert maximum failed ",
         pass_message: str = " ✔️ Assert maximum passed ",
         or_equal_to: bool = False,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
@@ -477,7 +477,7 @@ class DataFrameChecks:
         self,
         fail_message: str = " ㄨ Assert negative failed ",
         pass_message: str = " ✔️ Assert negative passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         assert_no_nulls: bool = True,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
@@ -533,7 +533,7 @@ class DataFrameChecks:
         self,
         fail_message: str = " ㄨ Assert no nulls failed ",
         pass_message: str = " ✔️ Assert no nulls passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
@@ -622,7 +622,7 @@ class DataFrameChecks:
         self,
         fail_message: str = " ㄨ Assert positive failed ",
         pass_message: str = " ✔️ Assert positive passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         assert_no_nulls: bool = True,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
@@ -732,7 +732,7 @@ class DataFrameChecks:
         self,
         fail_message: Union[str, None] = None,
         pass_message: str = " ✔️ Assert string passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
@@ -776,7 +776,7 @@ class DataFrameChecks:
         self,
         fail_message: Union[str, None] = None,
         pass_message: str = " ✔️ Assert timedelta passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
@@ -821,7 +821,7 @@ class DataFrameChecks:
         dtype: Type[Any],
         fail_message: Union[str, None] = None,
         pass_message: str = " ✔️ Assert type passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
@@ -885,7 +885,7 @@ class DataFrameChecks:
         self,
         fail_message: str = " ㄨ Assert unique failed ",
         pass_message: str = " ✔️ Assert unique passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
@@ -934,7 +934,7 @@ class DataFrameChecks:
         self,
         msg: Union[str, None] = "🏛️ Columns",
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
     ) -> pd.DataFrame:
         """Prints the column names of a DataFrame, without modifying the DataFrame itself.
 
@@ -966,7 +966,7 @@ class DataFrameChecks:
     def describe(
         self,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         msg: Union[str, None] = "📏 Distributions",
         **kwargs: Any,
     ) -> pd.DataFrame:
@@ -1025,7 +1025,7 @@ class DataFrameChecks:
     def dtypes(
         self,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         msg: Union[str, None] = "🗂️ Data types",
     ) -> pd.DataFrame:
         """Displays the data types of a DataFrame's columns without modifying the DataFrame itself.
@@ -1081,7 +1081,7 @@ class DataFrameChecks:
     def function(
         self,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         msg: Union[str, None] = None,
     ) -> pd.DataFrame:
         """Applies an arbitrary function on a DataFrame and shows the result, without modifying the DataFrame itself.
@@ -1133,7 +1133,7 @@ class DataFrameChecks:
         self,
         n: int = 5,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         msg: Union[str, None] = None,
     ) -> pd.DataFrame:
         """Displays the first n rows of a DataFrame, without modifying the DataFrame itself.
@@ -1168,7 +1168,7 @@ class DataFrameChecks:
 
     def hist(
         self,
-        subset: Union[str, List, None] = [],
+        subset: SubsetTypes = [],
         fn: Callable = lambda df: df,
         msg: Union[str, None] = None,
         **kwargs: Any,
@@ -1222,7 +1222,7 @@ class DataFrameChecks:
     def info(
         self,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         msg: Union[str, None] = "ℹ️ Info",
         **kwargs: Any,
     ) -> pd.DataFrame:
@@ -1263,7 +1263,7 @@ class DataFrameChecks:
     def memory_usage(
         self,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         msg: Union[str, None] = "💾 Memory usage",
         **kwargs: Any,
     ) -> pd.DataFrame:
@@ -1304,7 +1304,7 @@ class DataFrameChecks:
         self,
         msg: Union[str, None] = "🏛️ Columns",
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
     ) -> pd.DataFrame:
         """Displays the number of columns in a DataFrame, without modifying the DataFrame itself.
 
@@ -1335,7 +1335,7 @@ class DataFrameChecks:
 
     def ndups(
         self,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         fn: Callable = lambda df: df,
         msg: Union[str, None] = None,
         **kwargs: Any,
@@ -1378,7 +1378,7 @@ class DataFrameChecks:
     def nnulls(
         self,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         by_column: bool = True,
         msg: Union[str, None] = "👻 Rows with NaNs",
     ) -> pd.DataFrame:
@@ -1439,7 +1439,7 @@ class DataFrameChecks:
         self,
         msg: Union[str, None] = "☰ Rows",
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
     ) -> pd.DataFrame:
         """Displays the number of rows in a DataFrame, without modifying the DataFrame itself.
 
@@ -1470,7 +1470,7 @@ class DataFrameChecks:
 
     def nunique(
         self,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         column: Union[str, None] = None,
         across_columns: bool = False,
         fn: Callable = lambda df: df,
@@ -1558,7 +1558,7 @@ class DataFrameChecks:
 
     def plot(
         self,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         fn: Callable = lambda df: df,
         msg: Union[str, None] = "",
         **kwargs: Any,
@@ -1601,7 +1601,7 @@ class DataFrameChecks:
         self,
         object: Any = None,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         msg: Union[str, None] = None,
         max_rows: int = 10,
     ) -> pd.DataFrame:
@@ -1772,7 +1772,7 @@ class DataFrameChecks:
         self,
         msg: Union[str, None] = "📐 Shape",
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
     ) -> pd.DataFrame:
         """Displays the Dataframe's dimensions, without modifying the DataFrame itself.
 
@@ -1809,7 +1809,7 @@ class DataFrameChecks:
         self,
         n: int = 5,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         msg: Union[str, None] = None,
     ) -> pd.DataFrame:
         """Displays the last n rows of the DataFrame, without modifying the DataFrame itself.
@@ -1937,7 +1937,7 @@ class DataFrameChecks:
         path: str,
         format: Union[str, None] = None,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         verbose: bool = False,
         **kwargs: Any,
     ) -> pd.DataFrame:

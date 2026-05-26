@@ -1,15 +1,16 @@
 """Utilities for running Pandas Checks data checks."""
 
-from typing import Any, Callable, List, Union
+from typing import Any, Callable, Union
 
 from .display import _display_check
 from .options import get_mode
+from .utils import SubsetTypes
 
 
 def _apply_modifications(
     data: Any,
     fn: Callable = lambda df: df,
-    subset: Union[str, List, None] = None,
+    subset: SubsetTypes = None,
 ) -> Any:
     """Applies user's modifications to a data object.
 
@@ -32,7 +33,7 @@ def _check_data(
     data: Any,
     check_fn: Callable = lambda df: df,
     modify_fn: Callable = lambda df: df,
-    subset: Union[str, List, None] = None,
+    subset: SubsetTypes = None,
     msg: Union[str, None] = None,
 ) -> None:
     """Runs a selected check on a data object
