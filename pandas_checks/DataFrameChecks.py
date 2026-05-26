@@ -1162,7 +1162,7 @@ class DataFrameChecks:
             check_fn=lambda df: df.head(n),
             modify_fn=fn,
             subset=subset,
-            msg=msg if msg else f"⬆️ First {n} rows",
+            msg=msg if msg is not None else f"⬆️ First {n} rows",
         )
         return self._obj
 
@@ -1202,7 +1202,7 @@ class DataFrameChecks:
         Note:
             Only renders in interactive mode (IPython/Jupyter), not in terminal.
         """
-        if not msg:
+        if msg is None:
             if isinstance(subset, list) and len(subset) == 1:
                 msg = f"📏 Distribution of '{subset[0]}'"
             elif isinstance(subset, str):
@@ -1248,7 +1248,7 @@ class DataFrameChecks:
             The original DataFrame, unchanged.
         """
         if get_mode()["enable_checks"]:
-            if msg:
+            if msg is not None:
                 _display_table_title(msg)
             df_modified = _apply_modifications(self._obj, fn, subset)
             # Get the Pandas info() result as a string
@@ -1368,7 +1368,7 @@ class DataFrameChecks:
             modify_fn=fn,
             subset=subset,
             msg=msg
-            if msg
+            if msg is not None
             else f"👯‍♂️ Rows with duplication in '{subset}'"
             if subset is not None
             else "👯‍♂️ Duplicated rows",
@@ -1425,14 +1425,14 @@ class DataFrameChecks:
             _check_data(
                 na_counts,
                 msg=f"👻 Rows with NaNs in {subset}"
-                if subset is not None and not msg
+                if subset is not None and msg is None
                 else msg,
             )
         else:
             # Report on one line
             _display_line(
                 (f"👻 Rows with NaNs in {subset}: {na_counts} out of {data.shape[0]}")
-                if subset is not None and not msg
+                if subset is not None and msg is None
                 else f"{msg}: {na_counts}"
             )
         return self._obj
@@ -1522,7 +1522,7 @@ class DataFrameChecks:
 
             data_modified = _apply_modifications(self._obj, fn=fn, subset=subset)
 
-            if not msg:
+            if msg is None:
                 if subset is not None:
                     if isinstance(subset, str):
                         msg = f"🌟 Unique values in '{subset}'"
