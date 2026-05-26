@@ -1889,7 +1889,8 @@ class DataFrameChecks:
 
     def value_counts(
         self,
-        column: str,
+        subset: SubsetTypes = None,
+        column: Union[str, None] = None,
         fn: Callable = lambda df: df,
         max_rows: int = 10,
         msg: Union[str, None] = None,
@@ -1908,7 +1909,8 @@ class DataFrameChecks:
             ```
 
         Args:
-            column: Column to check for value counts.
+            subset: Optional column name or names to select before exporting data. Applied after fn.
+            column: Column to check for value counts. Applied after fn. Kept for backwards compatibility.
             max_rows: Maximum number of rows to show in the value counts.
             fn: An optional lambda function to apply to the DataFrame before running Pandas value_counts(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             msg: Optionally customize the text displayed before the result of the check.
@@ -1921,17 +1923,32 @@ class DataFrameChecks:
             `fn` is applied to the dataframe _before_ selecting `column`. If you want to select the column before modifying it, set `column=None` and start `fn` with a column selection, i.e. `fn=lambda df: df["my_column"].stuff()`
         """
         if get_mode()["enable_checks"]:
-            (
-                # Apply fn, then filter to `column`
-                _apply_modifications(self._obj, fn=fn, subset=column)
-                # Use SeriesChecks method
-                .check.value_counts(
-                    max_rows=max_rows,
-                    fn=lambda s: s,  # Identity function
-                    msg=msg,
-                    **kwargs,
-                )
-            )  # fmt: skip
+
+            # Coalesce subset and column
+            if column is not None:
+                subset = column
+
+            if msg is None:
+                if isinstance(subset, str):
+                    msg = f"🧮 Value counts in '{subset}'"
+                elif subset is None:
+                    msg = "🧮 Value counts"
+                elif isinstance(subset, str | pd.Index):
+                    if len(subset) > 0:
+                        msg = f"🧮 Value counts in '{subset}'"
+                else:
+                    msg = "🧮 Value counts"
+                if max_rows and max_rows < len(self._obj):
+                    # Str is for mypy not understanding msg can't be None by this point
+                    msg = str(msg) + f", first {max_rows} values"
+
+            _check_data(
+                self._obj,
+                check_fn=lambda df: df.value_counts(**kwargs).head(max_rows),
+                modify_fn=fn,
+                subset=subset,
+                msg=msg,
+            )
         return self._obj
 
     def write(
