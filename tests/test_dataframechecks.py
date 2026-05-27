@@ -351,7 +351,7 @@ def test_DataFrameChecks_unique(iris, capsys):
     )
 
 
-def test_DataFrameChecks_value_counts(iris, capsys):
+def test_DataFrameChecks_value_counts_column(iris, capsys):
     """Test that kwargs are getting passed to Pandas's value_counts()"""
     iris.check.value_counts(
         column="species",
@@ -374,6 +374,21 @@ def test_DataFrameChecks_value_counts(iris, capsys):
     versicolor    0.333333
     virginica     0.333333\n""",
     ]
+
+
+def test_DataFrameChecks_value_counts_subset(iris, capsys):
+    iris.check.value_counts(subset=["species", "petal_length"], msg="Test", max_rows=2)
+    # assert capsys.readouterr().out == """\nTest
+    # species  petal_length
+    # setosa        1.4             13
+    #     1.5             13\n"""
+    assert (
+        capsys.readouterr().out
+        == """\nTest
+    species  petal_length
+    setosa   1.4             13
+             1.5             13\n"""
+    )
 
 
 @pytest.mark.parametrize(

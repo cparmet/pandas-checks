@@ -3,12 +3,15 @@ Utility functions for the pandas_checks package.
 """
 from datetime import datetime, timedelta
 from inspect import getsourcelines
-from typing import Any, Callable, Type, Union
+from typing import Any, Callable, Type, TypeAlias, Union
 
 import pandas as pd
 from pandas.core.groupby.groupby import DataError
 
 from .display import _display_line
+
+# set and tuple are not valid for slicing in Pandas
+SubsetTypes: TypeAlias = Union[list, str, int, bool, slice, pd.Index, None]
 
 
 def _lambda_to_string(lambda_func: Callable) -> str:

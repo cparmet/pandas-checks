@@ -46,7 +46,7 @@ from .options import (
 )
 from .run_checks import _apply_modifications, _check_data
 from .timer import print_time_elapsed
-from .utils import _has_nulls, _is_type, _lambda_to_string
+from .utils import SubsetTypes, _has_nulls, _is_type, _lambda_to_string
 
 
 @pd.api.extensions.register_dataframe_accessor("check")
@@ -58,7 +58,7 @@ class DataFrameChecks:
         self,
         fail_message: str = " ㄨ Assert all nulls failed ",
         pass_message: str = " ✔️ Assert all nulls passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
@@ -106,7 +106,7 @@ class DataFrameChecks:
         condition: Callable,
         fail_message: str = " ㄨ Assertion failed ",
         pass_message: str = " ✔️ Assertion passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         message_shows_condition: bool = True,
@@ -158,7 +158,7 @@ class DataFrameChecks:
             raise TypeError(
                 f"Expected condition to be a lambda function (callable type) but received type {type(condition)}"
             )
-        data = self._obj[subset] if subset else self._obj
+        data = self._obj[subset] if subset is not None else self._obj
         result = condition(data)
         condition_str = _lambda_to_string(condition)
 
@@ -227,7 +227,7 @@ class DataFrameChecks:
         self,
         fail_message: Union[str, None] = None,
         pass_message: str = " ✔️ Assert datetime passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
@@ -271,7 +271,7 @@ class DataFrameChecks:
         self,
         fail_message: Union[str, None] = None,
         pass_message: str = " ✔️ Assert float passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
@@ -318,7 +318,7 @@ class DataFrameChecks:
         fail_message: str = " ㄨ Assert minimum failed ",
         pass_message: str = " ✔️ Assert minimum passed ",
         or_equal_to: bool = False,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
@@ -375,7 +375,7 @@ class DataFrameChecks:
         self,
         fail_message: Union[str, None] = None,
         pass_message: str = " ✔️ Assert integeer passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
@@ -421,7 +421,7 @@ class DataFrameChecks:
         fail_message: str = " ㄨ Assert maximum failed ",
         pass_message: str = " ✔️ Assert maximum passed ",
         or_equal_to: bool = False,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
@@ -477,7 +477,7 @@ class DataFrameChecks:
         self,
         fail_message: str = " ㄨ Assert negative failed ",
         pass_message: str = " ✔️ Assert negative passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         assert_no_nulls: bool = True,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
@@ -497,7 +497,7 @@ class DataFrameChecks:
         Args:
             fail_message: Message to display if the condition fails.
             pass_message: Message to display if the condition passes.
-            subset: Optional, which column or columns to check the condition against.`
+            subset: Optional, which column or columns to check the condition against.
             assert_no_nulls: Whether to also enforce that data has no nulls.
             raise_exception: Whether to raise an exception if the condition fails.
             exception_to_raise: The exception to raise if the condition fails and raise_exception is True.
@@ -509,7 +509,7 @@ class DataFrameChecks:
 
         if assert_no_nulls:
             if _has_nulls(
-                data=self._obj[subset] if subset else self._obj,
+                data=self._obj[subset] if subset is not None else self._obj,
                 fail_message=fail_message,
                 raise_exception=raise_exception,
                 exception_to_raise=exception_to_raise,
@@ -533,7 +533,7 @@ class DataFrameChecks:
         self,
         fail_message: str = " ㄨ Assert no nulls failed ",
         pass_message: str = " ✔️ Assert no nulls passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
@@ -622,7 +622,7 @@ class DataFrameChecks:
         self,
         fail_message: str = " ㄨ Assert positive failed ",
         pass_message: str = " ✔️ Assert positive passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         assert_no_nulls: bool = True,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
@@ -654,7 +654,7 @@ class DataFrameChecks:
         """
         if assert_no_nulls:
             if _has_nulls(
-                data=self._obj[subset] if subset else self._obj,
+                data=self._obj[subset] if subset is not None else self._obj,
                 fail_message=fail_message,
                 raise_exception=raise_exception,
                 exception_to_raise=exception_to_raise,
@@ -732,7 +732,7 @@ class DataFrameChecks:
         self,
         fail_message: Union[str, None] = None,
         pass_message: str = " ✔️ Assert string passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
@@ -776,7 +776,7 @@ class DataFrameChecks:
         self,
         fail_message: Union[str, None] = None,
         pass_message: str = " ✔️ Assert timedelta passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
@@ -821,7 +821,7 @@ class DataFrameChecks:
         dtype: Type[Any],
         fail_message: Union[str, None] = None,
         pass_message: str = " ✔️ Assert type passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = TypeError,
         verbose: bool = False,
@@ -852,13 +852,12 @@ class DataFrameChecks:
             The original DataFrame, unchanged.
         """
 
-        if not subset:
+        if subset is None:
             subset = self._obj.columns.tolist()
-        elif isinstance(subset, str):
+        elif isinstance(subset, str | int | bool):
             subset = [subset]
-        elif isinstance(
-            subset, tuple
-        ):  # Single multiindex, like in brain_networks.csv test case
+        elif isinstance(subset, tuple):
+            # Single multiindex, like in brain_networks.csv test case
             subset = [subset]
 
         found_dtypes = ", ".join([t.name for t in self._obj[subset].dtypes.values])
@@ -885,7 +884,7 @@ class DataFrameChecks:
         self,
         fail_message: str = " ㄨ Assert unique failed ",
         pass_message: str = " ✔️ Assert unique passed ",
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         raise_exception: bool = True,
         exception_to_raise: Type[BaseException] = DataError,
         verbose: bool = False,
@@ -934,7 +933,7 @@ class DataFrameChecks:
         self,
         msg: Union[str, None] = "🏛️ Columns",
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
     ) -> pd.DataFrame:
         """Prints the column names of a DataFrame, without modifying the DataFrame itself.
 
@@ -949,7 +948,7 @@ class DataFrameChecks:
         Args:
             msg: Optionally customize the text displayed before the result of the check.
             fn: An optional lambda function to apply to the DataFrame before printing columns. Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string to select a subset of columns before printing their names. Applied after fn.
+            subset: Optional column name or names to select before printing their names. Applied after fn.
 
         Returns:
             The original DataFrame, unchanged.
@@ -966,7 +965,7 @@ class DataFrameChecks:
     def describe(
         self,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         msg: Union[str, None] = "📏 Distributions",
         **kwargs: Any,
     ) -> pd.DataFrame:
@@ -984,7 +983,7 @@ class DataFrameChecks:
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas describe(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string to select a subset of columns before running Pandas describe(). Applied after fn.
+            subset: Optional column name or names to select before running Pandas describe(). Applied after fn.
             msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas describe() method.
 
@@ -1025,7 +1024,7 @@ class DataFrameChecks:
     def dtypes(
         self,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         msg: Union[str, None] = "🗂️ Data types",
     ) -> pd.DataFrame:
         """Displays the data types of a DataFrame's columns without modifying the DataFrame itself.
@@ -1040,7 +1039,7 @@ class DataFrameChecks:
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas dtypes. Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string to select a subset of columns before running Pandas .dtypes. Applied after fn.
+            subset: Optional column name or names to select before running Pandas .dtypes. Applied after fn.
             msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
@@ -1081,7 +1080,7 @@ class DataFrameChecks:
     def function(
         self,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         msg: Union[str, None] = None,
     ) -> pd.DataFrame:
         """Applies an arbitrary function on a DataFrame and shows the result, without modifying the DataFrame itself.
@@ -1097,7 +1096,7 @@ class DataFrameChecks:
 
         Args:
             fn: A lambda function to apply to the DataFrame. Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string to select a subset of columns before running Pandas describe(). Applied after fn.
+            subset: Optional column name or names to select before running Pandas describe(). Applied after fn.
             msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
@@ -1133,7 +1132,7 @@ class DataFrameChecks:
         self,
         n: int = 5,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         msg: Union[str, None] = None,
     ) -> pd.DataFrame:
         """Displays the first n rows of a DataFrame, without modifying the DataFrame itself.
@@ -1151,7 +1150,7 @@ class DataFrameChecks:
         Args:
             n: The number of rows to display.
             fn: An optional lambda function to apply to the DataFrame before running Pandas head(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string to select a subset of columns before running Pandas head(). Applied after fn.
+            subset: Optional column name or names to select before running Pandas head(). Applied after fn.
             msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
@@ -1162,13 +1161,13 @@ class DataFrameChecks:
             check_fn=lambda df: df.head(n),
             modify_fn=fn,
             subset=subset,
-            msg=msg if msg else f"⬆️ First {n} rows",
+            msg=msg if msg is not None else f"⬆️ First {n} rows",
         )
         return self._obj
 
     def hist(
         self,
-        subset: Union[str, List, None] = [],
+        subset: SubsetTypes = None,
         fn: Callable = lambda df: df,
         msg: Union[str, None] = None,
         **kwargs: Any,
@@ -1191,7 +1190,7 @@ class DataFrameChecks:
             ```
 
         Args:
-            subset: An optional list of column names or a string to select a subset of columns before running Pandas hist(). Applied after fn.
+            subset: Optional column name or names to select before running Pandas hist(). Applied after fn.
             fn: An optional lambda function to apply to the DataFrame before running Pandas hist(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas hist() method.
@@ -1202,14 +1201,14 @@ class DataFrameChecks:
         Note:
             Only renders in interactive mode (IPython/Jupyter), not in terminal.
         """
-        if not msg:
+        if msg is None:
             if isinstance(subset, list) and len(subset) == 1:
-                msg = f"📏 Distribution of '{subset[0]}'"
-            elif isinstance(subset, str):
-                msg = f"📏 Distribution of '{subset}'"
+                msg = f"📏 Distribution of {subset[0]}"
+            elif isinstance(subset, str | int | bool):
+                msg = f"📏 Distribution of {subset}"
             elif "column" in kwargs:
                 col_name = kwargs["column"]
-                msg = f"📏 Distribution of '{col_name}'"
+                msg = f"📏 Distribution of {col_name}"
             else:
                 msg = "📏 Distributions"
         # Only display if in IPython/Jupyter, or we'd just print the title
@@ -1222,7 +1221,7 @@ class DataFrameChecks:
     def info(
         self,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         msg: Union[str, None] = "ℹ️ Info",
         **kwargs: Any,
     ) -> pd.DataFrame:
@@ -1240,7 +1239,7 @@ class DataFrameChecks:
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas info(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string to select a subset of columns before running Pandas info(). Applied after fn.
+            subset: Optional column name or names to select before running Pandas info(). Applied after fn.
             msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas info() method.
 
@@ -1248,7 +1247,7 @@ class DataFrameChecks:
             The original DataFrame, unchanged.
         """
         if get_mode()["enable_checks"]:
-            if msg:
+            if msg is not None:
                 _display_table_title(msg)
             df_modified = _apply_modifications(self._obj, fn, subset)
             # Get the Pandas info() result as a string
@@ -1263,7 +1262,7 @@ class DataFrameChecks:
     def memory_usage(
         self,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         msg: Union[str, None] = "💾 Memory usage",
         **kwargs: Any,
     ) -> pd.DataFrame:
@@ -1281,7 +1280,7 @@ class DataFrameChecks:
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before running Pandas memory_usage(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string to select a subset of columns before running Pandas memory_usage(). Applied after fn.
+            subset: Optional column name or names to select before running Pandas memory_usage(). Applied after fn.
             msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas info() method.
 
@@ -1304,7 +1303,7 @@ class DataFrameChecks:
         self,
         msg: Union[str, None] = "🏛️ Columns",
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
     ) -> pd.DataFrame:
         """Displays the number of columns in a DataFrame, without modifying the DataFrame itself.
 
@@ -1319,7 +1318,7 @@ class DataFrameChecks:
         Args:
             msg: Optionally customize the text displayed before the result of the check.
             fn: An optional lambda function to apply to the DataFrame before counting the number of columns. Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string to select a subset of columns before counting the number of columns. Applied after fn.
+            subset: Optional column name or names to select before counting the number of columns. Applied after fn.
 
         Returns:
             The original DataFrame, unchanged.
@@ -1335,7 +1334,7 @@ class DataFrameChecks:
 
     def ndups(
         self,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         fn: Callable = lambda df: df,
         msg: Union[str, None] = None,
         **kwargs: Any,
@@ -1354,7 +1353,7 @@ class DataFrameChecks:
             ```
 
         Args:
-            subset: An optional list of column names or a string to select a subset of columns before counting duplicate rows. Applied after fn.
+            subset: Optional column name or names to select before counting duplicate rows. Applied after fn.
             fn: An optional lambda function to apply to the DataFrame before counting the number of duplicates. Example: `lambda df: df.shape[0]>10`. Applied before subset.
             msg: Optionally customize the text displayed before the result of the check.
             **kwargs: Optional, additional arguments that are accepted by Pandas duplicated() method.
@@ -1368,9 +1367,9 @@ class DataFrameChecks:
             modify_fn=fn,
             subset=subset,
             msg=msg
-            if msg
-            else f"👯‍♂️ Rows with duplication in '{subset}'"
-            if subset
+            if msg is not None
+            else f"👯‍♂️ Rows with duplication in {subset}"
+            if subset is not None
             else "👯‍♂️ Duplicated rows",
         )
         return self._obj
@@ -1378,7 +1377,7 @@ class DataFrameChecks:
     def nnulls(
         self,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         by_column: bool = True,
         msg: Union[str, None] = "👻 Rows with NaNs",
     ) -> pd.DataFrame:
@@ -1403,7 +1402,7 @@ class DataFrameChecks:
 
         Args:
             fn: An optional lambda function to apply to the DataFrame before counting the number of rows with a null. Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string to select a subset of columns before counting nulls.
+            subset: Optional column name or names to select before counting nulls.
             by_column: If True, count null values with each column separately. If False, count rows with a null value in any column. Applied after fn.
             msg: Optionally customize the text displayed before the result of the check.
 
@@ -1420,17 +1419,19 @@ class DataFrameChecks:
             if not by_column
             else pd.Series(data.isna().sum())
         )
-        if isinstance(
-            na_counts, (pd.DataFrame, pd.Series)
-        ):  # Report result as a pandas object
+        if isinstance(na_counts, (pd.DataFrame, pd.Series)):
+            # Report result as a pandas object
             _check_data(
                 na_counts,
-                msg=f"👻 Rows with NaNs in {subset}" if subset and not msg else msg,
+                msg=f"👻 Rows with NaNs in {subset}"
+                if subset is not None and msg is None
+                else msg,
             )
-        else:  # Report on one line
+        else:
+            # Report on one line
             _display_line(
                 (f"👻 Rows with NaNs in {subset}: {na_counts} out of {data.shape[0]}")
-                if subset and not msg
+                if subset is not None and msg is None
                 else f"{msg}: {na_counts}"
             )
         return self._obj
@@ -1439,7 +1440,7 @@ class DataFrameChecks:
         self,
         msg: Union[str, None] = "☰ Rows",
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
     ) -> pd.DataFrame:
         """Displays the number of rows in a DataFrame, without modifying the DataFrame itself.
 
@@ -1454,7 +1455,7 @@ class DataFrameChecks:
         Args:
             msg: Optionally customize the text displayed before the result of the check.
             fn: An optional lambda function to apply to the DataFrame before counting the number of rows. Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string name of one column to limit which columns are considered when counting rows. Applied after fn.
+            subset: Optional column name or names to select before counting rows. Applied after fn.
 
         Returns:
             The original DataFrame, unchanged.
@@ -1470,8 +1471,8 @@ class DataFrameChecks:
 
     def nunique(
         self,
+        subset: SubsetTypes = None,
         column: Union[str, None] = None,
-        subset: Union[str, List, None] = None,
         across_columns: bool = False,
         fn: Callable = lambda df: df,
         msg: Union[str, None] = None,
@@ -1495,8 +1496,8 @@ class DataFrameChecks:
             ```
 
         Args:
-            column: The optional name of a column to count uniques in. Applied after fn.
-            subset: The optional name of a column or columns to count uniques in. If None, and column is None, will include all columns. Applied after fn.
+            subset: Optional column name or names to select before counting uniques. If None, and column is None, will include all columns. Applied after fn.
+            column: The optional name of a column to count uniques in. Applied after fn. Kept for backwards compatibility.
             across_columns: When dataframe has multiple columns (after applying subset), whether we should
                 - count the unique values in each column separately (False), the standard Pandas DataFrame nunique()
                 - count the unique combinations of rows across those columns (True) or
@@ -1515,15 +1516,15 @@ class DataFrameChecks:
                 )
 
             # Coalesce subset and column
-            if column:
+            if column is not None:
                 subset = column
 
             data_modified = _apply_modifications(self._obj, fn=fn, subset=subset)
 
-            if not msg:
-                if subset:
-                    if isinstance(subset, str):
-                        msg = f"🌟 Unique values in '{subset}'"
+            if msg is None:
+                if subset is not None:
+                    if isinstance(subset, str | int | bool):
+                        msg = f"🌟 Unique values in {subset}"
                     elif across_columns:
                         msg = f"🌟 Unique rows across {subset}"
                     else:
@@ -1558,7 +1559,7 @@ class DataFrameChecks:
 
     def plot(
         self,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         fn: Callable = lambda df: df,
         msg: Union[str, None] = "",
         **kwargs: Any,
@@ -1576,7 +1577,7 @@ class DataFrameChecks:
             ```
 
         Args:
-            subset: An optional list of column names or a string name of one column to limit which columns are plotted. Applied after fn.
+            subset: Optional column name or names to select before plotting. Applied after fn.
             fn: An optional lambda function to apply to the DataFrame before running Pandas plot(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             msg: An optional title for the plot.
             **kwargs: Optional, additional arguments that are accepted by Pandas plot() method.
@@ -1601,7 +1602,7 @@ class DataFrameChecks:
         self,
         object: Any = None,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         msg: Union[str, None] = None,
         max_rows: int = 10,
     ) -> pd.DataFrame:
@@ -1627,7 +1628,7 @@ class DataFrameChecks:
         Args:
             object: Object to print. Can be anything printable: str, int, list, another DataFrame, etc. If None, print the DataFrame's head (with `max_rows` rows).
             fn: An optional lambda function to apply to the DataFrame before printing `object`. Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string name of one column to limit which columns are printed. Applied after fn.
+            subset: Optional column name or names to limit which data are printed. Applied after fn.
             msg: Optionally customize the text displayed before the result of the check.
             max_rows: Maximum number of rows to print if object=None.
 
@@ -1772,7 +1773,7 @@ class DataFrameChecks:
         self,
         msg: Union[str, None] = "📐 Shape",
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
     ) -> pd.DataFrame:
         """Displays the Dataframe's dimensions, without modifying the DataFrame itself.
 
@@ -1788,7 +1789,7 @@ class DataFrameChecks:
         Args:
             msg: Optionally customize the text displayed before the result of the check.
             fn: An optional lambda function to apply to the DataFrame before running Pandas `shape`. Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string name of one column to limit which columns are considered when printing the shape. Applied after fn.
+            subset: Optional column name or names to limit which columns are considered when printing the shape. Applied after fn.
 
         Returns:
             The original DataFrame, unchanged.
@@ -1809,7 +1810,7 @@ class DataFrameChecks:
         self,
         n: int = 5,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         msg: Union[str, None] = None,
     ) -> pd.DataFrame:
         """Displays the last n rows of the DataFrame, without modifying the DataFrame itself.
@@ -1827,7 +1828,7 @@ class DataFrameChecks:
         Args:
             n: Number of rows to show.
             fn: An optional lambda function to apply to the DataFrame before running Pandas tail(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string name of one column to limit which columns are displayed. Applied after fn.
+            subset: Optional column name or names to select before displaying tail. Applied after fn.
             msg: Optionally customize the text displayed before the result of the check.
 
         Returns:
@@ -1838,7 +1839,7 @@ class DataFrameChecks:
             check_fn=lambda df: df.tail(n),
             modify_fn=fn,
             subset=subset,
-            msg=msg if msg else f"⬇️ Last {n} rows",
+            msg=msg if msg is not None else f"⬇️ Last {n} rows",
         )
         return self._obj
 
@@ -1887,7 +1888,8 @@ class DataFrameChecks:
 
     def value_counts(
         self,
-        column: str,
+        subset: SubsetTypes = None,
+        column: Union[str, None] = None,
         fn: Callable = lambda df: df,
         max_rows: int = 10,
         msg: Union[str, None] = None,
@@ -1906,7 +1908,8 @@ class DataFrameChecks:
             ```
 
         Args:
-            column: Column to check for value counts.
+            subset: Optional column name or names to select before exporting data. Applied after fn.
+            column: Column to check for value counts. Applied after fn. Kept for backwards compatibility.
             max_rows: Maximum number of rows to show in the value counts.
             fn: An optional lambda function to apply to the DataFrame before running Pandas value_counts(). Example: `lambda df: df.shape[0]>10`. Applied before subset.
             msg: Optionally customize the text displayed before the result of the check.
@@ -1919,17 +1922,32 @@ class DataFrameChecks:
             `fn` is applied to the dataframe _before_ selecting `column`. If you want to select the column before modifying it, set `column=None` and start `fn` with a column selection, i.e. `fn=lambda df: df["my_column"].stuff()`
         """
         if get_mode()["enable_checks"]:
-            (
-                # Apply fn, then filter to `column`
-                _apply_modifications(self._obj, fn=fn, subset=column)
-                # Use SeriesChecks method
-                .check.value_counts(
-                    max_rows=max_rows,
-                    fn=lambda s: s,  # Identity function
-                    msg=msg,
-                    **kwargs,
-                )
-            )  # fmt: skip
+
+            # Coalesce subset and column
+            if column is not None:
+                subset = column
+
+            if msg is None:
+                if isinstance(subset, str | int | bool):
+                    msg = f"🧮 Value counts in {subset}"
+                elif subset is None:
+                    msg = "🧮 Value counts"
+                elif isinstance(subset, list | pd.Index):
+                    if len(subset) > 0:
+                        msg = f"🧮 Value counts in {subset}"
+                else:
+                    msg = "🧮 Value counts"
+                if max_rows and max_rows < len(self._obj):
+                    # Str is for mypy not understanding msg can't be None by this point
+                    msg = str(msg) + f", first {max_rows} values"
+
+            _check_data(
+                self._obj,
+                check_fn=lambda df: df.value_counts(**kwargs).head(max_rows),
+                modify_fn=fn,
+                subset=subset,
+                msg=msg,
+            )
         return self._obj
 
     def write(
@@ -1937,7 +1955,7 @@ class DataFrameChecks:
         path: str,
         format: Union[str, None] = None,
         fn: Callable = lambda df: df,
-        subset: Union[str, List, None] = None,
+        subset: SubsetTypes = None,
         verbose: bool = False,
         **kwargs: Any,
     ) -> pd.DataFrame:
@@ -1973,7 +1991,7 @@ class DataFrameChecks:
             path: Path to write the file to.
             format: Optional file format to force for the export. If None, format is inferred from the file's extension in `path`.
             fn: An optional lambda function to apply to the DataFrame before exporting. Example: `lambda df: df.shape[0]>10`. Applied before subset.
-            subset: An optional list of column names or a string name of one column to limit which columns are exported. Applied after fn.
+            subset: Optional column name or names to select before exporting data. Applied after fn.
             verbose: Whether to print a message when the file is written.
             **kwargs: Optional, additional keyword arguments to pass to the Pandas export function (e.g. `.to_csv()`).
 

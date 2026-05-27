@@ -1121,7 +1121,7 @@ class SeriesChecks:
             The original Series, unchanged.
         """
         if get_mode()["enable_checks"]:
-            if msg:
+            if msg is not None:
                 _display_table_title(msg)
             _apply_modifications(self._obj, fn).info(**kwargs)
         return self._obj
@@ -1282,7 +1282,7 @@ class SeriesChecks:
         Returns:
             The original Series, unchanged.
         """
-        if not msg:
+        if msg is None:
             if self._obj.name:
                 msg = f"🌟 Unique values in '{self._obj.name}'"
             else:
@@ -1592,7 +1592,7 @@ class SeriesChecks:
         Returns:
             The original Series, unchanged.
         """
-        if not msg:
+        if msg is None:
             if self._obj.name:
                 msg = f"🌟 Unique values of '{self._obj.name}'"
             else:
@@ -1635,7 +1635,7 @@ class SeriesChecks:
         Returns:
             The original Series, unchanged.
         """
-        if not msg:
+        if msg is None:
             if self._obj.name:
                 msg = f"🧮 Value counts in '{self._obj.name}'"
             else:
