@@ -1928,13 +1928,13 @@ class DataFrameChecks:
                 subset = column
 
             if msg is None:
-                if isinstance(subset, str):
-                    msg = f"🧮 Value counts in '{subset}'"
+                if isinstance(subset, str | int | bool):
+                    msg = f"🧮 Value counts in {subset}"
                 elif subset is None:
                     msg = "🧮 Value counts"
-                elif isinstance(subset, str | pd.Index):
+                elif isinstance(subset, list | pd.Index):
                     if len(subset) > 0:
-                        msg = f"🧮 Value counts in '{subset}'"
+                        msg = f"🧮 Value counts in {subset}"
                 else:
                     msg = "🧮 Value counts"
                 if max_rows and max_rows < len(self._obj):
