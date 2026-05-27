@@ -854,7 +854,7 @@ class DataFrameChecks:
 
         if subset is None:
             subset = self._obj.columns.tolist()
-        elif isinstance(subset, str):
+        elif isinstance(subset, str | int | bool):
             subset = [subset]
         elif isinstance(subset, tuple):
             # Single multiindex, like in brain_networks.csv test case
@@ -1203,12 +1203,12 @@ class DataFrameChecks:
         """
         if msg is None:
             if isinstance(subset, list) and len(subset) == 1:
-                msg = f"📏 Distribution of '{subset[0]}'"
-            elif isinstance(subset, str):
-                msg = f"📏 Distribution of '{subset}'"
+                msg = f"📏 Distribution of {subset[0]}"
+            elif isinstance(subset, str | int | bool):
+                msg = f"📏 Distribution of {subset}"
             elif "column" in kwargs:
                 col_name = kwargs["column"]
-                msg = f"📏 Distribution of '{col_name}'"
+                msg = f"📏 Distribution of {col_name}"
             else:
                 msg = "📏 Distributions"
         # Only display if in IPython/Jupyter, or we'd just print the title
@@ -1368,7 +1368,7 @@ class DataFrameChecks:
             subset=subset,
             msg=msg
             if msg is not None
-            else f"👯‍♂️ Rows with duplication in '{subset}'"
+            else f"👯‍♂️ Rows with duplication in {subset}"
             if subset is not None
             else "👯‍♂️ Duplicated rows",
         )
@@ -1523,8 +1523,8 @@ class DataFrameChecks:
 
             if msg is None:
                 if subset is not None:
-                    if isinstance(subset, str):
-                        msg = f"🌟 Unique values in '{subset}'"
+                    if isinstance(subset, str | int | bool):
+                        msg = f"🌟 Unique values in {subset}"
                     elif across_columns:
                         msg = f"🌟 Unique rows across {subset}"
                     else:
