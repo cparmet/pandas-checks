@@ -1541,7 +1541,6 @@ class DataFrameChecks:
                 _check_data(
                     data_modified,
                     check_fn=lambda data: data.nunique(**kwargs),
-                    modify_fn=fn,
                     msg=msg,
                 )  # fmt: skip
             else:
