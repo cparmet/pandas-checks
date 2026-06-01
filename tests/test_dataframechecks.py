@@ -212,6 +212,17 @@ def test_DataFrameChecks_nunique_across_columns(iris, capsys):
     assert capsys.readouterr().out == "\nTest: 27\n"
 
 
+def test_DataFrameChecks_nunique_select_cols_first(iris, capsys):
+    # Issue #72
+    iris.check.nunique(
+        subset="species",
+        fn=lambda df: df.loc[df["petal_length"] == 1.4],
+        dropna=False,
+        msg="Test",
+    )
+    assert capsys.readouterr().out == "\nTest: 1\n"
+
+
 def test_DataFrameChecks_plot_no_terminal_display(iris, capsys):
     iris.check.plot(subset=["sepal_width", "petal_length"])
     assert capsys.readouterr().out == ""
