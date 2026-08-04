@@ -15,7 +15,7 @@ resolution-markers = [
 ]
 
 [options]
-exclude-newer = "2026-07-21T21:05:06.418843Z"
+exclude-newer = "2026-07-21T23:45:01.423628Z"
 exclude-newer-span = "P14D"
 
 [[package]]
@@ -1709,7 +1709,7 @@ wheels = [
 
 [[package]]
 name = "pandas-checks"
-version = "2.0.1"
+version = "2.0.2"
 source = { editable = "." }
 dependencies = [
     { name = "emoji" },
