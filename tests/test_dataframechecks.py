@@ -389,17 +389,18 @@ def test_DataFrameChecks_value_counts_column(iris, capsys):
 
 def test_DataFrameChecks_value_counts_subset(iris, capsys):
     iris.check.value_counts(subset=["species", "petal_length"], msg="Test", max_rows=2)
-    # assert capsys.readouterr().out == """\nTest
-    # species  petal_length
-    # setosa        1.4             13
-    #     1.5             13\n"""
-    assert (
-        capsys.readouterr().out
-        == """\nTest
+    assert capsys.readouterr().out in [
+        # Pandas 2
+        """\nTest
     species  petal_length
     setosa   1.4             13
-             1.5             13\n"""
-    )
+             1.5             13\n""",
+        # Pandas 3
+        """\nTest
+    species  petal_length
+    setosa   1.5             13
+             1.4             13\n""",
+    ]
 
 
 @pytest.mark.parametrize(
