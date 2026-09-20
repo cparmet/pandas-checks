@@ -75,7 +75,8 @@ def test_DataFrameChecks_disable_checks(iris, capsys):
 
 
 def test_DataFrameChecks_dtypes(iris, capsys):
-    iris.check.dtypes(fn=lambda df: df.select_dtypes("object"))
+    # "string" works in pandas 2 and covers "str" in Pandas 3
+    iris.check.dtypes(fn=lambda df: df.select_dtypes(["object", "string"]))
     assert capsys.readouterr().out in [
         # Pandas 2
         """\n🗂️ Data types
