@@ -15,7 +15,7 @@ resolution-markers = [
 ]
 
 [options]
-exclude-newer = "2026-09-06T19:09:09.766244Z"
+exclude-newer = "2026-09-06T19:18:44.204998Z"
 exclude-newer-span = "P14D"
 
 [[package]]
@@ -1709,7 +1709,7 @@ wheels = [
 
 [[package]]
 name = "pandas-checks"
-version = "2.0.2"
+version = "2.0.3"
 source = { editable = "." }
 dependencies = [
     { name = "click" },
